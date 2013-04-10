@@ -1,0 +1,12 @@
+# emacs
+*~
+
+# eclipse
+.classpath
+.project
+.settings
+
+# maven
+target
+test-output
+

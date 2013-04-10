@@ -1,4 +1,4 @@
 jelly
 =====
 
-A solver for Jelly No Puzzle
+A solver for Jelly No Puzzle.

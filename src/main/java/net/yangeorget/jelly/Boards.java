@@ -36,9 +36,4 @@ public class Boards {
 			}
 		}
 	}
-
-	public static boolean isColored(int i, int j, char[][] board) {
-		char c = board[i][j];
-		return c != 0 && !Character.isWhitespace(c);
-	}
 }

@@ -56,11 +56,12 @@ public class Boards {
 		return board[i][j] == color;
 	}
 	
+	// TODO: move
 	public static char getPosition(int i, int j, char[][] board) {
-		return (char) (j + i * getWidth(board));
+		return (char) (j + i << 4 );
 	}
 
 	public static String positionToString(char position, int height, int width) {
-		return "(" + (position / width) + "," + (position % height) + ")";
+		return "(" + (position >> 4) + "," + (position % 16) + ")";
 	}
 }

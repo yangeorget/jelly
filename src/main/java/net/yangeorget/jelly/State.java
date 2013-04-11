@@ -3,6 +3,7 @@ package net.yangeorget.jelly;
 import java.util.LinkedList;
 import java.util.List;
 
+// TODO: create a game
 public class State {
 	int width;
 	int height;

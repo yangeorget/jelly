@@ -7,9 +7,9 @@ public class Boards {
 		"            ",
 		"            ",
 		"       P    ",
-		"      WW    ",
+		"      ww    ",
 		"  G     P B ",
-		"WBWWWG WWWWW"
+		"wBwwwG wwwww"
 	};
 	
 	public static int getHeight(char[][] board) {
@@ -18,16 +18,6 @@ public class Boards {
 
 	public static int getWidth(char[][] board) {
 		return board[0].length;
-	}
-
-	public static char[][] toCharMatrix(String[] a) {
-		// TODO: set border here if needed
-		int height = a.length;
-		char[][] m = new char[height][];
-		for (int i = 0; i < height; i++) {
-			m[i] = a[i].toCharArray();
-		}
-		return m;
 	}
 
 	public static String toString(char[][] board) {
@@ -50,18 +40,5 @@ public class Boards {
 	public static boolean isColored(int i, int j, char[][] board) {
 		char c = board[i][j];
 		return c != 0 && !Character.isWhitespace(c);
-	}
-	
-	public static boolean sameColors(char color, int i, int j, char[][] board) {
-		return board[i][j] == color;
-	}
-	
-	// TODO: move
-	public static char getPosition(int i, int j, char[][] board) {
-		return (char) (j + i << 4 );
-	}
-
-	public static String positionToString(char position, int height, int width) {
-		return "(" + (position >> 4) + "," + (position % 16) + ")";
 	}
 }

@@ -1,6 +1,11 @@
 package net.yangeorget.jelly;
 
 public class Position {
+	public static final int LEFT = -1;
+	public static final int RIGHT = -1;
+	public static final int UP = -16;
+	public static final int DOWN = 16;
+	
 	private int value; // TODO: use a char?
 
 	public Position(int i, int j) {
@@ -16,6 +21,10 @@ public class Position {
 
 	public int intValue() {
 		return value;
+	}
+
+	public void move(Position vec) {
+		value += vec.intValue();
 	}
 }
 

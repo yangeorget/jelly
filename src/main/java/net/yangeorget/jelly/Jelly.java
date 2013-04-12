@@ -1,10 +1,9 @@
 package net.yangeorget.jelly;
 
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class Jelly {
-	private Set<Position> positions;
+	private LinkedHashSet<Position> positions;
 	
 	public Jelly() {
 		positions = new LinkedHashSet<Position>();
@@ -16,5 +15,12 @@ public class Jelly {
 	
 	public String toString() {
 		return positions.toString();
+	}
+	
+	public void move(Position vec) {
+		// TODO: check if out of board
+		for (Position position : positions) {
+			position.move(vec);
+		}
 	}
 }

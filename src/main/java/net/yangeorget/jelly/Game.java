@@ -27,13 +27,13 @@ public class Game {
 
 	public boolean solve() {
 		for(State state = states.removeFirst(); explored.add(state);) {
-			Map<Character, LinkedList<Jelly>> map = state.getFloatingJellies();
+			Map<Character, List<Jelly>> map = state.getFloatingJellies();
 			for (Character color : map.keySet()) {
-				for (Jelly jelly : map.get(color)) {
-					if (check(state.moveLeft(jelly))) {
+				for (int i = map.get(color).size() - 1; i>=0; i--) {
+					if (check(state.move(color, i, Position.LEFT))) {
 						return true;
 					}
-					if (check(state.moveRight(jelly))) {
+					if (check(state.move(color, i, Position.RIGHT))) {
 						return true;
 					}
 				}
@@ -43,7 +43,7 @@ public class Game {
 	}
 
 	private boolean check(State state) {
-		if (!explored.contains(state)) {			
+		if (state != null && !explored.contains(state)) {			
 			if (state.getFloatingJellies().size() + state.getFixedJellies().size() == distinctColorsNb) {
 				return true;
 			} 

@@ -2,17 +2,18 @@ package net.yangeorget.jelly;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class State {
-	private Map<Character, LinkedList<Jelly>> floatingJellies;
-	private Map<Character, LinkedList<Jelly>> fixedJellies;
+	private Map<Character, List<Jelly>> floatingJellies;
+	private Map<Character, List<Jelly>> fixedJellies;
 
 	public State() {
-		floatingJellies = new HashMap<Character, LinkedList<Jelly>>();
-		fixedJellies = new HashMap<Character, LinkedList<Jelly>>();
+		floatingJellies = new HashMap<Character, List<Jelly>>();
+		fixedJellies = new HashMap<Character, List<Jelly>>();
 	}
-
+	
 	public State(char[][] board) {
 		this();
 		for (int i = 0; i < Boards.getHeight(board); i++) {
@@ -31,11 +32,14 @@ public class State {
 		}
 	}
 
+	public State clone() {
+		return null;
+	}
 
-	private void store(Map<Character, LinkedList<Jelly>> map,
+	private void store(Map<Character, List<Jelly>> map,
 					   Character color, 
 					   Jelly jelly) {
-		LinkedList<Jelly> list = map.get(color);
+		List<Jelly> list = map.get(color);
 		if (list == null) {
 			list = new LinkedList<Jelly>();
 			map.put(color, list);
@@ -66,19 +70,16 @@ public class State {
 		return fixed;
 	}
 
-	public Map<Character, LinkedList<Jelly>> getFloatingJellies() {
+	public Map<Character, List<Jelly>> getFloatingJellies() {
 		return floatingJellies;
 	}
 	
-	public Map<Character, LinkedList<Jelly>> getFixedJellies() {
+	public Map<Character, List<Jelly>> getFixedJellies() {
 		return fixedJellies;
 	}
 
-	public State moveLeft(Jelly jelly) {
-		return null;
-	}
-
-	public State moveRight(Jelly jelly) {
+	public State move(Character color, int i, int vec) {
+		State state = clone();
 		return null;
 	}
 	

@@ -1,6 +1,7 @@
 package net.yangeorget.jelly;
 
 public class Boards {
+	// TODO: use different w's or use a reserved char and a counter  
 	public static String[] BOARD1 = new String[] {
 		"            ",
 		"            ",

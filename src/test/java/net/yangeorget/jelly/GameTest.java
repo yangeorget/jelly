@@ -41,7 +41,7 @@ public class GameTest {
 		testJellies(Boards.BOARD1, 4, 1, 6, 3);
 	}
 	
-	private void testJellies(String[] board, int countFixed, int colorsFixed, int countNonFixed, int colorsNonFixed) {
+	private void testJellies(String[] board, int jelliesFixed, int colorsFixed, int jelliesFloating, int colorsFloating) {
 		Game game = new Game(board);
 		System.out.println(game.toString());
 		State state = game.getStates().get(0);
@@ -49,13 +49,13 @@ public class GameTest {
 		for (List<Jelly> jellies : state.getFixedJellies().values()) {
 			fixedJellies.addAll(jellies);
 		}
-		Assert.assertEquals(fixedJellies.size(), countFixed);
+		Assert.assertEquals(fixedJellies.size(), jelliesFixed);
 		Assert.assertEquals(state.getFixedJellies().size(), colorsFixed);		
-		List<Jelly> nonFixedJellies = new LinkedList<Jelly>();
+		List<Jelly> floating = new LinkedList<Jelly>();
 		for (List<Jelly> jellies : state.getFloatingJellies().values()) {
-			nonFixedJellies.addAll(jellies);
+			floating.addAll(jellies);
 		}
-		Assert.assertEquals(nonFixedJellies.size(), countNonFixed);
-		Assert.assertEquals(state.getFloatingJellies().size(), colorsNonFixed);
+		Assert.assertEquals(floating.size(), jelliesFloating);
+		Assert.assertEquals(state.getFloatingJellies().size(), colorsFloating);
 	}
 }

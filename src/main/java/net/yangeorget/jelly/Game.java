@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Game {
+	private int width;
+	private int height;
 	private int distinctColorsNb;
 	private LinkedList<State> states;
 	private Set<State> explored;
@@ -23,6 +25,8 @@ public class Game {
 		colors.addAll(state.getFloatingJellies().keySet());
 		colors.addAll(state.getFixedJellies().keySet());
 		distinctColorsNb = colors.size();
+		width = Boards.getWidth(board);
+		height = Boards.getHeight(board);
 	}
 
 	public boolean solve() {
@@ -30,10 +34,10 @@ public class Game {
 			Map<Character, List<Jelly>> map = state.getFloatingJellies();
 			for (Character color : map.keySet()) {
 				for (int i = map.get(color).size() - 1; i>=0; i--) {
-					if (check(state.move(color, i, Position.LEFT))) {
+					if (check(state.move(color, i, 0, -1, height, width))) {
 						return true;
 					}
-					if (check(state.move(color, i, Position.RIGHT))) {
+					if (check(state.move(color, i, 0, 1, height, width))) {
 						return true;
 					}
 				}

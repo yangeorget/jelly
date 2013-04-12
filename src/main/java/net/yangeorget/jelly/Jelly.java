@@ -1,13 +1,23 @@
 package net.yangeorget.jelly;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 
 public class Jelly {
 	private LinkedHashSet<Position> positions;
 	
 	public Jelly() {
-		positions = new LinkedHashSet<Position>();
-	}	
+		this(Collections.EMPTY_SET);
+	}
+	
+	public Jelly(Collection<Position> col) {
+		positions = new LinkedHashSet<Position>(col);
+	}
+	
+	public Jelly clone() {
+		return new Jelly(positions);
+	}
 	
 	public void store(int i, int j) {
 		positions.add(new Position(i, j));
@@ -17,10 +27,13 @@ public class Jelly {
 		return positions.toString();
 	}
 	
-	public void move(Position vec) {
-		// TODO: check if out of board
+	public boolean move(int di, int dj, int height, int width) {
 		for (Position position : positions) {
-			position.move(vec);
+			if (!position.move(di, dj, height, width)) {
+				return false;
+			}
 		}
+		return true;
 	}
+	
 }

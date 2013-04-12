@@ -1,30 +1,47 @@
 package net.yangeorget.jelly;
 
 public class Position {
-	public static final int LEFT = -1;
-	public static final int RIGHT = -1;
-	public static final int UP = -16;
-	public static final int DOWN = 16;
-	
 	private int value; // TODO: use a char?
 
 	public Position(int i, int j) {
-		this((i << 4) + j);
+		this(intValue(i, j));
 	}
-
+	
 	public Position(int value) {
 		this.value = value;
 	}
+
 	public String toString() {
-		return "(" + (value >> 4) + "," + (value & 0xF) + ")";
+		return "(" + getI() + "," + getJ() + ")";
 	}
 
-	public int intValue() {
+	int getI() {
+		return value >>> 4;
+	}
+	
+    int getJ() {
+		return value & 0xF;
+	}
+	
+	public int getValue() {
 		return value;
 	}
-
-	public void move(Position vec) {
-		value += vec.intValue();
+	
+	private static int intValue(int i, int j) {
+		return (i << 4) + j;
+	}
+	
+	public boolean move(int di, int dj, int height, int width) {
+		int i = getI() + di;
+		if (i < 0 || i >= height) {
+			return false;
+		}
+		int j = getJ() + dj;
+		if (j < 0 || j >= width) {
+			return false;
+		}
+		value = intValue(i, j);
+		return true;
 	}
 }
 

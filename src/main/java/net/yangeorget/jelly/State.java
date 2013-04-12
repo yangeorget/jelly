@@ -33,7 +33,18 @@ public class State {
 	}
 
 	public State clone() {
-		return null;
+		State state = new State();
+		for (Character color : fixedJellies.keySet()) {
+			for(Jelly jelly : fixedJellies.get(color)) {
+				state.store(state.getFixedJellies(), color, jelly.clone());
+			}			
+		}
+		for (Character color : floatingJellies.keySet()) {
+			for(Jelly jelly : floatingJellies.get(color)) {
+				state.store(state.getFloatingJellies(), color, jelly.clone());
+			}	
+		}
+		return state;
 	}
 
 	private void store(Map<Character, List<Jelly>> map,
@@ -78,7 +89,7 @@ public class State {
 		return fixedJellies;
 	}
 
-	public State move(Character color, int i, int vec) {
+	public State move(Character color, int index, int di, int dj, int height, int width) {
 		State state = clone();
 		return null;
 	}

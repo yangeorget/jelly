@@ -29,16 +29,23 @@ public class Game {
 		height = Boards.getHeight(board);
 	}
 
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
 	public boolean solve() {
 		for(State state = states.removeFirst(); explored.add(state);) {
 			Map<Character, List<Jelly>> map = state.getFloatingJellies();
 			for (Character color : map.keySet()) {
 				for (int i = map.get(color).size() - 1; i>=0; i--) {
-					if (check(state.move(color, i, 0, -1, height, width))) {
-						return true;
-					}
-					if (check(state.move(color, i, 0, 1, height, width))) {
-						return true;
+					for (int di = -1; di <= 1; di += 2) {
+						if (check(state.move(color, i, 0, di, height, width))) {
+							return true;
+						}
 					}
 				}
 			}
@@ -69,7 +76,7 @@ public class Game {
 	public List<State> getStates() {
 		return states;
 	}
-	
+
 	public String toString() {
 		return "distinctColorsNb=" + distinctColorsNb + ";states=" + states + ";explored=" + explored;
 	}

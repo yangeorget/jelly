@@ -1,10 +1,14 @@
 package net.yangeorget.jelly;
 
-public class Position {
+public class Position implements Comparable {
 	private int value; // TODO: use a char?
 
 	public Position(int i, int j) {
 		this(intValue(i, j));
+	}
+	
+	public Position(Position p) {
+		this(p.getValue());
 	}
 	
 	public Position(int value) {
@@ -16,7 +20,7 @@ public class Position {
 	}
 
 	int getI() {
-		return value >>> 4;
+		return value >> 4;
 	}
 	
     int getJ() {
@@ -42,6 +46,22 @@ public class Position {
 		}
 		value = intValue(i, j);
 		return true;
+	}
+	
+	public boolean equals(Object o) {
+		return (o instanceof Position) && ((Position) o).getValue() == value;		
+	}
+	
+	public int hashCode() {
+		return value;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if (o instanceof Position) {
+			return value - ((Position) o).getValue();		
+		}
+		throw new RuntimeException("Not a Position!");
 	}
 }
 

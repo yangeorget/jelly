@@ -13,7 +13,7 @@ public class State {
 		floatingJellies = new HashMap<Character, List<Jelly>>();
 		fixedJellies = new HashMap<Character, List<Jelly>>();
 	}
-	
+
 	public State(char[][] board) {
 		this();
 		for (int i = 0; i < Boards.getHeight(board); i++) {
@@ -48,8 +48,8 @@ public class State {
 	}
 
 	private void store(Map<Character, List<Jelly>> map,
-					   Character color, 
-					   Jelly jelly) {
+			Character color, 
+			Jelly jelly) {
 		List<Jelly> list = map.get(color);
 		if (list == null) {
 			list = new LinkedList<Jelly>();
@@ -84,16 +84,38 @@ public class State {
 	public Map<Character, List<Jelly>> getFloatingJellies() {
 		return floatingJellies;
 	}
-	
+
 	public Map<Character, List<Jelly>> getFixedJellies() {
 		return fixedJellies;
 	}
 
 	public State move(Character color, int index, int di, int dj, int height, int width) {
 		State state = clone();
-		return null;
+		return state.move(state.getFloatingJellies().get(color).get(index), di, dj, height, width) ? state : null;
 	}
-	
+
+	public boolean move(Jelly jelly, int di, int dj, int height, int width) {
+		System.out.println("move:" + jelly);
+		if (!jelly.update(di, dj, height, width)) {
+			return false;			
+		} 
+		for (Character c : fixedJellies.keySet()) {
+			for (Jelly j : fixedJellies.get(c)) {
+				if (jelly.overlaps(j)) {					
+					return false;
+				}
+			}
+		}
+		for (Character c : floatingJellies.keySet()) {
+			for (Jelly j : floatingJellies.get(c)) {
+				if (jelly.overlaps(j) && !move(j, di, dj, height, width)) {
+					return false;				
+				}
+			}
+		}
+		return true;
+	}
+
 	public String toString() {
 		return "fixed=" + fixedJellies + ";nonFixed=" + floatingJellies;
 	}

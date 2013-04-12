@@ -2,17 +2,22 @@ package net.yangeorget.jelly;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Jelly {
-	private LinkedHashSet<Position> positions;
+	private Set<Position> positions;
 	
 	public Jelly() {
-		this(Collections.EMPTY_SET);
+		this(Collections.<Position> emptySet());
 	}
 	
 	public Jelly(Collection<Position> col) {
-		positions = new LinkedHashSet<Position>(col);
+		positions = new HashSet<Position>();
+		for (Position position : col) {
+			positions.add(new Position(position));
+		}
 	}
 	
 	public Jelly clone() {
@@ -27,7 +32,11 @@ public class Jelly {
 		return positions.toString();
 	}
 	
-	public boolean move(int di, int dj, int height, int width) {
+	public int size() {
+		return positions.size();
+	}
+	
+	public boolean update(int di, int dj, int height, int width) {
 		for (Position position : positions) {
 			if (!position.move(di, dj, height, width)) {
 				return false;
@@ -35,5 +44,19 @@ public class Jelly {
 		}
 		return true;
 	}
-	
+
+	public boolean overlaps(Jelly j) {
+		if (size() > j.size()) {
+			return j.overlaps(this);
+		}
+		for (Position p : positions) {
+			System.out.println("checking " + p + " with " + j.positions);
+			if (j.positions.contains(p)) {
+				System.out.println(this + " overlaps " + j);
+				return true;
+			}
+		}
+		System.out.println(this + " does not overlaps " + j);
+		return false;
+	}
 }

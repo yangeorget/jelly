@@ -14,7 +14,7 @@ public class Jelly {
 	}
 	
 	public Jelly(Collection<Position> col) {
-		positions = new HashSet<Position>();
+		positions = new TreeSet<Position>();
 		for (Position position : col) {
 			positions.add(new Position(position));
 		}
@@ -36,6 +36,10 @@ public class Jelly {
 		return positions.size();
 	}
 	
+	public boolean contains(Position p) {
+		return positions.contains(p);
+	}
+	
 	public boolean update(int di, int dj, int height, int width) {
 		for (Position position : positions) {
 			if (!position.move(di, dj, height, width)) {
@@ -50,13 +54,10 @@ public class Jelly {
 			return j.overlaps(this);
 		}
 		for (Position p : positions) {
-			System.out.println("checking " + p + " with " + j.positions);
-			if (j.positions.contains(p)) {
-				System.out.println(this + " overlaps " + j);
+			if (j.contains(p)) {
 				return true;
 			}
 		}
-		System.out.println(this + " does not overlaps " + j);
 		return false;
 	}
 }

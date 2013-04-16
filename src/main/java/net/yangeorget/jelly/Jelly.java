@@ -15,4 +15,6 @@ public interface Jelly {
 
     int size();
 
+    boolean moveDown(int height);
+
 }

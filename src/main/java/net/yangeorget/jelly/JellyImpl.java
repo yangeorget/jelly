@@ -1,28 +1,32 @@
 package net.yangeorget.jelly;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class JellyImpl
         implements Jelly {
-    private final Set<Position> positions;
+    private Set<Position> positions;
 
     public JellyImpl() {
-        this(Collections.<Position> emptySet());
+        positions = new TreeSet<>();
     }
 
     public JellyImpl(final Collection<Position> col) {
-        positions = new TreeSet<>();
-        for (final Position position : col) {
-            positions.add(new Position(position));
-        }
+        positions = clone(col);
     }
 
     @Override
     public Jelly clone() {
         return new JellyImpl(positions);
+    }
+
+    private static Set<Position> clone(final Collection<Position> col) {
+        final Set<Position> clonedCol = new TreeSet<>();
+        for (final Position position : col) {
+            clonedCol.add(new Position(position));
+        }
+        return clonedCol;
     }
 
     @Override
@@ -52,6 +56,18 @@ public class JellyImpl
                 return false;
             }
         }
+        return true;
+    }
+
+    @Override
+    public boolean moveDown(final int height) {
+        final Set<Position> col = clone(positions);
+        for (final Position position : col) {
+            if (!position.moveDown(height)) {
+                return false;
+            }
+        }
+        positions = col;
         return true;
     }
 

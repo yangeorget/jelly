@@ -16,7 +16,5 @@ public interface State {
 
     char[][] toBoard(int height, int width);
 
-    boolean moveDown(Jelly jelly, int height);
-
     void moveDown(int height);
 }

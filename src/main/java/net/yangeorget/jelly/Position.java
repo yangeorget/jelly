@@ -46,6 +46,15 @@ public class Position
         return true;
     }
 
+    public boolean moveDown(final int height) {
+        final int i = getI() + 1;
+        if (i >= height) {
+            return false;
+        }
+        value = intValue(i, getJ());
+        return true;
+    }
+
     @Override
     public int compareTo(final Position o) {
         return value - o.getValue();

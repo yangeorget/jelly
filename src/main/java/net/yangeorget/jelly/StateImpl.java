@@ -4,9 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StateImpl
         implements State {
+    private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
+
     private final Map<Character, List<Jelly>> floatingJellies;
     private final Map<Character, List<Jelly>> fixedJellies;
 
@@ -93,12 +97,15 @@ public class StateImpl
     @Override
     public State move(final Character color, final int index, final int move, final int height, final int width) {
         final State state = clone();
+        LOG.debug("move: before HMove\n" + Boards.toString(state.toBoard(height, width)));
         if (!state.moveHorizontally(state.getFloatingJellies()
                                          .get(color)
                                          .get(index), move, width)) {
             return null;
         }
+        LOG.debug("move: before VMove\n" + Boards.toString(state.toBoard(height, width)));
         state.moveDown(height);
+        LOG.debug("move: after VMove\n" + Boards.toString(state.toBoard(height, width)));
         // join
         return state;
     }
@@ -129,21 +136,39 @@ public class StateImpl
 
     @Override
     public void moveDown(final int height) {
-        for (boolean loop = false; loop;) {
-            for (final Character c : floatingJellies.keySet()) {
-                for (final Jelly j : floatingJellies.get(c)) {
-
-                    // TODO : clone jelly
-                    loop |= moveDown(j, height);
-                }
+        boolean loop = false;
+        for (final Character c : floatingJellies.keySet()) {
+            for (final Jelly j : floatingJellies.get(c)) { // ideally start with jellies at bottom
+                loop |= moveDown(j, height);
             }
+        }
+        if (loop) {
+            moveDown(height);
         }
     }
 
-    @Override
-    public boolean moveDown(final Jelly jelly, final int height) {
-        // TODO Auto-generated method stub
-        return false;
+
+    private boolean moveDown(final Jelly j, final int height) {
+        if (!j.moveDown(height)) {
+            return false;
+        }
+        for (final Character c : fixedJellies.keySet()) {
+            for (final Jelly j : fixedJellies.get(c)) {
+                if (jelly.overlaps(j)) { // cannot move
+                    return false;
+                }
+            }
+        }
+        for (final Character c : floatingJellies.keySet()) {
+            for (final Jelly j : floatingJellies.get(c)) {
+                if (!jelly.equals(j) && jelly.overlaps(j)) {
+                    if (!moveHorizontally(j, move, width)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     @Override

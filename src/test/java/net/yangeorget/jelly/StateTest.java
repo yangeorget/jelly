@@ -1,9 +1,13 @@
 package net.yangeorget.jelly;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class StateTest {
+    private static final Logger LOG = LoggerFactory.getLogger(StateTest.class);
+
     @Test
     public void testClone() {
         final State state = new GameImpl(Boards.BOARD1).getStates()
@@ -32,8 +36,8 @@ public class StateTest {
         testMoveKO(new String[] { " BGw " }, 'B', 0, 1);
     }
 
-    private void testMoveKO(final String[] board, final char color, final int index, final int move) {
-        final Game game = new GameImpl(board);
+    private void testMoveKO(final String[] input, final char color, final int index, final int move) {
+        final Game game = new GameImpl(input);
         final State state = game.getStates()
                                 .get(0);
         Assert.assertNull(state.move(color, index, move, game.getHeight(), game.getWidth()));
@@ -54,15 +58,29 @@ public class StateTest {
         testMoveOK(new String[] { " BBYRR ", " GBB R " }, 'B', 0, 1, new String[] { "  BBYRR", " G BB R" });
     }
 
-    private void testMoveOK(final String[] board,
+    private void testMoveOK(final String[] input,
                             final char color,
                             final int index,
                             final int move,
-                            final String[] eBoard) {
-        final Game game = new GameImpl(board);
+                            final String[] output) {
+        final Game game = new GameImpl(input);
         Boards.assertEquals(game.getStates()
                                 .get(0)
                                 .move(color, index, move, game.getHeight(), game.getWidth())
-                                .toBoard(game.getHeight(), game.getWidth()), Boards.toCharMatrix(eBoard));
+                                .toBoard(game.getHeight(), game.getWidth()), Boards.toCharMatrix(output));
+    }
+
+    @Test
+    public void testMoveDownOK1() {
+        testMoveDownOK(new String[] { " BB ", "    ", "    " }, new String[] { "    ", "    ", " BB " });
+    }
+
+    private void testMoveDownOK(final String[] input, final String[] output) {
+        final Game game = new GameImpl(input);
+        final State state = game.getStates()
+                                .get(0);
+        state.moveDown(game.getHeight());
+        LOG.debug(state.toString());
+        Boards.assertEquals(state.toBoard(game.getHeight(), game.getWidth()), Boards.toCharMatrix(output));
     }
 }

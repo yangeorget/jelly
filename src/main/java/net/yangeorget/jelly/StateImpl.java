@@ -23,7 +23,7 @@ public class StateImpl
         this();
         for (int i = 0; i < Boards.getHeight(board); i++) {
             for (int j = 0; j < Boards.getWidth(board); j++) {
-                final Character color = Character.toUpperCase(board[i][j]);
+                final Character color = board[i][j];
                 if (color != 0 && !Character.isWhitespace(color)) {
                     final Jelly jelly = new JellyImpl();
                     final boolean fixed = update(jelly, color, i, j, board);
@@ -64,7 +64,7 @@ public class StateImpl
 
     private boolean update(final Jelly jelly, final char color, final int i, final int j, final char[][] board) {
         boolean fixed = false;
-        if (color == Character.toUpperCase(board[i][j])) {
+        if (Character.toUpperCase(color) == Character.toUpperCase(board[i][j])) {
             fixed |= Character.isLowerCase(board[i][j]);
             board[i][j] = 0;
             jelly.store(i, j);
@@ -97,17 +97,18 @@ public class StateImpl
     @Override
     public State move(final Character color, final int index, final int move, final int height, final int width) {
         final State state = clone();
-        LOG.debug("move: before HMove\n" + Boards.toString(state.toBoard(height, width)));
-        if (!state.moveHorizontally(state.getFloatingJellies()
-                                         .get(color)
-                                         .get(index), move, width)) {
+        LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
+        if (state.moveHorizontally(state.getFloatingJellies()
+                                        .get(color)
+                                        .get(index), move, width)) {
+
+            state.moveDown(height, width);
+            LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
+            // join
+            return state;
+        } else {
             return null;
         }
-        LOG.debug("move: before VMove\n" + Boards.toString(state.toBoard(height, width)));
-        state.moveDown(height);
-        LOG.debug("move: after VMove\n" + Boards.toString(state.toBoard(height, width)));
-        // join
-        return state;
     }
 
     @Override
@@ -135,21 +136,23 @@ public class StateImpl
     }
 
     @Override
-    public void moveDown(final int height) {
-        boolean loop = false;
+    public void moveDown(final int height, final int width) {
+        LOG.debug("\n" + Boards.toString(toBoard(height, width)));
         for (final Character c : floatingJellies.keySet()) {
             for (final Jelly j : floatingJellies.get(c)) { // ideally start with jellies at bottom
-                loop |= moveDown(j, height);
+                final Jelly jc = j.clone();
+                if (moveDown(j, height)) {
+                    moveDown(height, width);
+                } else {
+                    j.restore(jc);
+                }
             }
-        }
-        if (loop) {
-            moveDown(height);
         }
     }
 
-
-    private boolean moveDown(final Jelly j, final int height) {
-        if (!j.moveDown(height)) {
+    @Override
+    public boolean moveDown(final Jelly jelly, final int height) {
+        if (!jelly.moveDown(height)) {
             return false;
         }
         for (final Character c : fixedJellies.keySet()) {
@@ -162,9 +165,7 @@ public class StateImpl
         for (final Character c : floatingJellies.keySet()) {
             for (final Jelly j : floatingJellies.get(c)) {
                 if (!jelly.equals(j) && jelly.overlaps(j)) {
-                    if (!moveHorizontally(j, move, width)) {
-                        return false;
-                    }
+                    return false;
                 }
             }
         }

@@ -17,8 +17,19 @@ public class JellyImpl
     }
 
     @Override
+    public Set<Position> getPositions() {
+        return positions;
+    }
+
+    @Override
     public Jelly clone() {
         return new JellyImpl(positions);
+    }
+
+    @Override
+    public void restore(final Jelly j) {
+        positions = j.getPositions();
+
     }
 
     private static Set<Position> clone(final Collection<Position> col) {
@@ -61,13 +72,11 @@ public class JellyImpl
 
     @Override
     public boolean moveDown(final int height) {
-        final Set<Position> col = clone(positions);
-        for (final Position position : col) {
+        for (final Position position : positions) {
             if (!position.moveDown(height)) {
                 return false;
             }
         }
-        positions = col;
         return true;
     }
 

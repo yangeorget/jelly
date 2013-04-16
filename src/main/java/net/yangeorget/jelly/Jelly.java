@@ -1,5 +1,7 @@
 package net.yangeorget.jelly;
 
+import java.util.Set;
+
 public interface Jelly {
     void store(int i, int j);
 
@@ -16,5 +18,9 @@ public interface Jelly {
     int size();
 
     boolean moveDown(int height);
+
+    void restore(Jelly j);
+
+    Set<Position> getPositions();
 
 }

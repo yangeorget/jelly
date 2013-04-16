@@ -17,6 +17,25 @@ public class StateTest {
     }
 
     @Test
+    public void testMoveDownOK1() {
+        testMoveDownOK(new String[] { " BB ", "    ", "    " }, new String[] { "    ", "    ", " BB " });
+    }
+
+    @Test
+    public void testMoveDownOK2() {
+        testMoveDownOK(new String[] { "  GG ", " BB  ", "     " }, new String[] { "     ", "  GG ", " BB  " });
+    }
+
+    private void testMoveDownOK(final String[] input, final String[] output) {
+        final Game game = new GameImpl(input);
+        final State state = game.getStates()
+                                .get(0);
+        state.moveDown(game.getHeight(), game.getWidth());
+        LOG.debug(state.toString());
+        Boards.assertEquals(state.toBoard(game.getHeight(), game.getWidth()), Boards.toCharMatrix(output));
+    }
+
+    @Test
     public void testMoveKO1() {
         testMoveKO(new String[] { " BBBB" }, 'B', 0, 1);
     }
@@ -58,6 +77,13 @@ public class StateTest {
         testMoveOK(new String[] { " BBYRR ", " GBB R " }, 'B', 0, 1, new String[] { "  BBYRR", " G BB R" });
     }
 
+    @Test
+    public void testMoveOK4() {
+        testMoveOK(new String[] { " YYGGG ", " GGG B ", "     w " }, 'B', 0, 1, new String[] { "       ",
+                                                                                              " YYGGG ",
+                                                                                              " GGG wB" });
+    }
+
     private void testMoveOK(final String[] input,
                             final char color,
                             final int index,
@@ -70,17 +96,5 @@ public class StateTest {
                                 .toBoard(game.getHeight(), game.getWidth()), Boards.toCharMatrix(output));
     }
 
-    @Test
-    public void testMoveDownOK1() {
-        testMoveDownOK(new String[] { " BB ", "    ", "    " }, new String[] { "    ", "    ", " BB " });
-    }
 
-    private void testMoveDownOK(final String[] input, final String[] output) {
-        final Game game = new GameImpl(input);
-        final State state = game.getStates()
-                                .get(0);
-        state.moveDown(game.getHeight());
-        LOG.debug(state.toString());
-        Boards.assertEquals(state.toBoard(game.getHeight(), game.getWidth()), Boards.toCharMatrix(output));
-    }
 }

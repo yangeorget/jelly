@@ -5,70 +5,73 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class JellyImpl implements Jelly {
-	private Set<Position> positions;
-	
-	public JellyImpl() {
-		this(Collections.<Position> emptySet());
-	}
-	
-	public JellyImpl(Collection<Position> col) {
-		positions = new TreeSet<Position>();
-		for (Position position : col) {
-			positions.add(new Position(position));
-		}
-	}
-	
-	public Jelly clone() {
-		return new JellyImpl(positions);
-	}
+public class JellyImpl
+        implements Jelly {
+    private final Set<Position> positions;
 
-	@Override
-	public void store(int i, int j) {
-		positions.add(new Position(i, j));
-	}
-	
-	public String toString() {
-		return positions.toString();
-	}
-	
-	@Override
+    public JellyImpl() {
+        this(Collections.<Position> emptySet());
+    }
+
+    public JellyImpl(final Collection<Position> col) {
+        positions = new TreeSet<>();
+        for (final Position position : col) {
+            positions.add(new Position(position));
+        }
+    }
+
+    @Override
+    public Jelly clone() {
+        return new JellyImpl(positions);
+    }
+
+    @Override
+    public void store(final int i, final int j) {
+        positions.add(new Position(i, j));
+    }
+
+    @Override
+    public String toString() {
+        return positions.toString();
+    }
+
+    @Override
     public int size() {
-		return positions.size();
-	}
-	
-	@Override
-	public boolean contains(Position p) {
-		return positions.contains(p);
-	}
+        return positions.size();
+    }
 
-	@Override
-	public boolean update(int di, int dj, int height, int width) {
-		for (Position position : positions) {
-			if (!position.move(di, dj, height, width)) {
-				return false;
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean contains(final Position p) {
+        return positions.contains(p);
+    }
 
-	@Override
-	public boolean overlaps(Jelly j) {
-		if (size() > j.size()) {
-			return j.overlaps(this);
-		}
-		for (Position p : positions) {
-			if (j.contains(p)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean moveHorizontally(final int move, final int width) {
+        for (final Position position : positions) {
+            if (!position.moveHorizontally(move, width)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	@Override
-	public void updateBoard(char[][] board, Character color) {
-		for (Position position : positions) {
-			board[position.getI()][position.getJ()] = color;
-		}
-	}
+    @Override
+    public boolean overlaps(final Jelly j) {
+        if (size() > j.size()) {
+            return j.overlaps(this);
+        }
+        for (final Position p : positions) {
+            if (j.contains(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void updateBoard(final char[][] board, final Character color) {
+        for (final Position position : positions) {
+            board[position.getI()][position.getJ()] = color;
+        }
+    }
 }

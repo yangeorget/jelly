@@ -1,18 +1,18 @@
 package net.yangeorget.jelly;
 
 public interface Jelly {
-	void store(int i, int j);
+    void store(int i, int j);
 
-	boolean contains(Position p);
+    boolean contains(Position p);
 
-	boolean update(int di, int dj, int height, int width);
+    boolean moveHorizontally(int move, int width);
 
-	boolean overlaps(Jelly j);
+    boolean overlaps(Jelly j);
 
-	void updateBoard(char[][] board, Character color);
-	
-	Jelly clone();
+    void updateBoard(char[][] board, Character color);
 
-	int size();
+    Jelly clone();
+
+    int size();
 
 }

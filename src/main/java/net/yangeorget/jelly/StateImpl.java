@@ -1,11 +1,9 @@
 package net.yangeorget.jelly;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class StateImpl implements State {
 	private Map<Character, List<Jelly>> floatingJellies;
@@ -94,31 +92,32 @@ public class StateImpl implements State {
 	@Override
 	public State move(Character color, int index, int di, int dj, int height, int width) {
 		State state = clone();
-		boolean moved = state.move(new HashSet<Jelly>(), state.getFloatingJellies().get(color).get(index), di, dj, height, width);
-		if (moved) {
-			return state;
-		} else {
+		if (!state.move(state.getFloatingJellies().get(color).get(index), di, dj, height, width)) {
 			return null;
 		}
+		// gravity
+		// join
+		return state;
 	}
 
 	@Override
-	public boolean move(Set<Jelly> moved, Jelly jelly, int di, int dj, int height, int width) {
+	public boolean move(Jelly jelly, int di, int dj, int height, int width) {
 		if (!jelly.update(di, dj, height, width)) {
 			return false;			
 		} 
-		moved.add(jelly);
 		for (Character c : fixedJellies.keySet()) {
 			for (Jelly j : fixedJellies.get(c)) {
-				if (jelly.overlaps(j)) {					
+				if (jelly.overlaps(j)) { // cannot move					
 					return false;
 				}
 			}
 		}
 		for (Character c : floatingJellies.keySet()) {
 			for (Jelly j : floatingJellies.get(c)) {
-				if (!moved.contains(j) && jelly.overlaps(j) && !move(moved, j, di, dj, height, width)) {
-					return false;				
+				if (!jelly.equals(j) && jelly.overlaps(j)) {
+					if (!move(j, di, dj, height, width)) {
+						return false;		
+					}
 				}
 			}
 		}

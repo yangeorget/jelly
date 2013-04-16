@@ -42,8 +42,7 @@ public class GameTest {
 	}
 	
 	private void testJellies(String[] board, int jelliesFixed, int colorsFixed, int jelliesFloating, int colorsFloating) {
-		Game game = new Game(board);
-		System.out.println(game.toString());
+		Game game = new GameImpl(board);
 		State state = game.getStates().get(0);
 		List<Jelly> fixedJellies = new LinkedList<Jelly>();
 		for (List<Jelly> jellies : state.getFixedJellies().values()) {

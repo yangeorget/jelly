@@ -1,5 +1,7 @@
 package net.yangeorget.jelly;
 
+import org.testng.Assert;
+
 public class Boards {
 	// TODO: use different w's or use a reserved char and a counter  
 	public static String[] BOARD1 = new String[] {
@@ -35,6 +37,24 @@ public class Boards {
 			if (i < getHeight(board) -1) {
 				builder.append("\n");
 			}
+		}
+	}
+	
+	public static char[][] toCharMatrix(String[] board) {
+		int height = board.length;
+		char[][] m = new char[height][];
+		for (int i = 0; i < height; i++) {
+			m[i] = board[i].toCharArray();
+		}
+		return m;
+	}
+
+	public static void assertEquals(char[][] b1, char[][] b2) {
+		if (b1.length != b2.length) {
+			Assert.fail();
+		}
+		for (int i = 0; i < b1.length; i++) {
+			Assert.assertEquals(b1[i], b2[i]);
 		}
 	}
 }

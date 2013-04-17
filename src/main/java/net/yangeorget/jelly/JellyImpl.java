@@ -13,7 +13,14 @@ public class JellyImpl
     }
 
     public JellyImpl(final Collection<Position> col) {
-        positions = clone(col);
+        this();
+        add(col);
+    }
+
+    private void add(final Collection<Position> col) {
+        for (final Position position : col) {
+            positions.add(new Position(position));
+        }
     }
 
     @Override
@@ -30,14 +37,6 @@ public class JellyImpl
     public void restore(final Jelly j) {
         positions = j.getPositions();
 
-    }
-
-    private static Set<Position> clone(final Collection<Position> col) {
-        final Set<Position> clonedCol = new TreeSet<>();
-        for (final Position position : col) {
-            clonedCol.add(new Position(position));
-        }
-        return clonedCol;
     }
 
     @Override
@@ -61,9 +60,9 @@ public class JellyImpl
     }
 
     @Override
-    public boolean moveHorizontally(final int move, final int width) {
+    public boolean hMove(final int move, final int width) {
         for (final Position position : positions) {
-            if (!position.moveHorizontally(move, width)) {
+            if (!position.hMove(move, width)) {
                 return false;
             }
         }
@@ -71,9 +70,9 @@ public class JellyImpl
     }
 
     @Override
-    public boolean moveDown(final int height) {
+    public boolean vMove(final int move, final int height) {
         for (final Position position : positions) {
-            if (!position.moveDown(height)) {
+            if (!position.vMove(move, height)) {
                 return false;
             }
         }
@@ -98,5 +97,39 @@ public class JellyImpl
         for (final Position position : positions) {
             board[position.getI()][position.getJ()] = color;
         }
+    }
+
+    @Override
+    public boolean adjacentTo(final Jelly je, final int height, final int width) {
+        Jelly j = clone();
+        if (j.hMove(-1, width)) {
+            if (j.overlaps(je)) {
+                return true;
+            }
+        }
+        j = clone();
+        if (j.hMove(1, width)) {
+            if (j.overlaps(je)) {
+                return true;
+            }
+        }
+        j = clone();
+        if (j.vMove(-1, width)) {
+            if (j.overlaps(je)) {
+                return true;
+            }
+        }
+        j = clone();
+        if (j.vMove(1, width)) {
+            if (j.overlaps(je)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void merge(final Jelly je) {
+        add(je.getPositions());
     }
 }

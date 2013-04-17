@@ -60,7 +60,7 @@ public class GameImpl
                 for (int i = map.get(color)
                                 .size() - 1; i >= 0; i--) {
                     for (int move = -1; move <= 1; move += 2) {
-                        if (check(state.move(color, i, move, height, width))) {
+                        if (check(state.slide(color, i, move, height, width))) {
                             return true;
                         }
                     }

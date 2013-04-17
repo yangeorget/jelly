@@ -14,8 +14,8 @@ public class PositionTest {
     }
 
     @Test
-    public void testPositionMove() {
-        Assert.assertFalse(new Position(0, 15).moveHorizontally(1, 16));
-        Assert.assertTrue(new Position(0, 14).moveHorizontally(1, 16));
+    public void testHMove() {
+        Assert.assertFalse(new Position(0, 15).hMove(1, 16));
+        Assert.assertTrue(new Position(0, 14).hMove(1, 16));
     }
 }

@@ -97,16 +97,16 @@ public class StateImpl
     }
 
     @Override
-    public State move(final Character color, final int index, final int move, final int height, final int width) {
+    public State slide(final Character color, final int index, final int move, final int height, final int width) {
         final State state = clone();
         LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
-        if (state.moveHorizontally(state.getFloatingJellies()
-                                        .get(color)
-                                        .get(index), move, width)) {
+        if (state.slide(state.getFloatingJellies()
+                             .get(color)
+                             .get(index), move, width)) {
 
-            state.moveDown(height, width);
+            state.gravity(height, width);
             LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
-            state.join();
+            state.join(height, width);
             return state;
         } else {
             return null;
@@ -114,8 +114,8 @@ public class StateImpl
     }
 
     @Override
-    public boolean moveHorizontally(final Jelly jelly, final int move, final int width) {
-        if (!jelly.moveHorizontally(move, width)) {
+    public boolean slide(final Jelly jelly, final int move, final int width) {
+        if (!jelly.hMove(move, width)) {
             return false;
         }
         for (final Character c : fixedJellies.keySet()) {
@@ -128,7 +128,7 @@ public class StateImpl
         for (final Character c : floatingJellies.keySet()) {
             for (final Jelly j : floatingJellies.get(c)) {
                 if (!jelly.equals(j) && jelly.overlaps(j)) {
-                    if (!moveHorizontally(j, move, width)) {
+                    if (!slide(j, move, width)) {
                         return false;
                     }
                 }
@@ -138,13 +138,13 @@ public class StateImpl
     }
 
     @Override
-    public void moveDown(final int height, final int width) {
+    public void gravity(final int height, final int width) {
         LOG.debug("\n" + Boards.toString(toBoard(height, width)));
         for (final Character c : floatingJellies.keySet()) {
             for (final Jelly j : floatingJellies.get(c)) { // ideally start with jellies at bottom
                 final Jelly jc = j.clone();
-                if (moveDown(j, height)) {
-                    moveDown(height, width);
+                if (gravity(j, height)) {
+                    gravity(height, width);
                 } else {
                     j.restore(jc);
                 }
@@ -153,8 +153,8 @@ public class StateImpl
     }
 
     @Override
-    public boolean moveDown(final Jelly jelly, final int height) {
-        if (!jelly.moveDown(height)) {
+    public boolean gravity(final Jelly jelly, final int height) {
+        if (!jelly.vMove(1, height)) {
             return false;
         }
         for (final Character c : fixedJellies.keySet()) {
@@ -174,8 +174,21 @@ public class StateImpl
         return true;
     }
 
-    public void join() {
-
+    @Override
+    public void join(final int height, final int width) {
+        for (final Character c : floatingJellies.keySet()) {
+            final List<Jelly> jellies = floatingJellies.get(c);
+            for (int i = 0; i < jellies.size() - 1; i++) {
+                final Jelly jelly = jellies.get(i);
+                for (int j = i + 1; j < jellies.size(); j++) {
+                    final Jelly je = jellies.get(j);
+                    if (jelly.adjacentTo(je, height, width)) {
+                        jelly.merge(je);
+                        jellies.remove(je);
+                    }
+                }
+            }
+        }
     }
 
     @Override

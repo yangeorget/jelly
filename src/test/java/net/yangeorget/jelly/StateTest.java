@@ -17,84 +17,82 @@ public class StateTest {
     }
 
     @Test
-    public void testMoveDownOK1() {
-        testMoveDownOK(new String[] { " BB ", "    ", "    " }, new String[] { "    ", "    ", " BB " });
+    public void testGravityOK1() {
+        testGravityOK(new String[] { " BB ", "    ", "    " }, new String[] { "    ", "    ", " BB " });
     }
 
     @Test
-    public void testMoveDownOK2() {
-        testMoveDownOK(new String[] { "  GG ", " BB  ", "     " }, new String[] { "     ", "  GG ", " BB  " });
+    public void testGravityOK2() {
+        testGravityOK(new String[] { "  GG ", " BB  ", "     " }, new String[] { "     ", "  GG ", " BB  " });
     }
 
-    private void testMoveDownOK(final String[] input, final String[] output) {
+    private void testGravityOK(final String[] input, final String[] output) {
         final Game game = new GameImpl(input);
         final State state = game.getStates()
                                 .get(0);
-        state.moveDown(game.getHeight(), game.getWidth());
+        state.gravity(game.getHeight(), game.getWidth());
         LOG.debug(state.toString());
         Boards.assertEquals(state.toBoard(game.getHeight(), game.getWidth()), Boards.toCharMatrix(output));
     }
 
     @Test
-    public void testMoveKO1() {
-        testMoveKO(new String[] { " BBBB" }, 'B', 0, 1);
+    public void testSlideKO1() {
+        testSlideKO(new String[] { " BBBB" }, 'B', 0, 1);
     }
 
     @Test
-    public void testMoveKO2() {
-        testMoveKO(new String[] { " BBBG" }, 'B', 0, 1);
+    public void testSlideKO2() {
+        testSlideKO(new String[] { " BBBG" }, 'B', 0, 1);
     }
 
     @Test
-    public void testMoveKO3() {
-        testMoveKO(new String[] { " BBw " }, 'B', 0, 1);
+    public void testSlideKO3() {
+        testSlideKO(new String[] { " BBw " }, 'B', 0, 1);
     }
 
     @Test
-    public void testMoveKO4() {
-        testMoveKO(new String[] { " BGw " }, 'B', 0, 1);
+    public void testSlideKO4() {
+        testSlideKO(new String[] { " BGw " }, 'B', 0, 1);
     }
 
-    private void testMoveKO(final String[] input, final char color, final int index, final int move) {
+    private void testSlideKO(final String[] input, final char color, final int index, final int move) {
         final Game game = new GameImpl(input);
         final State state = game.getStates()
                                 .get(0);
-        Assert.assertNull(state.move(color, index, move, game.getHeight(), game.getWidth()));
+        Assert.assertNull(state.slide(color, index, move, game.getHeight(), game.getWidth()));
     }
 
     @Test
-    public void testMoveOK1() {
-        testMoveOK(new String[] { " BB  " }, 'B', 0, 1, new String[] { "  BB " });
+    public void testSlideOK1() {
+        testSlideOK(new String[] { " BB  " }, 'B', 0, 1, new String[] { "  BB " });
     }
 
     @Test
-    public void testMoveOK2() {
-        testMoveOK(new String[] { " BB  ", " GBB " }, 'G', 0, 1, new String[] { "  BB ", "  GBB" });
+    public void testSlideOK2() {
+        testSlideOK(new String[] { " BB  ", " GBB " }, 'G', 0, 1, new String[] { "  BB ", "  GBB" });
     }
 
     @Test
-    public void testMoveOK3() {
-        testMoveOK(new String[] { " BBYRR ", " GBB R " }, 'B', 0, 1, new String[] { "  BBYRR", " G BB R" });
+    public void testSlideOK3() {
+        testSlideOK(new String[] { " BBYRR ", " GBB R " }, 'B', 0, 1, new String[] { "  BBYRR", " G BB R" });
     }
 
     @Test
-    public void testMoveOK4() {
-        testMoveOK(new String[] { " YYGGG ", " GGG B ", "     w " }, 'B', 0, 1, new String[] { "       ",
-                                                                                              " YYGGG ",
-                                                                                              " GGG wB" });
+    public void testSlideOK4() {
+        testSlideOK(new String[] { " YYGGG ", " GGG B ", "     w " }, 'B', 0, 1, new String[] { "       ",
+                                                                                               " YYGGG ",
+                                                                                               " GGG wB" });
     }
 
-    private void testMoveOK(final String[] input,
-                            final char color,
-                            final int index,
-                            final int move,
-                            final String[] output) {
+    private void testSlideOK(final String[] input,
+                             final char color,
+                             final int index,
+                             final int move,
+                             final String[] output) {
         final Game game = new GameImpl(input);
         Boards.assertEquals(game.getStates()
                                 .get(0)
-                                .move(color, index, move, game.getHeight(), game.getWidth())
+                                .slide(color, index, move, game.getHeight(), game.getWidth())
                                 .toBoard(game.getHeight(), game.getWidth()), Boards.toCharMatrix(output));
     }
-
-
 }

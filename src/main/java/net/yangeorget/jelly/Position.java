@@ -37,7 +37,7 @@ public class Position
         return (i << 4) + j;
     }
 
-    public boolean moveHorizontally(final int move, final int width) {
+    public boolean hMove(final int move, final int width) {
         final int j = getJ() + move;
         if (j < 0 || j >= width) {
             return false;
@@ -46,9 +46,9 @@ public class Position
         return true;
     }
 
-    public boolean moveDown(final int height) {
-        final int i = getI() + 1;
-        if (i >= height) {
+    public boolean vMove(final int move, final int height) {
+        final int i = getI() + move;
+        if (i < 0 || i >= height) {
             return false;
         }
         value = intValue(i, getJ());

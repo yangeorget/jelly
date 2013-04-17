@@ -19,4 +19,6 @@ public interface State {
     void moveDown(int height, int width);
 
     boolean moveDown(Jelly jelly, int height);
+
+    void join();
 }

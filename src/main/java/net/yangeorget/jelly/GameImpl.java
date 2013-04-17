@@ -24,7 +24,7 @@ public class GameImpl
     public GameImpl(final char[][] board) {
         explored = new HashSet<State>();
         states = new LinkedList<State>();
-        final StateImpl state = new StateImpl(board);
+        final State state = new StateImpl(board);
         LOG.debug(state.toString());
         states.add(state);
         final Set<Character> colors = new HashSet<Character>();

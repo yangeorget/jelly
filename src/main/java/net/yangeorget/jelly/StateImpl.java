@@ -11,6 +11,7 @@ public class StateImpl
         implements State {
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
 
+    // TODO: only store a list of jellies containing : color, fixed
     private final Map<Character, List<Jelly>> floatingJellies;
     private final Map<Character, List<Jelly>> fixedJellies;
 
@@ -62,6 +63,7 @@ public class StateImpl
         list.add(jelly);
     }
 
+    // TODO: move to Jelly
     private boolean update(final Jelly jelly, final char color, final int i, final int j, final char[][] board) {
         boolean fixed = false;
         if (Character.toUpperCase(color) == Character.toUpperCase(board[i][j])) {
@@ -104,7 +106,7 @@ public class StateImpl
 
             state.moveDown(height, width);
             LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
-            // join
+            state.join();
             return state;
         } else {
             return null;
@@ -170,6 +172,10 @@ public class StateImpl
             }
         }
         return true;
+    }
+
+    public void join() {
+
     }
 
     @Override

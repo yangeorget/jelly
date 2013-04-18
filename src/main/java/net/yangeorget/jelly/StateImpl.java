@@ -99,13 +99,12 @@ public class StateImpl
     @Override
     public State slide(final Character color, final int index, final int move, final int height, final int width) {
         final State state = clone();
-        LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
+        // LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
         if (state.slide(state.getFloatingJellies()
                              .get(color)
                              .get(index), move, width)) {
-
             state.gravity(height, width);
-            LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
+            // LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
             state.join(height, width);
             return state;
         } else {
@@ -139,7 +138,7 @@ public class StateImpl
 
     @Override
     public void gravity(final int height, final int width) {
-        LOG.debug("\n" + Boards.toString(toBoard(height, width)));
+        // LOG.debug("\n" + Boards.toString(toBoard(height, width)));
         for (final Character c : floatingJellies.keySet()) {
             for (final Jelly j : floatingJellies.get(c)) { // ideally start with jellies at bottom
                 final Jelly jc = j.clone();
@@ -176,6 +175,7 @@ public class StateImpl
 
     @Override
     public void join(final int height, final int width) {
+        // TODO: also join fixed jellies
         for (final Character c : floatingJellies.keySet()) {
             final List<Jelly> jellies = floatingJellies.get(c);
             for (int i = 0; i < jellies.size() - 1; i++) {
@@ -183,7 +183,7 @@ public class StateImpl
                 for (int j = i + 1; j < jellies.size(); j++) {
                     final Jelly je = jellies.get(j);
                     if (jelly.adjacentTo(je, height, width)) {
-                        jelly.merge(je);
+                        jelly.merge(je); // TODO: tst merge & join
                         jellies.remove(je);
                     }
                 }

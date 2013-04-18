@@ -26,6 +26,14 @@ public class StateTest {
         testGravityOK(new String[] { "  GG ", " BB  ", "     " }, new String[] { "     ", "  GG ", " BB  " });
     }
 
+    @Test
+    public void testGravityOK3() {
+        testGravityOK(new String[] { "  GG ", " BBG ", "  GG ", "     " }, new String[] { "     ",
+                                                                                         "  GG ",
+                                                                                         " BBG ",
+                                                                                         "  GG " });
+    }
+
     private void testGravityOK(final String[] input, final String[] output) {
         final Game game = new GameImpl(input);
         final State state = game.getStates()

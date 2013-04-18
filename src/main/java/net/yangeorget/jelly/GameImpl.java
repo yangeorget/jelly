@@ -11,17 +11,12 @@ import org.slf4j.LoggerFactory;
 public class GameImpl
         implements Game {
     private static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
-    private final int width;
-    private final int height;
     private final int distinctColorsNb;
     private final LinkedList<State> states;
     private final Set<State> explored;
 
-    public GameImpl(final String[] board) {
-        this(Boards.toCharMatrix(board));
-    }
-
-    public GameImpl(final char[][] board) {
+    public GameImpl(final Board board) {
+        LOG.debug(board.toString());
         explored = new HashSet<State>();
         states = new LinkedList<State>();
         final State state = new StateImpl(board);
@@ -33,23 +28,11 @@ public class GameImpl
         colors.addAll(state.getFixedJellies()
                            .keySet());
         distinctColorsNb = colors.size();
-        width = Boards.getWidth(board);
-        height = Boards.getHeight(board);
     }
 
     @Override
     public List<State> getStates() {
         return states;
-    }
-
-    @Override
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public int getWidth() {
-        return width;
     }
 
     @Override
@@ -60,7 +43,7 @@ public class GameImpl
                 for (int i = map.get(color)
                                 .size() - 1; i >= 0; i--) {
                     for (int move = -1; move <= 1; move += 2) {
-                        if (check(state.slide(color, i, move, height, width))) {
+                        if (check(state.slide(color, i, move))) {
                             return true;
                         }
                     }

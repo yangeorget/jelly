@@ -14,44 +14,63 @@ public class StateImpl
     // TODO: only store a list of jellies containing : color, fixed
     private final Map<Character, List<Jelly>> floatingJellies;
     private final Map<Character, List<Jelly>> fixedJellies;
+    private final Frame frame;
 
-    public StateImpl() {
+    public StateImpl(final Board board) {
+        this.frame = board;
         floatingJellies = new HashMap<Character, List<Jelly>>();
         fixedJellies = new HashMap<Character, List<Jelly>>();
-    }
-
-    public StateImpl(final char[][] board) {
-        this();
-        for (int i = 0; i < Boards.getHeight(board); i++) {
-            for (int j = 0; j < Boards.getWidth(board); j++) {
-                final Character color = board[i][j];
-                if (color != 0 && !Character.isWhitespace(color)) {
-                    final Jelly jelly = new JellyImpl();
-                    final boolean fixed = update(jelly, color, i, j, board);
-                    if (fixed) {
-                        store(fixedJellies, color, jelly);
-                    } else {
-                        store(floatingJellies, color, jelly);
+        final boolean[][] visited = new boolean[board.getHeight()][board.getWidth()];
+        for (int i = 0; i < board.getHeight(); i++) {
+            for (int j = 0; j < board.getWidth(); j++) {
+                if (!visited[i][j]) {
+                    final Character color = board.get(i, j);
+                    if (!Character.isWhitespace(color)) {
+                        final Jelly jelly = new JellyImpl(board);
+                        final boolean fixed = update(visited, jelly, board, color, i, j);
+                        if (fixed) {
+                            store(fixedJellies, color, jelly);
+                        } else {
+                            store(floatingJellies, color, jelly);
+                        }
                     }
                 }
             }
         }
     }
 
+    // TODO: move to Jelly
+    private boolean update(final boolean[][] visited,
+                           final Jelly jelly,
+                           final Board board,
+                           final char color,
+                           final int i,
+                           final int j) {
+        boolean fixed = false;
+        final char c = board.get(i, j);
+        if (!visited[i][j] && Character.toUpperCase(color) == Character.toUpperCase(c)) {
+            fixed |= Character.isLowerCase(c);
+            visited[i][j] = true;
+            jelly.store(i, j);
+            if (i > 0) {
+                update(visited, jelly, board, color, i - 1, j);
+            }
+            if (i < board.getHeight() - 1) {
+                update(visited, jelly, board, color, i + 1, j);
+            }
+            if (j > 0) {
+                update(visited, jelly, board, color, i, j - 1);
+            }
+            if (j < board.getWidth() - 1) {
+                update(visited, jelly, board, color, i, j + 1);
+            }
+        }
+        return fixed;
+    }
+
     @Override
     public State clone() {
-        final State state = new StateImpl();
-        for (final Character color : fixedJellies.keySet()) {
-            for (final Jelly jelly : fixedJellies.get(color)) {
-                store(state.getFixedJellies(), color, jelly.clone());
-            }
-        }
-        for (final Character color : floatingJellies.keySet()) {
-            for (final Jelly jelly : floatingJellies.get(color)) {
-                store(state.getFloatingJellies(), color, jelly.clone());
-            }
-        }
-        return state;
+        return new StateImpl(toBoard());
     }
 
     private static void store(final Map<Character, List<Jelly>> map, final Character color, final Jelly jelly) {
@@ -63,28 +82,6 @@ public class StateImpl
         list.add(jelly);
     }
 
-    // TODO: move to Jelly
-    private boolean update(final Jelly jelly, final char color, final int i, final int j, final char[][] board) {
-        boolean fixed = false;
-        if (Character.toUpperCase(color) == Character.toUpperCase(board[i][j])) {
-            fixed |= Character.isLowerCase(board[i][j]);
-            board[i][j] = 0;
-            jelly.store(i, j);
-            if (i > 0) {
-                update(jelly, color, i - 1, j, board);
-            }
-            if (i < Boards.getHeight(board) - 1) {
-                update(jelly, color, i + 1, j, board);
-            }
-            if (j > 0) {
-                update(jelly, color, i, j - 1, board);
-            }
-            if (j < Boards.getWidth(board) - 1) {
-                update(jelly, color, i, j + 1, board);
-            }
-        }
-        return fixed;
-    }
 
     @Override
     public Map<Character, List<Jelly>> getFloatingJellies() {
@@ -97,15 +94,17 @@ public class StateImpl
     }
 
     @Override
-    public State slide(final Character color, final int index, final int move, final int height, final int width) {
+    public State slide(final Character color, final int index, final int move) {
         final State state = clone();
-        // LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
+        LOG.debug("\n" + state.toBoard()
+                              .toString());
         if (state.slide(state.getFloatingJellies()
                              .get(color)
-                             .get(index), move, width)) {
-            state.gravity(height, width);
-            // LOG.debug("\n" + Boards.toString(state.toBoard(height, width)));
-            state.join(height, width);
+                             .get(index), move)) {
+            state.gravity();
+            LOG.debug("\n" + state.toBoard()
+                                  .toString());
+            state.join();
             return state;
         } else {
             return null;
@@ -113,8 +112,8 @@ public class StateImpl
     }
 
     @Override
-    public boolean slide(final Jelly jelly, final int move, final int width) {
-        if (!jelly.hMove(move, width)) {
+    public boolean slide(final Jelly jelly, final int move) {
+        if (!jelly.hMove(move)) {
             return false;
         }
         for (final Character c : fixedJellies.keySet()) {
@@ -127,7 +126,7 @@ public class StateImpl
         for (final Character c : floatingJellies.keySet()) {
             for (final Jelly j : floatingJellies.get(c)) {
                 if (!jelly.equals(j) && jelly.overlaps(j)) {
-                    if (!slide(j, move, width)) {
+                    if (!slide(j, move)) {
                         return false;
                     }
                 }
@@ -137,13 +136,13 @@ public class StateImpl
     }
 
     @Override
-    public void gravity(final int height, final int width) {
+    public void gravity() {
         // LOG.debug("\n" + Boards.toString(toBoard(height, width)));
         for (final Character c : floatingJellies.keySet()) {
             for (final Jelly j : floatingJellies.get(c)) { // ideally start with jellies at bottom
                 final Jelly jc = j.clone();
-                if (gravity(j, height)) {
-                    gravity(height, width);
+                if (gravity(j)) {
+                    gravity();
                 } else {
                     j.restore(jc);
                 }
@@ -152,8 +151,8 @@ public class StateImpl
     }
 
     @Override
-    public boolean gravity(final Jelly jelly, final int height) {
-        if (!jelly.vMove(1, height)) {
+    public boolean gravity(final Jelly jelly) {
+        if (!jelly.vMove(1)) {
             return false;
         }
         for (final Character c : fixedJellies.keySet()) {
@@ -174,7 +173,7 @@ public class StateImpl
     }
 
     @Override
-    public void join(final int height, final int width) {
+    public void join() {
         // TODO: also join fixed jellies
         for (final Character c : floatingJellies.keySet()) {
             final List<Jelly> jellies = floatingJellies.get(c);
@@ -182,7 +181,7 @@ public class StateImpl
                 final Jelly jelly = jellies.get(i);
                 for (int j = i + 1; j < jellies.size(); j++) {
                     final Jelly je = jellies.get(j);
-                    if (jelly.adjacentTo(je, height, width)) {
+                    if (jelly.adjacentTo(je)) {
                         jelly.merge(je); // TODO: tst merge & join
                         jellies.remove(je);
                     }
@@ -197,23 +196,27 @@ public class StateImpl
     }
 
     @Override
-    public char[][] toBoard(final int height, final int width) {
-        final char[][] board = new char[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                board[i][j] = ' ';
+    public Board toBoard() {
+        final char[][] m = new char[frame.getHeight()][frame.getWidth()];
+        for (int i = 0; i < frame.getHeight(); i++) {
+            for (int j = 0; j < frame.getWidth(); j++) {
+                m[i][j] = ' ';
             }
         }
         for (final Character color : fixedJellies.keySet()) {
             for (final Jelly jelly : fixedJellies.get(color)) {
-                jelly.updateBoard(board, color);
+                for (final Position position : jelly.getPositions()) {
+                    m[position.getI()][position.getJ()] = color;
+                }
             }
         }
         for (final Character color : floatingJellies.keySet()) {
             for (final Jelly jelly : floatingJellies.get(color)) {
-                jelly.updateBoard(board, color);
+                for (final Position position : jelly.getPositions()) {
+                    m[position.getI()][position.getJ()] = color;
+                }
             }
         }
-        return board;
+        return new BoardImpl(m);
     }
 }

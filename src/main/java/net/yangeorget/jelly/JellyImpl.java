@@ -7,13 +7,15 @@ import java.util.TreeSet;
 public class JellyImpl
         implements Jelly {
     private Set<Position> positions;
+    private final Frame frame;
 
-    public JellyImpl() {
+    public JellyImpl(final Frame frame) {
+        this.frame = frame;
         positions = new TreeSet<>();
     }
 
-    public JellyImpl(final Collection<Position> col) {
-        this();
+    public JellyImpl(final Frame frame, final Collection<Position> col) {
+        this(frame);
         add(col);
     }
 
@@ -30,7 +32,7 @@ public class JellyImpl
 
     @Override
     public Jelly clone() {
-        return new JellyImpl(positions);
+        return new JellyImpl(frame, positions);
     }
 
     @Override
@@ -60,9 +62,9 @@ public class JellyImpl
     }
 
     @Override
-    public boolean hMove(final int move, final int width) {
+    public boolean hMove(final int move) {
         for (final Position position : positions) {
-            if (!position.hMove(move, width)) {
+            if (!position.hMove(move, frame.getWidth())) {
                 return false;
             }
         }
@@ -70,9 +72,9 @@ public class JellyImpl
     }
 
     @Override
-    public boolean vMove(final int move, final int height) {
+    public boolean vMove(final int move) {
         for (final Position position : positions) {
-            if (!position.vMove(move, height)) {
+            if (!position.vMove(move, frame.getHeight())) {
                 return false;
             }
         }
@@ -93,34 +95,27 @@ public class JellyImpl
     }
 
     @Override
-    public void updateBoard(final char[][] board, final Character color) {
-        for (final Position position : positions) {
-            board[position.getI()][position.getJ()] = color;
-        }
-    }
-
-    @Override
-    public boolean adjacentTo(final Jelly je, final int height, final int width) {
+    public boolean adjacentTo(final Jelly je) {
         Jelly j = clone();
-        if (j.hMove(-1, width)) {
+        if (j.hMove(-1)) {
             if (j.overlaps(je)) {
                 return true;
             }
         }
         j = clone();
-        if (j.hMove(1, width)) {
+        if (j.hMove(1)) {
             if (j.overlaps(je)) {
                 return true;
             }
         }
         j = clone();
-        if (j.vMove(-1, width)) {
+        if (j.vMove(-1)) {
             if (j.overlaps(je)) {
                 return true;
             }
         }
         j = clone();
-        if (j.vMove(1, width)) {
+        if (j.vMove(1)) {
             if (j.overlaps(je)) {
                 return true;
             }

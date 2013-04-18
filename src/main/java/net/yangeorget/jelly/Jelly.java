@@ -7,24 +7,23 @@ public interface Jelly {
 
     boolean contains(Position p);
 
-    boolean hMove(int move, int width);
+    boolean hMove(int move);
 
-    boolean vMove(int move, int height);
+    boolean vMove(int move);
 
     boolean overlaps(Jelly j);
 
-    boolean adjacentTo(Jelly j, int height, int width);
+    boolean adjacentTo(Jelly j);
 
-    void updateBoard(char[][] board, Character color);
-
-    Jelly clone();
+    void merge(Jelly j);
 
     void restore(Jelly j);
+
+    Jelly clone();
 
     int size();
 
     Set<Position> getPositions();
 
-    void merge(Jelly je);
 
 }

@@ -10,15 +10,15 @@ public interface State {
 
     Map<Character, List<Jelly>> getFixedJellies();
 
-    State slide(Character color, int index, int move, int height, int width);
+    State slide(Character color, int index, int move);
 
-    boolean slide(final Jelly jelly, final int move, final int width);
+    boolean slide(final Jelly jelly, final int move);
 
-    char[][] toBoard(int height, int width);
+    Board toBoard();
 
-    void gravity(int height, int width);
+    void gravity();
 
-    boolean gravity(Jelly jelly, int height);
+    boolean gravity(Jelly jelly);
 
-    void join(int height, int width);
+    void join();
 }

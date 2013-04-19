@@ -1,24 +1,21 @@
 package net.yangeorget.jelly;
 
 import java.util.List;
-import java.util.Map;
 
 public interface State {
     State clone();
 
-    Map<Character, List<Jelly>> getFloatingJellies();
-
-    Map<Character, List<Jelly>> getFixedJellies();
-
-    State slide(Character color, int index, int move);
-
-    boolean slide(final Jelly jelly, final int move);
+    List<Jelly> getJellies();
 
     Board toBoard();
+
+    int getDistinctColorsNb();
+
+    State move(int j, int move);
+
+    boolean slide(final Jelly jelly, final int move);
 
     void gravity();
 
     boolean gravity(Jelly jelly);
-
-    void join();
 }

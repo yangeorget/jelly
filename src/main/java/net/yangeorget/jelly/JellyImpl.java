@@ -4,10 +4,14 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * @author y.georget
+ */
 public class JellyImpl
         implements Jelly {
-    private Set<Position> positions;
+    private final Set<Position> positions; // TODO: use list
     private final Frame frame;
+    private char color;
 
     public JellyImpl(final Frame frame) {
         this.frame = frame;
@@ -17,6 +21,38 @@ public class JellyImpl
     public JellyImpl(final Frame frame, final Collection<Position> col) {
         this(frame);
         add(col);
+    }
+
+    public JellyImpl(final Board board, final boolean[][] visited, final char color, final int i, final int j) {
+        this(board);
+        this.color = color;
+        update(board, visited, i, j);
+    }
+
+    private void update(final Board board, final boolean[][] visited, final int i, final int j) {
+        final char c = board.get(i, j);
+        if (!visited[i][j] && Character.toUpperCase(color) == Character.toUpperCase(c)) {
+            this.color = Character.isLowerCase(c) ? Character.toLowerCase(c) : Character.toUpperCase(c);
+            visited[i][j] = true;
+            positions.add(new Position(i, j));
+            if (i > 0) {
+                update(board, visited, i - 1, j);
+            }
+            if (i < board.getHeight() - 1) {
+                update(board, visited, i + 1, j);
+            }
+            if (j > 0) {
+                update(board, visited, i, j - 1);
+            }
+            if (j < board.getWidth() - 1) {
+                update(board, visited, i, j + 1);
+            }
+        }
+    }
+
+    @Override
+    public boolean isFixed() {
+        return Character.isLowerCase(color);
     }
 
     private void add(final Collection<Position> col) {
@@ -36,17 +72,6 @@ public class JellyImpl
     }
 
     @Override
-    public void restore(final Jelly j) {
-        positions = j.getPositions();
-
-    }
-
-    @Override
-    public void store(final int i, final int j) {
-        positions.add(new Position(i, j));
-    }
-
-    @Override
     public String toString() {
         return positions.toString();
     }
@@ -63,6 +88,9 @@ public class JellyImpl
 
     @Override
     public boolean hMove(final int move) {
+        if (isFixed()) {
+            return false;
+        }
         for (final Position position : positions) {
             if (!position.hMove(move, frame.getWidth())) {
                 return false;
@@ -73,6 +101,9 @@ public class JellyImpl
 
     @Override
     public boolean vMove(final int move) {
+        if (isFixed()) {
+            return false;
+        }
         for (final Position position : positions) {
             if (!position.vMove(move, frame.getHeight())) {
                 return false;
@@ -95,36 +126,7 @@ public class JellyImpl
     }
 
     @Override
-    public boolean adjacentTo(final Jelly je) {
-        Jelly j = clone();
-        if (j.hMove(-1)) {
-            if (j.overlaps(je)) {
-                return true;
-            }
-        }
-        j = clone();
-        if (j.hMove(1)) {
-            if (j.overlaps(je)) {
-                return true;
-            }
-        }
-        j = clone();
-        if (j.vMove(-1)) {
-            if (j.overlaps(je)) {
-                return true;
-            }
-        }
-        j = clone();
-        if (j.vMove(1)) {
-            if (j.overlaps(je)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void merge(final Jelly je) {
-        add(je.getPositions());
+    public char getColor() {
+        return color;
     }
 }

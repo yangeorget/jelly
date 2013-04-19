@@ -1,5 +1,8 @@
 package net.yangeorget.jelly;
 
+import java.util.LinkedList;
+import java.util.List;
+
 
 public class BoardImpl
         implements Board {
@@ -64,5 +67,22 @@ public class BoardImpl
             }
         }
         return true;
+    }
+
+    @Override
+    public List<Jelly> getJellies() {
+        final List<Jelly> jellies = new LinkedList<Jelly>();
+        final boolean[][] visited = new boolean[getHeight()][getWidth()];
+        for (int i = 0; i < getHeight(); i++) {
+            for (int j = 0; j < getWidth(); j++) {
+                if (!visited[i][j]) {
+                    final Character color = get(i, j);
+                    if (!Character.isWhitespace(color)) {
+                        jellies.add(new JellyImpl(this, visited, color, i, j));
+                    }
+                }
+            }
+        }
+        return jellies;
     }
 }

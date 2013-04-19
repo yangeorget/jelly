@@ -1,5 +1,7 @@
 package net.yangeorget.jelly;
 
+import java.util.List;
+
 
 public interface Board
         extends Frame {
@@ -14,4 +16,6 @@ public interface Board
                                  "wBwwwG wwwww");
 
     char get(final int i, final int j);
+
+    List<Jelly> getJellies();
 }

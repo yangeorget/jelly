@@ -9,23 +9,23 @@ import java.util.TreeSet;
  */
 public class JellyImpl
         implements Jelly {
-    private final Set<Position> positions; // TODO: use list
+    private final Set<Jelly.Position> positions; // TODO: use list
     private final Frame frame;
     private char color;
 
-    public JellyImpl(final Frame frame) {
+    private JellyImpl(final Frame frame, final char color) {
         this.frame = frame;
+        this.color = color;
         positions = new TreeSet<>();
     }
 
-    public JellyImpl(final Frame frame, final Collection<Position> col) {
-        this(frame);
-        add(col);
+    public JellyImpl(final Frame frame, final char color, final Collection<Jelly.Position> positions) {
+        this(frame, color);
+        add(positions);
     }
 
     public JellyImpl(final Board board, final boolean[][] visited, final char color, final int i, final int j) {
-        this(board);
-        this.color = color;
+        this(board, color);
         update(board, visited, i, j);
     }
 
@@ -55,25 +55,20 @@ public class JellyImpl
         return Character.isLowerCase(color);
     }
 
-    private void add(final Collection<Position> col) {
-        for (final Position position : col) {
+    private void add(final Collection<Jelly.Position> col) {
+        for (final Jelly.Position position : col) {
             positions.add(new Position(position));
         }
     }
 
     @Override
-    public Set<Position> getPositions() {
-        return positions;
-    }
-
-    @Override
-    public Jelly clone() {
-        return new JellyImpl(frame, positions);
+    public JellyImpl clone() {
+        return new JellyImpl(frame, color, positions);
     }
 
     @Override
     public String toString() {
-        return positions.toString();
+        return "color=" + color + ";positions=" + positions.toString();
     }
 
     @Override
@@ -82,7 +77,7 @@ public class JellyImpl
     }
 
     @Override
-    public boolean contains(final Position p) {
+    public boolean contains(final Jelly.Position p) {
         return positions.contains(p);
     }
 
@@ -91,7 +86,7 @@ public class JellyImpl
         if (isFixed()) {
             return false;
         }
-        for (final Position position : positions) {
+        for (final Jelly.Position position : positions) {
             if (!position.hMove(move, frame.getWidth())) {
                 return false;
             }
@@ -104,7 +99,7 @@ public class JellyImpl
         if (isFixed()) {
             return false;
         }
-        for (final Position position : positions) {
+        for (final Jelly.Position position : positions) {
             if (!position.vMove(move, frame.getHeight())) {
                 return false;
             }
@@ -117,7 +112,7 @@ public class JellyImpl
         if (size() > j.size()) {
             return j.overlaps(this);
         }
-        for (final Position p : positions) {
+        for (final Jelly.Position p : positions) {
             if (j.contains(p)) {
                 return true;
             }
@@ -128,5 +123,12 @@ public class JellyImpl
     @Override
     public char getColor() {
         return color;
+    }
+
+    @Override
+    public void updateBoard(final char[][] board) {
+        for (final Jelly.Position position : positions) {
+            board[position.getI()][position.getJ()] = getColor();
+        }
     }
 }

@@ -10,6 +10,8 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.version>1.7</java.version>
+      <aspectj.version>1.7.1</aspectj.version>
+      <aspectj.maven.version>1.4-criteo</aspectj.maven.version>
       <log4j.version>1.2.17</log4j.version>
       <maven.javadoc.version>2.8.1</maven.javadoc.version>
       <maven.source.version>2.1.2</maven.source.version>
@@ -20,6 +22,16 @@
       <testng.version>6.8</testng.version>
    </properties>
    <dependencies>
+     <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjtools</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>slf4j-api</artifactId>
@@ -52,6 +64,26 @@
 	    <downloadJavadocs>true</downloadJavadocs>
 	  </configuration>
 	</plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <version>${aspectj.maven.version}</version>
+            <configuration>
+               <source>${java.version}</source>
+               <target>${java.version}</target>
+               <Xlint>ignore</Xlint>
+               <complianceLevel>${java.version}</complianceLevel>
+               <encoding>UTF-8</encoding>
+            </configuration>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>compile</goal>
+                     <goal>test-compile</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>

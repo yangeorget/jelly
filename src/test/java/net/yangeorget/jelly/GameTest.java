@@ -1,54 +1,41 @@
 package net.yangeorget.jelly;
 
-import java.util.LinkedList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class GameTest {
+    private static final Logger LOG = LoggerFactory.getLogger(GameTest.class);
+
     @Test
-    public void testGame1() {
-        testJellies(new BoardImpl("BBBB", "  BY", "  YY", "YB  "), 0, 0, 4, 2);
+    public void testGetStates() {
+        Assert.assertEquals(new GameImpl(Board.BOARD1).getStates()
+                                                      .size(), 1);
     }
 
     @Test
-    public void testGame2() {
-        testJellies(new BoardImpl("BBBB", "  BB", "  BB", "BB  "), 0, 0, 2, 1);
+    public void testSolve1() {
+        Assert.assertTrue(new GameImpl(new BoardImpl("     R")).solve());
     }
 
     @Test
-    public void testGame3() {
-        testJellies(new BoardImpl("BYBB", "  GG", "  BB", " B  "), 0, 0, 6, 3);
+    public void testSolve2() {
+        Assert.assertTrue(new GameImpl(new BoardImpl("R R")).solve());
     }
 
     @Test
-    public void testGameBoard1() {
-        testJellies(Board.BOARD1, 4, 1, 6, 3);
+    public void testSolve3() {
+        Assert.assertTrue(new GameImpl(new BoardImpl("R R R")).solve());
     }
 
-    private void testJellies(final Board board,
-                             final int jelliesFixed,
-                             final int colorsFixed,
-                             final int jelliesFloating,
-                             final int colorsFloating) {
-        final Game game = new GameImpl(board);
-        final State state = game.getStates()
-                                .get(0);
-        final List<Jelly> fixedJellies = new LinkedList<Jelly>();
-        for (final List<Jelly> jellies : state.getFixedJellies()
-                                              .values()) {
-            fixedJellies.addAll(jellies);
-        }
-        Assert.assertEquals(fixedJellies.size(), jelliesFixed);
-        Assert.assertEquals(state.getFixedJellies()
-                                 .size(), colorsFixed);
-        final List<Jelly> floating = new LinkedList<Jelly>();
-        for (final List<Jelly> jellies : state.getFloatingJellies()
-                                              .values()) {
-            floating.addAll(jellies);
-        }
-        Assert.assertEquals(floating.size(), jelliesFloating);
-        Assert.assertEquals(state.getFloatingJellies()
-                                 .size(), colorsFloating);
+    @Test
+    public void testSolve4() {
+        Assert.assertTrue(new GameImpl(new BoardImpl("R R B B")).solve());
+    }
+
+    @Test
+    public void testSolve5() {
+        Assert.assertFalse(new GameImpl(new BoardImpl("R R B R")).solve());
     }
 }

@@ -9,13 +9,9 @@ public interface State {
 
     Board toBoard();
 
+    Frame getFrame();
+
     int getDistinctColorsNb();
 
     State move(int j, int move);
-
-    boolean slide(final Jelly jelly, final int move);
-
-    void gravity();
-
-    boolean gravity(Jelly jelly);
 }

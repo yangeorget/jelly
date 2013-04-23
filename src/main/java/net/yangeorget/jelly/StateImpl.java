@@ -1,6 +1,10 @@
 package net.yangeorget.jelly;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,13 +16,28 @@ public class StateImpl
     private final Frame frame;
 
     public StateImpl(final Board board) {
-        frame = board;
-        jellies = board.getJellies();
+        this(board, board.getJellies(), false);
+    }
+
+    public StateImpl(final State state) {
+        this(state.getFrame(), state.getJellies(), true);
+    }
+
+    private StateImpl(final Frame frame, final List<Jelly> jellies, final boolean copy) {
+        this.frame = frame;
+        if (copy) {
+            this.jellies = new LinkedList<>();
+            for (final Jelly jelly : jellies) {
+                this.jellies.add(jelly.clone());
+            }
+        } else {
+            this.jellies = jellies;
+        }
     }
 
     @Override
-    public State clone() {
-        return new StateImpl(toBoard());
+    public StateImpl clone() {
+        return new StateImpl(this);
     }
 
     @Override
@@ -28,36 +47,38 @@ public class StateImpl
 
     @Override
     public State move(final int j, final int move) {
-        final State state = clone();
-        if (state.slide(state.getJellies()
-                             .get(j), move)) {
-            state.gravity();
-            jellies = state.toBoard()
-                           .getJellies();
-            return state;
+        final StateImpl state = new StateImpl(toBoard());
+        return state.move(state.getJellies()
+                               .get(j), move);
+    }
+
+    State move(final Jelly jelly, final int move) {
+        if (hMove(jelly, move)) {
+            gravity();
+            jellies = toBoard().getJellies();
+            return this;
         } else {
             return null;
         }
     }
 
-    @Override
-    public boolean slide(final Jelly jelly, final int move) {
+    boolean hMove(final Jelly jelly, final int move) {
+        LOG.debug("hMove:" + jelly + " " + move);
         if (!jelly.hMove(move)) {
             return false;
         }
         for (final Jelly j : jellies) {
-            if (!jelly.equals(j) && jelly.overlaps(j) && !slide(j, move)) {
+            if (!jelly.equals(j) && jelly.overlaps(j) && !hMove(j, move)) {
                 return false;
             }
         }
         return true;
     }
 
-    @Override
-    public void gravity() {
+    void gravity() {
         boolean gravity = false;
         for (int j = 0; j < getJellies().size(); j++) {
-            final State state = clone();
+            final StateImpl state = clone();
             if (state.gravity(state.getJellies()
                                    .get(j))) {
                 jellies = state.getJellies();
@@ -69,8 +90,7 @@ public class StateImpl
         }
     }
 
-    @Override
-    public boolean gravity(final Jelly jelly) {
+    boolean gravity(final Jelly jelly) {
         if (!jelly.vMove(1)) {
             return false;
         }
@@ -84,28 +104,34 @@ public class StateImpl
 
     @Override
     public String toString() {
-        return "frame=" + frame + ";jellies=" + jellies;
+        return "jellies=" + jellies;
     }
 
     @Override
     public Board toBoard() {
-        final char[][] m = new char[frame.getHeight()][frame.getWidth()];
-        for (int i = 0; i < frame.getHeight(); i++) {
-            for (int j = 0; j < frame.getWidth(); j++) {
-                m[i][j] = ' '; // TODO: optim
-            }
+        final int height = frame.getHeight();
+        final int width = frame.getWidth();
+        final char[][] m = new char[height][width];
+        for (int i = 0; i < height; i++) {
+            Arrays.fill(m[i], ' ');
         }
         for (final Jelly jelly : jellies) {
-            for (final Position position : jelly.getPositions()) {
-                m[position.getI()][position.getJ()] = jelly.getColor();
-            }
+            jelly.updateBoard(m);
         }
         return new BoardImpl(m);
     }
 
     @Override
     public int getDistinctColorsNb() {
-        // TODO Auto-generated method stub
-        return 0;
+        final Set<Character> colors = new HashSet<>();
+        for (final Jelly j : getJellies()) {
+            colors.add(Character.toUpperCase(j.getColor()));
+        }
+        return colors.size();
+    }
+
+    @Override
+    public Frame getFrame() {
+        return frame;
     }
 }

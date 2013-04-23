@@ -1,5 +1,6 @@
 package net.yangeorget.jelly;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,13 +8,18 @@ import java.util.List;
 public class BoardImpl
         implements Board {
     private final char[][] matrix;
+    private final int height;
+    private final int width;
 
     public BoardImpl(final char[][] matrix) {
         this.matrix = matrix;
+        height = matrix.length;
+        width = matrix[0].length;
     }
 
     public BoardImpl(final String... strings) {
-        final int height = strings.length;
+        height = strings.length;
+        width = strings[0].length();
         matrix = new char[height][];
         for (int i = 0; i < height; i++) {
             matrix[i] = strings[i].toCharArray();
@@ -22,12 +28,12 @@ public class BoardImpl
 
     @Override
     public int getHeight() {
-        return matrix.length;
+        return height;
     }
 
     @Override
     public int getWidth() {
-        return matrix[0].length;
+        return width;
     }
 
     @Override
@@ -38,11 +44,11 @@ public class BoardImpl
     }
 
     private void toString(final StringBuilder builder) {
-        for (int i = 0; i < getHeight(); i++) {
-            for (int j = 0; j < getWidth(); j++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 builder.append(matrix[i][j]);
             }
-            if (i < getHeight() - 1) {
+            if (i < height - 1) {
                 builder.append("\n");
             }
         }
@@ -55,28 +61,17 @@ public class BoardImpl
 
     @Override
     public boolean equals(final Object o) {
-        final Board b = (Board) o;
-        if (getHeight() != b.getHeight() || getWidth() != b.getWidth()) {
-            return false;
-        }
-        for (int i = 0; i < getHeight(); i++) {
-            for (int j = 0; j < getWidth(); j++) {
-                if (get(i, j) != b.get(i, j)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return Arrays.deepEquals(matrix, ((BoardImpl) o).matrix); // TODO: fix this
     }
 
     @Override
     public List<Jelly> getJellies() {
-        final List<Jelly> jellies = new LinkedList<Jelly>();
-        final boolean[][] visited = new boolean[getHeight()][getWidth()];
-        for (int i = 0; i < getHeight(); i++) {
-            for (int j = 0; j < getWidth(); j++) {
+        final List<Jelly> jellies = new LinkedList<>();
+        final boolean[][] visited = new boolean[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 if (!visited[i][j]) {
-                    final Character color = get(i, j);
+                    final Character color = matrix[i][j];
                     if (!Character.isWhitespace(color)) {
                         jellies.add(new JellyImpl(this, visited, color, i, j));
                     }

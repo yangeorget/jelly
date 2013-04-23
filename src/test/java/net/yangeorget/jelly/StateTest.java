@@ -17,87 +17,97 @@ public class StateTest {
     }
 
     @Test
-    public void testGravityOK1() {
-        testGravityOK(new BoardImpl(" BB ", "    ", "    "), new BoardImpl("    ", "    ", " BB "));
+    public void testGetDistinctColorsNb1() {
+        Assert.assertEquals(new GameImpl(new BoardImpl("  R ")).getStates()
+                                                               .get(0)
+                                                               .getDistinctColorsNb(), 1);
     }
 
     @Test
-    public void testGravityOK2() {
-        testGravityOK(new BoardImpl("  GG ", " BB  ", "     "), new BoardImpl("     ", "  GG ", " BB  "));
+    public void testGetDistinctColorsNb2() {
+        Assert.assertEquals(new GameImpl(Board.BOARD1).getStates()
+                                                      .get(0)
+                                                      .getDistinctColorsNb(), 4);
     }
 
     @Test
-    public void testGravityOK3() {
-        testGravityOK(new BoardImpl("  GG ", " BBG ", "  GG ", "     "), new BoardImpl("     ",
-                                                                                       "  GG ",
-                                                                                       " BBG ",
-                                                                                       "  GG "));
+    public void testGravity1() {
+        testGravity(new BoardImpl(" BB ", "    ", "    "), new BoardImpl("    ", "    ", " BB "));
     }
 
-    private void testGravityOK(final Board input, final Board output) {
+    @Test
+    public void testGravity2() {
+        testGravity(new BoardImpl("  GG ", " BB  ", "     "), new BoardImpl("     ", "  GG ", " BB  "));
+    }
+
+    @Test
+    public void testGravity3() {
+        testGravity(new BoardImpl("  GG ", " BBG ", "  GG ", "     "),
+                    new BoardImpl("     ", "  GG ", " BBG ", "  GG "));
+    }
+
+    private void testGravity(final Board input, final Board output) {
         final Game game = new GameImpl(input);
-        final State state = game.getStates()
-                                .get(0);
+        final StateImpl state = (StateImpl) game.getStates()
+                                                .get(0);
         state.gravity();
         LOG.debug(state.toString());
         Assert.assertEquals(state.toBoard(), output);
     }
 
     @Test
-    public void testSlideKO1() {
-        testSlideKO(new BoardImpl(" BBBB"), 'B', 0, 1);
+    public void testMoveKO1() {
+        testMoveKO(new BoardImpl(" BBBB"), 0, 1);
     }
 
     @Test
-    public void testSlideKO2() {
-        testSlideKO(new BoardImpl(" BBBG"), 'B', 0, 1);
+    public void testMoveKO2() {
+        testMoveKO(new BoardImpl(" BBBG"), 0, 1);
     }
 
     @Test
-    public void testSlideKO3() {
-        testSlideKO(new BoardImpl(" BBw "), 'B', 0, 1);
+    public void testMoveKO3() {
+        testMoveKO(new BoardImpl(" BBw "), 0, 1);
     }
 
     @Test
-    public void testSlideKO4() {
-        testSlideKO(new BoardImpl(" BGw "), 'B', 0, 1);
+    public void testMoveKO4() {
+        testMoveKO(new BoardImpl(" BGw "), 0, 1);
     }
 
-    private void testSlideKO(final Board input, final char color, final int index, final int move) {
+    private void testMoveKO(final Board input, final int index, final int move) {
         final Game game = new GameImpl(input);
         final State state = game.getStates()
                                 .get(0);
-        Assert.assertNull(state.slide(color, index, move));
+        Assert.assertNull(state.move(index, move));
     }
 
     @Test
-    public void testSlideOK1() {
-        testSlideOK(new BoardImpl(" BB  "), 'B', 0, 1, new BoardImpl("  BB "));
+    public void testMoveOK1() {
+        testMoveOK(new BoardImpl(" BB  "), 0, 1, new BoardImpl("  BB "));
     }
 
     @Test
-    public void testSlideOK2() {
-        testSlideOK(new BoardImpl(" BB  ", " GBB "), 'G', 0, 1, new BoardImpl("  BB ", "  GBB"));
+    public void testMoveOK2() {
+        testMoveOK(new BoardImpl(" BB  ", " GBB "), 1, 1, new BoardImpl("  BB ", "  GBB"));
     }
 
     @Test
-    public void testSlideOK3() {
-        testSlideOK(new BoardImpl(" BBYRR ", " GBB R "), 'B', 0, 1, new BoardImpl("  BBYRR", " G BB R"));
+    public void testMoveOK3() {
+        testMoveOK(new BoardImpl(" BBYRR ", " GBB R "), 0, 1, new BoardImpl("  BBYRR", " G BB R"));
     }
 
     @Test
-    public void testSlideOK4() {
-        testSlideOK(new BoardImpl(" YYGGG ", " GGG B ", "     w "), 'B', 0, 1, new BoardImpl("       ",
-                                                                                             " YYGGG ",
-                                                                                             " GGG wB"));
+    public void testMoveOK4() {
+        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     w "), 2, 1, new BoardImpl("       ", " YYGGG ", " GGG wB"));
     }
 
-    private void testSlideOK(final Board input, final char color, final int index, final int move, final Board output) {
+    private void testMoveOK(final Board input, final int index, final int move, final Board output) {
         final Game game = new GameImpl(input);
         LOG.debug(game.toString());
         final State state = game.getStates()
                                 .get(0)
-                                .slide(color, index, move);
+                                .move(index, move);
         LOG.debug(state.toString());
         Assert.assertEquals(state.toBoard(), output);
     }

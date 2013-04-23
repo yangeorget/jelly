@@ -19,55 +19,68 @@ public class JellyTest {
 
     @Test
     public void testClone() {
-        final Jelly jelly = new JellyImpl(F5_5, Arrays.asList(new Position(1, 2),
-                                                              new Position(1, 3),
-                                                              new Position(2, 2)));
+        final Jelly jelly = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(1, 2),
+                                                                   new Jelly.Position(1, 3),
+                                                                   new Jelly.Position(2, 2)));
         Assert.assertEquals(jelly.toString(), jelly.clone()
                                                    .toString());
     }
 
     @Test
-    public void testUpdate() {
-        final Jelly jelly = new JellyImpl(F5_5, Arrays.asList(new Position(1, 2),
-                                                              new Position(1, 3),
-                                                              new Position(2, 2)));
-        final String jellyAsString = jelly.toString();
-        jelly.hMove(1);
-        jelly.hMove(-1);
-        Assert.assertEquals(jelly.toString(), jellyAsString);
+    public void testContains() {
+        final Jelly jelly = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(1, 2),
+                                                                   new Jelly.Position(1, 3),
+                                                                   new Jelly.Position(2, 2)));
+        Assert.assertTrue(jelly.contains(new Jelly.Position(1, 3)));
+        Assert.assertTrue(jelly.contains(new Jelly.Position(1, 2)));
+        Assert.assertTrue(jelly.contains(new Jelly.Position(2, 2)));
+        Assert.assertFalse(jelly.contains(new Jelly.Position(1, 1)));
     }
 
     @Test
+    public void testHMove() {
+        final Jelly jelly1 = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(1, 2),
+                                                                    new Jelly.Position(1, 3),
+                                                                    new Jelly.Position(2, 2)));
+        final Jelly jelly2 = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(1, 3),
+                                                                    new Jelly.Position(1, 4),
+                                                                    new Jelly.Position(2, 3)));
+        jelly1.hMove(1);
+        Assert.assertEquals(jelly1.toString(), jelly2.toString());
+    }
+
+    @Test
+    public void testVMove() {
+        final Jelly jelly1 = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(1, 2),
+                                                                    new Jelly.Position(1, 3),
+                                                                    new Jelly.Position(2, 2)));
+        final Jelly jelly2 = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(2, 2),
+                                                                    new Jelly.Position(2, 3),
+                                                                    new Jelly.Position(3, 2)));
+        jelly1.vMove(1);
+        Assert.assertEquals(jelly1.toString(), jelly2.toString());
+    }
+
+
+    @Test
     public void testOverlaps1() {
-        final Jelly jelly1 = new JellyImpl(F5_5, Arrays.asList(new Position(1, 2), new Position(1, 3), new Position(2,
-                                                                                                                    2)));
-        final Jelly jelly2 = new JellyImpl(F5_5, Arrays.asList(new Position(2, 1), new Position(3, 1), new Position(2,
-                                                                                                                    2)));
+        final Jelly jelly1 = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(1, 2),
+                                                                    new Jelly.Position(1, 3),
+                                                                    new Jelly.Position(2, 2)));
+        final Jelly jelly2 = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(2, 1),
+                                                                    new Jelly.Position(3, 1),
+                                                                    new Jelly.Position(2, 2)));
         Assert.assertTrue(jelly1.overlaps(jelly2));
     }
 
     @Test
     public void testOverlaps2() {
-        final Jelly jelly1 = new JellyImpl(F5_5, Arrays.asList(new Position(1, 2), new Position(1, 3), new Position(2,
-                                                                                                                    2)));
-        final Jelly jelly2 = new JellyImpl(F5_5, Arrays.asList(new Position(2, 1), new Position(3, 1), new Position(2,
-                                                                                                                    3)));
+        final Jelly jelly1 = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(1, 2),
+                                                                    new Jelly.Position(1, 3),
+                                                                    new Jelly.Position(2, 2)));
+        final Jelly jelly2 = new JellyImpl(F5_5, 'B', Arrays.asList(new Jelly.Position(2, 1),
+                                                                    new Jelly.Position(3, 1),
+                                                                    new Jelly.Position(2, 3)));
         Assert.assertFalse(jelly1.overlaps(jelly2));
-    }
-
-    @Test
-    public void testAdjacentTo1() {
-        final Jelly jelly1 = new JellyImpl(F5_5, Arrays.asList(new Position(1, 2), new Position(1, 3), new Position(2,
-                                                                                                                    2)));
-        final Jelly jelly2 = new JellyImpl(F5_5, Arrays.asList(new Position(3, 1), new Position(3, 2)));
-        Assert.assertTrue(jelly1.adjacentTo(jelly2));
-    }
-
-    @Test
-    public void testAdjacentTo2() {
-        final Jelly jelly1 = new JellyImpl(F5_5, Arrays.asList(new Position(1, 2), new Position(1, 3), new Position(2,
-                                                                                                                    2)));
-        final Jelly jelly2 = new JellyImpl(F5_5, Arrays.asList(new Position(3, 0), new Position(3, 1)));
-        Assert.assertFalse(jelly1.adjacentTo(jelly2));
     }
 }

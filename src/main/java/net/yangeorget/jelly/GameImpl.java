@@ -35,31 +35,40 @@ public class GameImpl
 
     @Override
     public boolean solve() {
-        for (final State state = states.removeFirst(); !states.isEmpty(); explored.add(state.toBoard()
-                                                                                            .toString())) {
+        while (!states.isEmpty()) {
+            final State state = states.removeFirst();
+            explored.add(state.toBoard()
+                              .toString());
             if (state.getJellies()
                      .size() == distinctColorsNb) {
                 return true;
             }
-            for (int j = 0; j < state.getJellies()
-                                     .size(); j++) {
-                if (!state.getJellies()
-                          .get(j)
-                          .isFixed()) {
-                    final State leftState = state.move(j, -1);
-                    if (leftState != null && !explored.contains(leftState.toBoard()
-                                                                         .toString())) {
-                        states.addLast(leftState);
-                    }
-                    final State rightState = state.move(j, 1);
-                    if (rightState != null && !explored.contains(rightState.toBoard()
-                                                                           .toString())) {
-                        states.addLast(rightState);
-                    }
-                }
-            }
+            solve(state);
         }
         return false;
+    }
+
+    void solve(final State state) {
+        for (int j = 0; j < state.getJellies()
+                                 .size(); j++) {
+            solve(state, j);
+        }
+    }
+
+    void solve(final State state, final int j) {
+        if (!state.getJellies()
+                  .get(j)
+                  .isFixed()) {
+            check(state.move(j, -1));
+            check(state.move(j, 1));
+        }
+    }
+
+    void check(final State state) {
+        if (state != null && !explored.contains(state.toBoard()
+                                                     .toString())) {
+            states.addLast(state);
+        }
     }
 
     @Override

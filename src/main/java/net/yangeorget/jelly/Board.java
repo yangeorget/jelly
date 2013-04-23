@@ -6,7 +6,7 @@ import java.util.List;
 public interface Board
         extends Frame {
     // TODO: use different w's or use a reserved char and a counter
-    Board BOARD1 = new BoardImpl("            ",
+    Board LEVEL_1 = new BoardImpl("            ",
                                  "            ",
                                  "            ",
                                  "            ",

@@ -7,22 +7,22 @@ import org.testng.annotations.Test;
 public class BoardTest {
     @Test
     public void testGet() {
-        Assert.assertEquals(Board.BOARD1.get(0, 0), ' ');
-        Assert.assertEquals(Board.BOARD1.get(0, 1), ' ');
-        Assert.assertEquals(Board.BOARD1.get(1, 0), ' ');
-        Assert.assertEquals(Board.BOARD1.get(1, 1), ' ');
-        Assert.assertEquals(Board.BOARD1.get(7, 0), 'w');
-        Assert.assertEquals(Board.BOARD1.get(7, 1), 'B');
-        Assert.assertEquals(Board.BOARD1.get(7, 2), 'w');
-        Assert.assertEquals(Board.BOARD1.get(7, 3), 'w');
-        Assert.assertEquals(Board.BOARD1.get(7, 4), 'w');
-        Assert.assertEquals(Board.BOARD1.get(7, 5), 'G');
-        Assert.assertEquals(Board.BOARD1.get(7, 6), ' ');
+        Assert.assertEquals(Board.LEVEL_1.get(0, 0), ' ');
+        Assert.assertEquals(Board.LEVEL_1.get(0, 1), ' ');
+        Assert.assertEquals(Board.LEVEL_1.get(1, 0), ' ');
+        Assert.assertEquals(Board.LEVEL_1.get(1, 1), ' ');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 0), 'w');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 1), 'B');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 2), 'w');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 3), 'w');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 4), 'w');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 5), 'G');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 6), ' ');
     }
 
     @Test
     public void testGetJellies() {
-        final List<Jelly> jellies = Board.BOARD1.getJellies();
+        final List<Jelly> jellies = Board.LEVEL_1.getJellies();
         Assert.assertEquals(jellies.size(), 10);
         Assert.assertEquals(jellies.get(0)
                                    .getColor(), 'P');

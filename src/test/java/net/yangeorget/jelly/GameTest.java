@@ -9,12 +9,6 @@ public class GameTest {
     private static final Logger LOG = LoggerFactory.getLogger(GameTest.class);
 
     @Test
-    public void testGetStates() {
-        Assert.assertEquals(new GameImpl(Board.BOARD1).getStates()
-                                                      .size(), 1);
-    }
-
-    @Test
     public void testSolve1() {
         Assert.assertTrue(new GameImpl(new BoardImpl("     R")).solve());
     }
@@ -37,5 +31,21 @@ public class GameTest {
     @Test
     public void testSolve5() {
         Assert.assertFalse(new GameImpl(new BoardImpl("R R B R")).solve());
+    }
+
+    @Test
+    public void testSolve6() {
+        Assert.assertTrue(new GameImpl(new BoardImpl(" R B R ", " wwwww ", "       ")).solve());
+    }
+
+
+    @Test
+    public void testSolve7() {
+        Assert.assertTrue(new GameImpl(new BoardImpl("  G       B ", "wBwwwG wwwww")).solve());
+    }
+
+    // @Test
+    public void testSolveLEVEL1() {
+        Assert.assertTrue(new GameImpl(Board.LEVEL_1).solve());
     }
 }

@@ -2,7 +2,6 @@ package net.yangeorget.jelly;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +25,6 @@ public class GameImpl
         final State state = new StateImpl(board);
         states.add(state);
         distinctColorsNb = state.getDistinctColorsNb();
-    }
-
-    @Override
-    public List<State> getStates() {
-        return states;
     }
 
     @Override

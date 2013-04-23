@@ -10,24 +10,19 @@ public class StateTest {
 
     @Test
     public void testClone() {
-        final State state = new GameImpl(Board.BOARD1).getStates()
-                                                      .get(0);
+        final State state = new StateImpl(Board.LEVEL_1);
         Assert.assertEquals(state.clone()
                                  .toBoard(), state.toBoard());
     }
 
     @Test
     public void testGetDistinctColorsNb1() {
-        Assert.assertEquals(new GameImpl(new BoardImpl("  R ")).getStates()
-                                                               .get(0)
-                                                               .getDistinctColorsNb(), 1);
+        Assert.assertEquals(new StateImpl(new BoardImpl("  R ")).getDistinctColorsNb(), 1);
     }
 
     @Test
     public void testGetDistinctColorsNb2() {
-        Assert.assertEquals(new GameImpl(Board.BOARD1).getStates()
-                                                      .get(0)
-                                                      .getDistinctColorsNb(), 4);
+        Assert.assertEquals(new StateImpl(Board.LEVEL_1).getDistinctColorsNb(), 4);
     }
 
     @Test
@@ -47,11 +42,8 @@ public class StateTest {
     }
 
     private void testGravity(final Board input, final Board output) {
-        final Game game = new GameImpl(input);
-        final StateImpl state = (StateImpl) game.getStates()
-                                                .get(0);
+        final StateImpl state = new StateImpl(input);
         state.gravity();
-        LOG.debug(state.toString());
         Assert.assertEquals(state.toBoard(), output);
     }
 
@@ -76,10 +68,7 @@ public class StateTest {
     }
 
     private void testMoveKO(final Board input, final int index, final int move) {
-        final Game game = new GameImpl(input);
-        final State state = game.getStates()
-                                .get(0);
-        Assert.assertNull(state.move(index, move));
+        Assert.assertNull(new StateImpl(input).move(index, move));
     }
 
     @Test
@@ -103,12 +92,7 @@ public class StateTest {
     }
 
     private void testMoveOK(final Board input, final int index, final int move, final Board output) {
-        final Game game = new GameImpl(input);
-        LOG.debug(game.toString());
-        final State state = game.getStates()
-                                .get(0)
-                                .move(index, move);
-        LOG.debug(state.toString());
-        Assert.assertEquals(state.toBoard(), output);
+        Assert.assertEquals(new StateImpl(input).move(index, move)
+                                                .toBoard(), output);
     }
 }

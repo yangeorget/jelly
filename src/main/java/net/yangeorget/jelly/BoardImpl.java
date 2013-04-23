@@ -44,14 +44,11 @@ public class BoardImpl
     }
 
     private void toString(final StringBuilder builder) {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                builder.append(matrix[i][j]);
-            }
-            if (i < height - 1) {
-                builder.append("\n");
-            }
+        for (int i = 0; i < height - 1; i++) {
+            builder.append(matrix[i]);
+            builder.append("\n");
         }
+        builder.append(matrix[height - 1]);
     }
 
     @Override

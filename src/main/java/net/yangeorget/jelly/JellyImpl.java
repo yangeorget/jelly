@@ -55,9 +55,9 @@ public class JellyImpl
         return Character.isLowerCase(color);
     }
 
-    private void add(final Collection<Jelly.Position> col) {
-        for (final Jelly.Position position : col) {
-            positions.add(new Position(position));
+    private void add(final Collection<Jelly.Position> positions) {
+        for (final Jelly.Position position : positions) {
+            this.positions.add(new Position(position));
         }
     }
 
@@ -128,7 +128,7 @@ public class JellyImpl
     @Override
     public void updateBoard(final char[][] board) {
         for (final Jelly.Position position : positions) {
-            board[position.getI()][position.getJ()] = getColor();
+            board[position.getI()][position.getJ()] = color;
         }
     }
 }

@@ -40,7 +40,7 @@ public class Tracer {
     /**
      * We exclude this class to avoid infinite loops.
      */
-    private static final String TRACER_POINTCUT_STR = "execution(* net.yangeorget.jelly..*.*(..)) && !within(net.yangeorget.jelly.Tracer)";
+    private static final String TRACER_POINTCUT_STR = "execution(public * net.yangeorget.jelly..*.*(..)) && !within(net.yangeorget.jelly.Tracer)";
 
     @Pointcut(TRACER_POINTCUT_STR)
     void tracerPointcut() {

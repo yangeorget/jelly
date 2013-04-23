@@ -1,8 +1,8 @@
 package net.yangeorget.jelly;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class StateImpl
     private StateImpl(final Frame frame, final List<Jelly> jellies, final boolean copy) {
         this.frame = frame;
         if (copy) {
-            this.jellies = new LinkedList<>();
+            this.jellies = new ArrayList<>(jellies.size());
             for (final Jelly jelly : jellies) {
                 this.jellies.add(jelly.clone());
             }

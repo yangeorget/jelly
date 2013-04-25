@@ -35,16 +35,22 @@ public class GameTest {
 
     @Test
     public void testSolve6() {
-        Assert.assertTrue(new GameImpl(new BoardImpl(" R B R ", " wwwww ", "       ")).solve());
+        Assert.assertTrue(new GameImpl(new BoardImpl(" R B R ", " ***** ", "       ")).solve());
     }
 
 
     @Test
     public void testSolve7() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("  G       B ", "wBwwwG wwwww")).solve());
+        Assert.assertTrue(new GameImpl(new BoardImpl("  G       B ", "#B@@@G *****")).solve());
     }
 
-    // @Test
+
+    @Test
+    public void testSolve8() {
+        Assert.assertTrue(new GameImpl(new BoardImpl("       P    ", "      **    ", "        P B ", "+B---GG@@@@@")).solve());
+    }
+
+    @Test
     public void testSolveLEVEL1() {
         Assert.assertTrue(new GameImpl(Board.LEVEL_1).solve());
     }

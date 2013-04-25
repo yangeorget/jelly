@@ -22,7 +22,7 @@ public class StateTest {
 
     @Test
     public void testGetDistinctColorsNb2() {
-        Assert.assertEquals(new StateImpl(Board.LEVEL_1).getDistinctColorsNb(), 4);
+        Assert.assertEquals(new StateImpl(Board.LEVEL_1).getDistinctColorsNb(), 7);
     }
 
     @Test
@@ -68,7 +68,10 @@ public class StateTest {
     }
 
     private void testMoveKO(final Board input, final int index, final int move) {
-        Assert.assertNull(new StateImpl(input).move(index, move));
+        final State state = new StateImpl(input);
+        final Jelly jelly = state.getJellies()
+                                 .get(index);
+        Assert.assertFalse(state.move(jelly, move));
     }
 
     @Test
@@ -92,7 +95,10 @@ public class StateTest {
     }
 
     private void testMoveOK(final Board input, final int index, final int move, final Board output) {
-        Assert.assertEquals(new StateImpl(input).move(index, move)
-                                                .toBoard(), output);
+        final State state = new StateImpl(input);
+        final Jelly jelly = state.getJellies()
+                                 .get(index);
+        state.move(jelly, move);
+        Assert.assertEquals(state.toBoard(), output);
     }
 }

@@ -39,14 +39,17 @@ public class BoardImpl
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        toString(builder);
+        toString(builder, true);
         return builder.toString();
     }
 
-    private void toString(final StringBuilder builder) {
+    @Override
+    public void toString(final StringBuilder builder, final boolean nl) {
         for (int i = 0; i < height - 1; i++) {
             builder.append(matrix[i]);
-            builder.append("\n");
+            if (nl) {
+                builder.append("\n");
+            }
         }
         builder.append(matrix[height - 1]);
     }
@@ -57,8 +60,13 @@ public class BoardImpl
     }
 
     @Override
+    public char[][] getMatrix() {
+        return matrix;
+    }
+
+    @Override
     public boolean equals(final Object o) {
-        return Arrays.deepEquals(matrix, ((BoardImpl) o).matrix); // TODO: fix this
+        return Arrays.deepEquals(matrix, ((Board) o).getMatrix());
     }
 
     @Override
@@ -67,14 +75,38 @@ public class BoardImpl
         final boolean[][] visited = new boolean[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if (!visited[i][j]) {
-                    final Character color = matrix[i][j];
-                    if (!Character.isWhitespace(color)) {
-                        jellies.add(new JellyImpl(this, visited, color, i, j));
-                    }
+                if (!visited[i][j] && !cellIsBlank(i, j)) {
+                    jellies.add(new JellyImpl(this, visited, matrix[i][j], i, j));
                 }
             }
         }
         return jellies;
+    }
+
+    @Override
+    public boolean cellIsBlank(final int i, final int j) {
+        return isBlank(matrix[i][j]);
+    }
+
+    public static boolean isBlank(final char c) {
+        return Character.isWhitespace(c);
+    }
+
+    @Override
+    public boolean cellIsFixed(final int i, final int j) {
+        return isFixed(matrix[i][j]);
+    }
+
+    public static boolean isFixed(final char color) {
+        return !Character.isUpperCase(color);
+    }
+
+    @Override
+    public boolean cellHasColor(final int i, final int j, final char color) {
+        return getColor(matrix[i][j]) == getColor(color);
+    }
+
+    public static char getColor(final char color) {
+        return Character.toUpperCase(color);
     }
 }

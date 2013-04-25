@@ -13,7 +13,7 @@ public class StateImpl
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
 
     private List<Jelly> jellies;
-    private final Frame frame;
+    private final Frame frame; // TODO: should we store the board here
 
     public StateImpl(final Board board) {
         this(board, board.getJellies(), false);
@@ -46,24 +46,17 @@ public class StateImpl
     }
 
     @Override
-    public State move(final int j, final int move) {
-        final StateImpl state = new StateImpl(toBoard());
-        return state.move(state.getJellies()
-                               .get(j), move);
-    }
-
-    State move(final Jelly jelly, final int move) {
+    public boolean move(final Jelly jelly, final int move) {
         if (hMove(jelly, move)) {
             gravity();
             jellies = toBoard().getJellies();
-            return this;
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
     boolean hMove(final Jelly jelly, final int move) {
-        LOG.debug("hMove:" + jelly + " " + move);
         if (!jelly.hMove(move)) {
             return false;
         }
@@ -125,7 +118,7 @@ public class StateImpl
     public int getDistinctColorsNb() {
         final Set<Character> colors = new HashSet<>();
         for (final Jelly j : getJellies()) {
-            colors.add(Character.toUpperCase(j.getColor()));
+            colors.add(BoardImpl.getColor(j.getColor()));
         }
         return colors.size();
     }
@@ -133,5 +126,12 @@ public class StateImpl
     @Override
     public Frame getFrame() {
         return frame;
+    }
+
+    @Override
+    public String serialize() {
+        final StringBuilder builder = new StringBuilder();
+        toBoard().toString(builder, false);
+        return builder.toString();
     }
 }

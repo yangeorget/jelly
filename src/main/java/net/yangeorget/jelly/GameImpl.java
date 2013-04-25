@@ -1,7 +1,9 @@
 package net.yangeorget.jelly;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +22,10 @@ public class GameImpl
      * @param board
      */
     public GameImpl(final Board board) {
-        explored = new HashSet<>();
-        states = new LinkedList<>();
         final State state = new StateImpl(board);
+        explored = new HashSet<>();
+        explored.add(state.serialize());
+        states = new LinkedList<>();
         states.add(state);
         distinctColorsNb = state.getDistinctColorsNb();
     }
@@ -30,43 +33,71 @@ public class GameImpl
     @Override
     public boolean solve() {
         while (!states.isEmpty()) {
+            LOG.debug("before pop" + toString());
+            // dump();
             final State state = states.removeFirst();
-            explored.add(state.toBoard()
-                              .toString());
-            if (state.getJellies()
-                     .size() == distinctColorsNb) {
+            // LOG.debug("state=" + state.toString());
+            // LOG.debug("board=" + state.toBoard()
+            // .toString());
+            // LOG.debug("after pop" + toString());
+            // dump();
+            // LOG.debug("explored=" + explored.toString());
+            final List<Jelly> jellies = state.getJellies();
+            // LOG.debug("#jellies=" + jellies.size());
+            if (jellies.size() == distinctColorsNb) {
+                // LOG.debug(toString());
                 return true;
             }
-            solve(state);
+            for (int j = 0; j < jellies.size(); j++) {
+                if (!jellies.get(j)
+                            .isFixed()) {
+                    move(state, j, -1);
+                    move(state, j, 1);
+                }
+            }
         }
+        // LOG.debug(toString());
         return false;
     }
 
-    void solve(final State state) {
-        for (int j = 0; j < state.getJellies()
-                                 .size(); j++) {
-            solve(state, j);
+    void move(final State state, final int j, final int move) {
+        // LOG.debug("state=" + state.toString() + ";j=" + j + ";move=" + move);
+        // LOG.debug("board=" + state.toBoard()
+        // .toString());
+        final State newState = state.clone();
+        final boolean moveOk = newState.move(newState.getJellies()
+                                                     .get(j), move);
+        // LOG.debug("newState=" + newState.toString());
+        // LOG.debug("board=" + newState.toBoard()
+        // .toString());
+        if (moveOk) {
+            final String ser = newState.serialize();
+            // LOG.debug("ser=" + ser);
+            // LOG.debug("explored=" + explored.toString());
+            if (!explored.contains(ser)) {
+                states.addLast(newState);
+                explored.add(newState.serialize());
+                // LOG.debug("states=" + states.toString());
+                // dump();
+            }
         }
     }
 
-    void solve(final State state, final int j) {
-        if (!state.getJellies()
-                  .get(j)
-                  .isFixed()) {
-            check(state.move(j, -1));
-            check(state.move(j, 1));
+    void dump() {
+        final List<String> serStates = new LinkedList<>();
+        for (final State state : states) {
+            serStates.add(state.serialize());
         }
-    }
+        Collections.sort(serStates);
+        for (final String s : serStates) {
+            LOG.debug(s);
+        }
 
-    void check(final State state) {
-        if (state != null && !explored.contains(state.toBoard()
-                                                     .toString())) {
-            states.addLast(state);
-        }
+
     }
 
     @Override
     public String toString() {
-        return "distinctColorsNb=" + distinctColorsNb + ";states=" + states + ";explored=" + explored;
+        return "distinctColorsNb=" + distinctColorsNb + ";#states=" + states.size() + ";#explored=" + explored.size();
     }
 }

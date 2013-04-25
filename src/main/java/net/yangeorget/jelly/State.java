@@ -13,5 +13,7 @@ public interface State {
 
     int getDistinctColorsNb();
 
-    State move(int j, int move);
+    boolean move(final Jelly jelly, final int move);
+
+    String serialize();
 }

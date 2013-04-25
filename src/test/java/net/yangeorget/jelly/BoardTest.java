@@ -11,11 +11,11 @@ public class BoardTest {
         Assert.assertEquals(Board.LEVEL_1.get(0, 1), ' ');
         Assert.assertEquals(Board.LEVEL_1.get(1, 0), ' ');
         Assert.assertEquals(Board.LEVEL_1.get(1, 1), ' ');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 0), 'w');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 0), '+');
         Assert.assertEquals(Board.LEVEL_1.get(7, 1), 'B');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 2), 'w');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 3), 'w');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 4), 'w');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 2), '-');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 3), '-');
+        Assert.assertEquals(Board.LEVEL_1.get(7, 4), '-');
         Assert.assertEquals(Board.LEVEL_1.get(7, 5), 'G');
         Assert.assertEquals(Board.LEVEL_1.get(7, 6), ' ');
     }
@@ -29,7 +29,7 @@ public class BoardTest {
         Assert.assertFalse(jellies.get(0)
                                   .isFixed());
         Assert.assertEquals(jellies.get(1)
-                                   .getColor(), 'w');
+                                   .getColor(), '*');
         Assert.assertTrue(jellies.get(1)
                                  .isFixed());
         Assert.assertEquals(jellies.get(2)
@@ -45,7 +45,7 @@ public class BoardTest {
         Assert.assertFalse(jellies.get(4)
                                   .isFixed());
         Assert.assertEquals(jellies.get(5)
-                                   .getColor(), 'w');
+                                   .getColor(), '+');
         Assert.assertTrue(jellies.get(5)
                                  .isFixed());
         Assert.assertEquals(jellies.get(6)
@@ -53,7 +53,7 @@ public class BoardTest {
         Assert.assertFalse(jellies.get(6)
                                   .isFixed());
         Assert.assertEquals(jellies.get(7)
-                                   .getColor(), 'w');
+                                   .getColor(), '-');
         Assert.assertTrue(jellies.get(7)
                                  .isFixed());
         Assert.assertEquals(jellies.get(8)
@@ -61,7 +61,7 @@ public class BoardTest {
         Assert.assertFalse(jellies.get(8)
                                   .isFixed());
         Assert.assertEquals(jellies.get(9)
-                                   .getColor(), 'w');
+                                   .getColor(), '@');
         Assert.assertTrue(jellies.get(9)
                                  .isFixed());
     }

@@ -5,17 +5,26 @@ import java.util.List;
 
 public interface Board
         extends Frame {
-    // TODO: use different w's or use a reserved char and a counter
     Board LEVEL_1 = new BoardImpl("            ",
-                                 "            ",
-                                 "            ",
-                                 "            ",
-                                 "       P    ",
-                                 "      ww    ",
-                                 "  G     P B ",
-                                 "wBwwwG wwwww");
+                                  "            ",
+                                  "            ",
+                                  "            ",
+                                  "       P    ",
+                                  "      **    ",
+                                  "  G     P B ",
+                                  "+B---G @@@@@");
 
-    char get(final int i, final int j);
+    char get(int i, int j);
+
+    char[][] getMatrix();
 
     List<Jelly> getJellies();
+
+    boolean cellIsBlank(int i, int j);
+
+    boolean cellIsFixed(int i, int j);
+
+    boolean cellHasColor(int i, int j, char c);
+
+    void toString(final StringBuilder builder, final boolean nl);
 }

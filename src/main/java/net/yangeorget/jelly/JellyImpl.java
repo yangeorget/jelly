@@ -30,9 +30,8 @@ public class JellyImpl
     }
 
     private void update(final Board board, final boolean[][] visited, final int i, final int j) {
-        final char c = board.get(i, j);
-        if (!visited[i][j] && Character.toUpperCase(color) == Character.toUpperCase(c)) {
-            this.color = Character.isLowerCase(c) ? Character.toLowerCase(c) : Character.toUpperCase(c);
+        if (!visited[i][j] && board.cellHasColor(i, j, color)) {
+            this.color = board.cellIsFixed(i, j) ? board.get(i, j) : color;
             visited[i][j] = true;
             positions.add(new Position(i, j));
             if (i > 0) {
@@ -52,7 +51,7 @@ public class JellyImpl
 
     @Override
     public boolean isFixed() {
-        return Character.isLowerCase(color);
+        return BoardImpl.isFixed(color);
     }
 
     private void add(final Collection<Jelly.Position> positions) {

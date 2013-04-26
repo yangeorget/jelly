@@ -71,7 +71,7 @@ public class StateTest {
         final State state = new StateImpl(input);
         final Jelly jelly = state.getJellies()
                                  .get(index);
-        Assert.assertFalse(state.move(jelly, move));
+        Assert.assertNull(state.move(jelly, move));
     }
 
     @Test

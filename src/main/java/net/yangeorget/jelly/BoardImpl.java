@@ -39,17 +39,14 @@ public class BoardImpl
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        toString(builder, true);
+        toString(builder);
         return builder.toString();
     }
 
-    @Override
-    public void toString(final StringBuilder builder, final boolean nl) {
+    private void toString(final StringBuilder builder) {
         for (int i = 0; i < height - 1; i++) {
             builder.append(matrix[i]);
-            if (nl) {
-                builder.append("\n");
-            }
+            builder.append("\n");
         }
         builder.append(matrix[height - 1]);
     }
@@ -60,13 +57,8 @@ public class BoardImpl
     }
 
     @Override
-    public char[][] getMatrix() {
-        return matrix;
-    }
-
-    @Override
     public boolean equals(final Object o) {
-        return Arrays.deepEquals(matrix, ((Board) o).getMatrix());
+        return Arrays.deepEquals(matrix, ((BoardImpl) o).matrix);
     }
 
     @Override
@@ -75,7 +67,7 @@ public class BoardImpl
         final boolean[][] visited = new boolean[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if (!visited[i][j] && !cellIsBlank(i, j)) {
+                if (!visited[i][j] && !isBlank(matrix[i][j])) {
                     jellies.add(new JellyImpl(this, visited, matrix[i][j], i, j));
                 }
             }
@@ -83,12 +75,7 @@ public class BoardImpl
         return jellies;
     }
 
-    @Override
-    public boolean cellIsBlank(final int i, final int j) {
-        return isBlank(matrix[i][j]);
-    }
-
-    public static boolean isBlank(final char c) {
+    private static boolean isBlank(final char c) {
         return Character.isWhitespace(c);
     }
 

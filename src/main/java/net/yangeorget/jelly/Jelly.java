@@ -2,8 +2,6 @@ package net.yangeorget.jelly;
 
 
 public interface Jelly {
-    boolean contains(Position p);
-
     boolean hMove(int move);
 
     boolean vMove(int move);
@@ -11,8 +9,6 @@ public interface Jelly {
     boolean overlaps(Jelly j);
 
     Jelly clone();
-
-    int size();
 
     boolean isFixed();
 

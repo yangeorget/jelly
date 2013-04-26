@@ -9,11 +9,7 @@ public interface State {
 
     Board toBoard();
 
-    Frame getFrame();
-
     int getDistinctColorsNb();
 
-    boolean move(final Jelly jelly, final int move);
-
-    String serialize();
+    Board move(final Jelly jelly, final int move);
 }

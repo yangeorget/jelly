@@ -13,18 +13,20 @@ public class StateImpl
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
 
     private List<Jelly> jellies;
-    private final Frame frame; // TODO: should we store the board here
+    private final int width;
+    private final int height;
 
     public StateImpl(final Board board) {
-        this(board, board.getJellies(), false);
+        this(board.getHeight(), board.getWidth(), board.getJellies(), false);
     }
 
-    public StateImpl(final State state) {
-        this(state.getFrame(), state.getJellies(), true);
+    public StateImpl(final StateImpl state) {
+        this(state.height, state.width, state.getJellies(), true);
     }
 
-    private StateImpl(final Frame frame, final List<Jelly> jellies, final boolean copy) {
-        this.frame = frame;
+    private StateImpl(final int height, final int width, final List<Jelly> jellies, final boolean copy) {
+        this.height = height;
+        this.width = width;
         if (copy) {
             this.jellies = new ArrayList<>(jellies.size());
             for (final Jelly jelly : jellies) {
@@ -46,13 +48,14 @@ public class StateImpl
     }
 
     @Override
-    public boolean move(final Jelly jelly, final int move) {
+    public Board move(final Jelly jelly, final int move) {
         if (hMove(jelly, move)) {
             gravity();
-            jellies = toBoard().getJellies();
-            return true;
+            final Board board = toBoard();
+            jellies = board.getJellies();
+            return board;
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -102,8 +105,6 @@ public class StateImpl
 
     @Override
     public Board toBoard() {
-        final int height = frame.getHeight();
-        final int width = frame.getWidth();
         final char[][] m = new char[height][width];
         for (int i = 0; i < height; i++) {
             Arrays.fill(m[i], ' ');
@@ -121,17 +122,5 @@ public class StateImpl
             colors.add(BoardImpl.getColor(j.getColor()));
         }
         return colors.size();
-    }
-
-    @Override
-    public Frame getFrame() {
-        return frame;
-    }
-
-    @Override
-    public String serialize() {
-        final StringBuilder builder = new StringBuilder();
-        toBoard().toString(builder, false);
-        return builder.toString();
     }
 }

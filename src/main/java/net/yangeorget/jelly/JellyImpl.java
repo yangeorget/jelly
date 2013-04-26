@@ -1,32 +1,40 @@
 package net.yangeorget.jelly;
 
 import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author y.georget
  */
 public class JellyImpl
         implements Jelly {
-    private final Set<Jelly.Position> positions; // TODO: use list
-    private final Frame frame;
+    private final List<Jelly.Position> positions;
+
+    private final int width;
+    private final int height;
     private char color;
 
-    private JellyImpl(final Frame frame, final char color) {
-        this.frame = frame;
+    private JellyImpl(final int width, final int height, final char color) {
+        this.width = width;
+        this.height = height;
         this.color = color;
-        positions = new TreeSet<>();
+        positions = new LinkedList<>();
     }
 
-    public JellyImpl(final Frame frame, final char color, final Collection<Jelly.Position> positions) {
-        this(frame, color);
-        add(positions);
+    public JellyImpl(final int width, final int height, final char color, final Collection<Jelly.Position> positions) {
+        this(width, height, color);
+        for (final Jelly.Position position : positions) {
+            this.positions.add(new Position(position));
+        }
+        Collections.sort(this.positions);
     }
 
     public JellyImpl(final Board board, final boolean[][] visited, final char color, final int i, final int j) {
-        this(board, color);
+        this(board.getWidth(), board.getHeight(), color);
         update(board, visited, i, j);
+        Collections.sort(positions);
     }
 
     private void update(final Board board, final boolean[][] visited, final int i, final int j) {
@@ -54,15 +62,9 @@ public class JellyImpl
         return BoardImpl.isFixed(color);
     }
 
-    private void add(final Collection<Jelly.Position> positions) {
-        for (final Jelly.Position position : positions) {
-            this.positions.add(new Position(position));
-        }
-    }
-
     @Override
     public JellyImpl clone() {
-        return new JellyImpl(frame, color, positions);
+        return new JellyImpl(width, height, color, positions);
     }
 
     @Override
@@ -71,22 +73,12 @@ public class JellyImpl
     }
 
     @Override
-    public int size() {
-        return positions.size();
-    }
-
-    @Override
-    public boolean contains(final Jelly.Position p) {
-        return positions.contains(p);
-    }
-
-    @Override
     public boolean hMove(final int move) {
         if (isFixed()) {
             return false;
         }
         for (final Jelly.Position position : positions) {
-            if (!position.hMove(move, frame.getWidth())) {
+            if (!position.hMove(move, width)) {
                 return false;
             }
         }
@@ -99,7 +91,7 @@ public class JellyImpl
             return false;
         }
         for (final Jelly.Position position : positions) {
-            if (!position.vMove(move, frame.getHeight())) {
+            if (!position.vMove(move, height)) {
                 return false;
             }
         }
@@ -107,16 +99,28 @@ public class JellyImpl
     }
 
     @Override
-    public boolean overlaps(final Jelly j) {
-        if (size() > j.size()) {
-            return j.overlaps(this);
-        }
-        for (final Jelly.Position p : positions) {
-            if (j.contains(p)) {
+    public boolean overlaps(final Jelly jelly) {
+        final JellyImpl j = (JellyImpl) jelly;
+        int index = 0;
+        int jIndex = 0;
+        while (true) {
+            while (positions.get(index)
+                            .compareTo(j.positions.get(jIndex)) < 0) {
+                if (++index == positions.size()) {
+                    return false;
+                }
+            }
+            if (positions.get(index)
+                         .compareTo(j.positions.get(jIndex)) == 0) {
                 return true;
             }
+            while (positions.get(index)
+                            .compareTo(j.positions.get(jIndex)) > 0) {
+                if (++jIndex == j.positions.size()) {
+                    return false;
+                }
+            }
         }
-        return false;
     }
 
     @Override

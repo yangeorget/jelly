@@ -5,6 +5,17 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class BoardTest {
+
+    @Test
+    public void testHeight() {
+        Assert.assertEquals(Board.LEVEL_1.getHeight(), 8);
+    }
+
+    @Test
+    public void testWidth() {
+        Assert.assertEquals(Board.LEVEL_1.getWidth(), 12);
+    }
+
     @Test
     public void testGet() {
         Assert.assertEquals(Board.LEVEL_1.get(0, 0), ' ');

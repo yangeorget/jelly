@@ -1,6 +1,5 @@
 package net.yangeorget.jelly;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class GameImpl
     public GameImpl(final Board board) {
         final State state = new StateImpl(board);
         explored = new HashSet<>();
-        explored.add(state.serialize());
+        explored.add(board.toString());
         states = new LinkedList<>();
         states.add(state);
         distinctColorsNb = state.getDistinctColorsNb();
@@ -33,7 +32,7 @@ public class GameImpl
     @Override
     public boolean solve() {
         while (!states.isEmpty()) {
-            LOG.debug("before pop" + toString());
+            // LOG.debug("before pop" + toString());
             // dump();
             final State state = states.removeFirst();
             // LOG.debug("state=" + state.toString());
@@ -45,7 +44,8 @@ public class GameImpl
             final List<Jelly> jellies = state.getJellies();
             // LOG.debug("#jellies=" + jellies.size());
             if (jellies.size() == distinctColorsNb) {
-                // LOG.debug(toString());
+                LOG.debug(state.toBoard()
+                               .toString());
                 return true;
             }
             for (int j = 0; j < jellies.size(); j++) {
@@ -65,35 +65,22 @@ public class GameImpl
         // LOG.debug("board=" + state.toBoard()
         // .toString());
         final State newState = state.clone();
-        final boolean moveOk = newState.move(newState.getJellies()
-                                                     .get(j), move);
+        final Board board = newState.move(newState.getJellies()
+                                                  .get(j), move);
         // LOG.debug("newState=" + newState.toString());
         // LOG.debug("board=" + newState.toBoard()
         // .toString());
-        if (moveOk) {
-            final String ser = newState.serialize();
+        if (board != null) {
+            final String ser = board.toString();
             // LOG.debug("ser=" + ser);
             // LOG.debug("explored=" + explored.toString());
             if (!explored.contains(ser)) {
                 states.addLast(newState);
-                explored.add(newState.serialize());
+                explored.add(ser);
                 // LOG.debug("states=" + states.toString());
                 // dump();
             }
         }
-    }
-
-    void dump() {
-        final List<String> serStates = new LinkedList<>();
-        for (final State state : states) {
-            serStates.add(state.serialize());
-        }
-        Collections.sort(serStates);
-        for (final String s : serStates) {
-            LOG.debug(s);
-        }
-
-
     }
 
     @Override

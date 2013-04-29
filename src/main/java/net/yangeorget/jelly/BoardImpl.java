@@ -46,7 +46,7 @@ public class BoardImpl
     private void toString(final StringBuilder builder) {
         for (int i = 0; i < height - 1; i++) {
             builder.append(matrix[i]);
-            builder.append("\n");
+            builder.append('\n');
         }
         builder.append(matrix[height - 1]);
     }

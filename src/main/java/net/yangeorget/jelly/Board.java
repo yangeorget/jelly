@@ -40,6 +40,9 @@ public interface Board {
                                   "&& &      ##",
                                   "&&&& #######");
 
+    int MAX_WIDTH = 16;
+    int MAX_HEIGHT = 16;
+
     char get(int i, int j);
 
     int getHeight();

@@ -65,8 +65,7 @@ public class GameImpl
         // LOG.debug("board=" + state.toBoard()
         // .toString());
         final State newState = state.clone();
-        final Board board = newState.move(newState.getJellies()
-                                                  .get(j), move);
+        final Board board = newState.move(newState.getJelly(j), move);
         // LOG.debug("newState=" + newState.toString());
         // LOG.debug("board=" + newState.toBoard()
         // .toString());

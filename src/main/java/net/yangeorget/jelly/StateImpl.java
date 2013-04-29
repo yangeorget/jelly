@@ -48,6 +48,11 @@ public class StateImpl
     }
 
     @Override
+    public Jelly getJelly(final int index) {
+        return jellies.get(index);
+    }
+
+    @Override
     public Board move(final Jelly jelly, final int move) {
         if (hMove(jelly, move)) {
             gravity();

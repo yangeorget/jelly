@@ -32,7 +32,7 @@ public class GameImpl
     @Override
     public boolean solve() {
         while (!states.isEmpty()) {
-            // LOG.debug("before pop" + toString());
+            LOG.debug("before pop" + toString());
             // dump();
             final State state = states.removeFirst();
             // LOG.debug("state=" + state.toString());
@@ -56,7 +56,6 @@ public class GameImpl
                 }
             }
         }
-        // LOG.debug(toString());
         return false;
     }
 

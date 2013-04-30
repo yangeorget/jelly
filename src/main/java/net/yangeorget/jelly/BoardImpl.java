@@ -63,8 +63,8 @@ public class BoardImpl
 
     @Override
     public List<Jelly> getJellies() {
-        final List<Jelly> jellies = new LinkedList<>();
         final boolean[][] visited = new boolean[height][width];
+        final List<Jelly> jellies = new LinkedList<>();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (!visited[i][j] && !isBlank(matrix[i][j])) {

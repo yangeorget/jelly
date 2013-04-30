@@ -40,6 +40,24 @@ public interface Board {
                                   "&& &      ##",
                                   "&&&& #######");
 
+    Board LEVEL_5 = new BoardImpl("            ",
+                                  "            ",
+                                  "            ",
+                                  "RG  GG      ",
+                                  "++ ==== --  ",
+                                  "RG          ",
+                                  "&&&&  ##   (",
+                                  "&&&&& ##  ((");
+
+    Board LEVEL_6 = new BoardImpl("@@@@@@      ",
+                                  "@@@@@@ G    ",
+                                  "       ??   ",
+                                  " R   B      ",
+                                  " + === - G  ",
+                                  "         & B",
+                                  "       R &&&",
+                                  "   &&&&&&&&&");
+
     int MAX_WIDTH = 16;
     int MAX_HEIGHT = 16;
 

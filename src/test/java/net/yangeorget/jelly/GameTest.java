@@ -69,4 +69,14 @@ public class GameTest {
     public void testSolveLEVEL_4() {
         Assert.assertTrue(new GameImpl(Board.LEVEL_4).solve());
     }
+
+    @Test
+    public void testSolveLEVEL_5() {
+        Assert.assertTrue(new GameImpl(Board.LEVEL_5).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_6() {
+        Assert.assertTrue(new GameImpl(Board.LEVEL_6).solve());
+    }
 }

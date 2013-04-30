@@ -79,11 +79,12 @@ public class StateImpl
     void gravity() {
         boolean gravity = false;
         for (int j = 0; j < getJellies().size(); j++) {
-            final StateImpl state = clone();
-            if (state.gravity(state.getJellies()
-                                   .get(j))) {
-                jellies = state.getJellies();
-                gravity = true;
+            if (!getJelly(j).isFixed()) { // TODO: optimize replace by cannot move
+                final StateImpl state = clone();
+                if (state.gravity(state.getJelly(j))) {
+                    jellies = state.getJellies();
+                    gravity = true;
+                }
             }
         }
         if (gravity) {

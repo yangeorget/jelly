@@ -7,6 +7,8 @@ public interface State {
 
     List<Jelly> getJellies();
 
+    Board getBoard();
+
     Jelly getJelly(int index);
 
     Board toBoard();

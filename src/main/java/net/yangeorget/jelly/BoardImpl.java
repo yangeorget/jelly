@@ -10,11 +10,13 @@ public class BoardImpl
     private final char[][] matrix;
     private final int height;
     private final int width;
+    final boolean[][] visited;
 
     public BoardImpl(final char[][] matrix) {
         this.matrix = matrix;
         height = matrix.length;
         width = matrix[0].length;
+        visited = new boolean[height][width];
     }
 
     public BoardImpl(final String... strings) {
@@ -24,6 +26,7 @@ public class BoardImpl
         for (int i = 0; i < height; i++) {
             matrix[i] = strings[i].toCharArray();
         }
+        visited = new boolean[height][width];
     }
 
     @Override
@@ -63,20 +66,18 @@ public class BoardImpl
 
     @Override
     public List<Jelly> getJellies() {
-        final boolean[][] visited = new boolean[height][width];
+        for (int i = 0; i < height; i++) {
+            Arrays.fill(visited[i], false);
+        }
         final List<Jelly> jellies = new LinkedList<>();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if (!visited[i][j] && !isBlank(matrix[i][j])) {
+                if (!visited[i][j] && !Character.isWhitespace((matrix[i][j]))) {
                     jellies.add(new JellyImpl(this, visited, matrix[i][j], i, j));
                 }
             }
         }
         return jellies;
-    }
-
-    private static boolean isBlank(final char c) {
-        return Character.isWhitespace(c);
     }
 
     @Override
@@ -97,12 +98,15 @@ public class BoardImpl
         return Character.toUpperCase(color);
     }
 
-    public static char[][] getCharMatrix(final int height, final int width) {
-        final char[][] m = new char[height][width];
+    @Override
+    public void clear() {
         for (int i = 0; i < height; i++) {
-            Arrays.fill(m[i], ' ');
+            Arrays.fill(matrix[i], ' ');
         }
-        return m;
     }
 
+    @Override
+    public void set(final byte i, final byte j, final char color) {
+        matrix[i][j] = color;
+    }
 }

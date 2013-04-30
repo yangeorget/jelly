@@ -31,7 +31,7 @@ public class GameImpl
     @Override
     public boolean solve() {
         while (!states.isEmpty()) {
-            LOG.debug(toString());
+            // LOG.debug(toString());
             final State state = states.removeFirst();
             final int size = state.getJellies()
                                   .size();

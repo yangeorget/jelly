@@ -69,4 +69,8 @@ public interface Board {
     boolean cellIsFixed(int i, int j);
 
     boolean cellHasColor(int i, int j, char c);
+
+    void clear();
+
+    void set(byte i, byte j, char color);
 }

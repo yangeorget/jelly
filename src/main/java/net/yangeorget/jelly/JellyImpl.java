@@ -13,6 +13,8 @@ public class JellyImpl
     private final int height;
     private char color;
 
+    // TODO: isFixed to avoid UpperCase conversions
+
     private JellyImpl(final int width, final int height, final char color) {
         this.width = width;
         this.height = height;
@@ -156,9 +158,9 @@ public class JellyImpl
     }
 
     @Override
-    public void updateBoard(final char[][] board) {
+    public void updateBoard(final Board board) {
         for (final byte position : positions) {
-            board[getI(position)][getJ(position)] = color;
+            board.set(getI(position), getJ(position), color);
         }
     }
 }

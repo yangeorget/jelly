@@ -14,5 +14,5 @@ public interface Jelly {
 
     char getColor();
 
-    void updateBoard(char[][] board);
+    void updateBoard(Board board);
 }

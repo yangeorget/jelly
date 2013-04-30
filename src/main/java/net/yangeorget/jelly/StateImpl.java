@@ -12,27 +12,19 @@ public class StateImpl
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
 
     private List<Jelly> jellies;
-    private final int width; // TODO : keep board for reuse
-    private final int height;
+    private final Board board;
 
     public StateImpl(final Board board) {
-        this(board.getHeight(), board.getWidth(), board.getJellies(), false);
+        this.board = board;
+        jellies = board.getJellies();
     }
 
-    public StateImpl(final StateImpl state) {
-        this(state.height, state.width, state.getJellies(), true);
-    }
-
-    private StateImpl(final int height, final int width, final List<Jelly> jellies, final boolean copy) {
-        this.height = height;
-        this.width = width;
-        if (copy) {
-            this.jellies = new ArrayList<>(jellies.size());
-            for (final Jelly jelly : jellies) {
-                this.jellies.add(jelly.clone());
-            }
-        } else {
-            this.jellies = jellies;
+    public StateImpl(final State state) {
+        board = state.getBoard();
+        jellies = new ArrayList<>(state.getJellies()
+                                       .size());
+        for (final Jelly jelly : state.getJellies()) {
+            jellies.add(jelly.clone());
         }
     }
 
@@ -109,11 +101,11 @@ public class StateImpl
 
     @Override
     public Board toBoard() {
-        final char[][] m = BoardImpl.getCharMatrix(height, width);
+        board.clear();
         for (final Jelly jelly : jellies) {
-            jelly.updateBoard(m);
+            jelly.updateBoard(board);
         }
-        return new BoardImpl(m);
+        return board;
     }
 
     @Override
@@ -123,5 +115,10 @@ public class StateImpl
             colors.add(BoardImpl.getColor(j.getColor()));
         }
         return colors.size();
+    }
+
+    @Override
+    public Board getBoard() {
+        return board;
     }
 }

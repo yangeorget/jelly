@@ -96,4 +96,13 @@ public class BoardImpl
     public static char getColor(final char color) {
         return Character.toUpperCase(color);
     }
+
+    public static char[][] getCharMatrix(final int height, final int width) {
+        final char[][] m = new char[height][width];
+        for (int i = 0; i < height; i++) {
+            Arrays.fill(m[i], ' ');
+        }
+        return m;
+    }
+
 }

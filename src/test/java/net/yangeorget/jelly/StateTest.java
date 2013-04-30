@@ -10,7 +10,7 @@ public class StateTest {
 
     @Test
     public void testClone() {
-        final State state = new StateImpl(Board.LEVEL_1);
+        final State state = new StateImpl(Board.LEVELS[0]);
         Assert.assertEquals(state.clone()
                                  .toBoard(), state.toBoard());
     }
@@ -22,7 +22,7 @@ public class StateTest {
 
     @Test
     public void testGetDistinctColorsNb2() {
-        Assert.assertEquals(new StateImpl(Board.LEVEL_1).getDistinctColorsNb(), 7);
+        Assert.assertEquals(new StateImpl(Board.LEVELS[0]).getDistinctColorsNb(), 7);
     }
 
     @Test

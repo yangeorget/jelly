@@ -8,32 +8,32 @@ public class BoardTest {
 
     @Test
     public void testHeight() {
-        Assert.assertEquals(Board.LEVEL_1.getHeight(), 8);
+        Assert.assertEquals(Board.LEVELS[0].getHeight(), 8);
     }
 
     @Test
     public void testWidth() {
-        Assert.assertEquals(Board.LEVEL_1.getWidth(), 12);
+        Assert.assertEquals(Board.LEVELS[0].getWidth(), 12);
     }
 
     @Test
     public void testGet() {
-        Assert.assertEquals(Board.LEVEL_1.get(0, 0), ' ');
-        Assert.assertEquals(Board.LEVEL_1.get(0, 1), ' ');
-        Assert.assertEquals(Board.LEVEL_1.get(1, 0), ' ');
-        Assert.assertEquals(Board.LEVEL_1.get(1, 1), ' ');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 0), '+');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 1), 'B');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 2), '-');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 3), '-');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 4), '-');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 5), 'G');
-        Assert.assertEquals(Board.LEVEL_1.get(7, 6), ' ');
+        Assert.assertEquals(Board.LEVELS[0].get(0, 0), ' ');
+        Assert.assertEquals(Board.LEVELS[0].get(0, 1), ' ');
+        Assert.assertEquals(Board.LEVELS[0].get(1, 0), ' ');
+        Assert.assertEquals(Board.LEVELS[0].get(1, 1), ' ');
+        Assert.assertEquals(Board.LEVELS[0].get(7, 0), '+');
+        Assert.assertEquals(Board.LEVELS[0].get(7, 1), 'B');
+        Assert.assertEquals(Board.LEVELS[0].get(7, 2), '-');
+        Assert.assertEquals(Board.LEVELS[0].get(7, 3), '-');
+        Assert.assertEquals(Board.LEVELS[0].get(7, 4), '-');
+        Assert.assertEquals(Board.LEVELS[0].get(7, 5), 'G');
+        Assert.assertEquals(Board.LEVELS[0].get(7, 6), ' ');
     }
 
     @Test
     public void testGetJellies() {
-        final List<Jelly> jellies = Board.LEVEL_1.getJellies();
+        final List<Jelly> jellies = Board.LEVELS[0].getJellies();
         Assert.assertEquals(jellies.size(), 10);
         Assert.assertEquals(jellies.get(0)
                                    .getColor(), 'P');

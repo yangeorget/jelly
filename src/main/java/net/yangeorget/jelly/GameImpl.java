@@ -2,7 +2,6 @@ package net.yangeorget.jelly;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,25 +31,18 @@ public class GameImpl
     @Override
     public boolean solve() {
         while (!states.isEmpty()) {
-            LOG.debug("before pop" + toString());
-            // dump();
+            LOG.debug(toString());
             final State state = states.removeFirst();
-            // LOG.debug("state=" + state.toString());
-            // LOG.debug("board=" + state.toBoard()
-            // .toString());
-            // LOG.debug("after pop" + toString());
-            // dump();
-            // LOG.debug("explored=" + explored.toString());
-            final List<Jelly> jellies = state.getJellies();
-            // LOG.debug("#jellies=" + jellies.size());
-            if (jellies.size() == distinctColorsNb) {
+            final int size = state.getJellies()
+                                  .size();
+            if (size == distinctColorsNb) {
                 LOG.debug(state.toBoard()
                                .toString());
                 return true;
             }
-            for (int j = 0; j < jellies.size(); j++) {
-                if (!jellies.get(j)
-                            .isFixed()) {
+            for (int j = 0; j < size; j++) {
+                if (!state.getJelly(j)
+                          .isFixed()) {
                     move(state, j, -1);
                     move(state, j, 1);
                 }
@@ -60,23 +52,12 @@ public class GameImpl
     }
 
     void move(final State state, final int j, final int move) {
-        // LOG.debug("state=" + state.toString() + ";j=" + j + ";move=" + move);
-        // LOG.debug("board=" + state.toBoard()
-        // .toString());
         final State newState = state.clone();
-        final Board board = newState.move(newState.getJelly(j), move);
-        // LOG.debug("newState=" + newState.toString());
-        // LOG.debug("board=" + newState.toBoard()
-        // .toString());
-        if (board != null) {
-            final String ser = board.toString();
-            // LOG.debug("ser=" + ser);
-            // LOG.debug("explored=" + explored.toString());
+        final String ser = newState.move(newState.getJelly(j), move);
+        if (ser != null) {
             if (!explored.contains(ser)) {
-                states.addLast(newState);
                 explored.add(ser);
-                // LOG.debug("states=" + states.toString());
-                // dump();
+                states.addLast(newState);
             }
         }
     }

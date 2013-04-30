@@ -1,7 +1,6 @@
 package net.yangeorget.jelly;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +12,7 @@ public class StateImpl
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
 
     private List<Jelly> jellies;
-    private final int width;
+    private final int width; // TODO : keep board for reuse
     private final int height;
 
     public StateImpl(final Board board) {
@@ -53,15 +52,14 @@ public class StateImpl
     }
 
     @Override
-    public Board move(final Jelly jelly, final int move) {
-        if (hMove(jelly, move)) {
-            gravity();
-            final Board board = toBoard();
-            jellies = board.getJellies();
-            return board;
-        } else {
+    public String move(final Jelly jelly, final int move) {
+        if (!hMove(jelly, move)) {
             return null;
         }
+        gravity();
+        final Board board = toBoard();
+        jellies = board.getJellies();
+        return board.toString();
     }
 
     boolean hMove(final Jelly jelly, final int move) {
@@ -79,10 +77,10 @@ public class StateImpl
     void gravity() {
         boolean gravity = false;
         for (int j = 0; j < getJellies().size(); j++) {
-            if (!getJelly(j).isFixed()) { // TODO: optimize replace by cannot move
-                final StateImpl state = clone();
-                if (state.gravity(state.getJelly(j))) {
-                    jellies = state.getJellies();
+            if (!getJelly(j).isFixed()) {
+                final StateImpl clone = clone();
+                if (clone.gravity(clone.getJelly(j))) {
+                    jellies = clone.getJellies();
                     gravity = true;
                 }
             }
@@ -111,10 +109,7 @@ public class StateImpl
 
     @Override
     public Board toBoard() {
-        final char[][] m = new char[height][width];
-        for (int i = 0; i < height; i++) {
-            Arrays.fill(m[i], ' ');
-        }
+        final char[][] m = BoardImpl.getCharMatrix(height, width);
         for (final Jelly jelly : jellies) {
             jelly.updateBoard(m);
         }

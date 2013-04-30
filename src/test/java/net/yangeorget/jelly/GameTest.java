@@ -52,31 +52,37 @@ public class GameTest {
 
     @Test
     public void testSolveLEVEL_1() {
-        Assert.assertTrue(new GameImpl(Board.LEVEL_1).solve());
+        Assert.assertTrue(new GameImpl(Board.LEVELS[0]).solve());
     }
 
     @Test
     public void testSolveLEVEL_2() {
-        Assert.assertTrue(new GameImpl(Board.LEVEL_2).solve());
+        Assert.assertTrue(new GameImpl(Board.LEVELS[1]).solve());
     }
 
     @Test
     public void testSolveLEVEL_3() {
-        Assert.assertTrue(new GameImpl(Board.LEVEL_3).solve());
+        Assert.assertTrue(new GameImpl(Board.LEVELS[2]).solve());
     }
 
     @Test
     public void testSolveLEVEL_4() {
-        Assert.assertTrue(new GameImpl(Board.LEVEL_4).solve());
+        Assert.assertTrue(new GameImpl(Board.LEVELS[3]).solve());
     }
 
     @Test
     public void testSolveLEVEL_5() {
-        Assert.assertTrue(new GameImpl(Board.LEVEL_5).solve());
+        Assert.assertTrue(new GameImpl(Board.LEVELS[4]).solve());
     }
 
     @Test
     public void testSolveLEVEL_6() {
-        Assert.assertTrue(new GameImpl(Board.LEVEL_6).solve());
+        Assert.assertTrue(new GameImpl(Board.LEVELS[5]).solve());
+    }
+
+    public static void main(final String[] args) {
+        for (final Board b : Board.LEVELS) {
+            new GameImpl(b).solve();
+        }
     }
 }

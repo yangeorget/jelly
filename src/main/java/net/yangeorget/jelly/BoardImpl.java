@@ -11,6 +11,8 @@ public class BoardImpl
     private final int height;
     private final int width;
     final boolean[][] visited;
+    private static final char MASK0 = (char) 223;
+    private static final char MASK1 = (char) 32;
 
     public BoardImpl(final char[][] matrix) {
         this.matrix = matrix;
@@ -94,12 +96,10 @@ public class BoardImpl
     }
 
     public static boolean isFixed(final char c) {
-        // return !Character.isUpperCase(c);
-        return (c & (1 << 5)) == 0;
+        return (c & MASK1) != 0;
     }
 
     public static char toFloating(final char c) {
-        // return Character.toUpperCase(c);
-        return (char) (c | (1 << 5));
+        return c < 'A' ? c : (char) (c & MASK0);
     }
 }

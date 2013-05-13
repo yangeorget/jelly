@@ -11,25 +11,29 @@ public class JellyImpl
     private byte[] positions;
     private final int width;
     private final int height;
-    private char color;
+    private final char color;
+    private boolean isFixed;
 
-    // TODO: isFixed to avoid UpperCase conversions
 
-    private JellyImpl(final int width, final int height, final char color) {
+    private JellyImpl(final int width, final int height, final char color, final boolean isFixed) {
         this.width = width;
         this.height = height;
         this.color = color;
+        this.isFixed = isFixed;
     }
 
-    public JellyImpl(final int width, final int height, final char color, final byte... positions) {
-        this(width, height, color);
+    public JellyImpl(final int width,
+                     final int height,
+                     final char color,
+                     final boolean isFixed,
+                     final byte... positions) {
+        this(width, height, color, isFixed);
         this.positions = new byte[positions.length];
         System.arraycopy(positions, 0, this.positions, 0, positions.length);
-        Arrays.sort(this.positions);
     }
 
     public JellyImpl(final Board board, final boolean[][] visited, final char color, final int i, final int j) {
-        this(board.getWidth(), board.getHeight(), color);
+        this(board.getWidth(), board.getHeight(), BoardImpl.toFloating(color), BoardImpl.isFixed(color));
         final int free = update(board, visited, 0, i, j);
         positions = new byte[free];
         System.arraycopy(BUFFER, 0, positions, 0, free);
@@ -37,8 +41,9 @@ public class JellyImpl
     }
 
     private int update(final Board board, final boolean[][] visited, int free, final int i, final int j) {
-        if (!visited[i][j] && board.cellHasColor(i, j, color)) {
-            color = board.cellIsFixed(i, j) ? board.get(i, j) : color;
+        final char c = board.get(i, j);
+        if (!visited[i][j] && BoardImpl.toFloating(c) == color) {
+            isFixed |= BoardImpl.isFixed(c);
             visited[i][j] = true;
             BUFFER[free++] = value(i, j);
             if (i > 0) {
@@ -59,12 +64,12 @@ public class JellyImpl
 
     @Override
     public boolean isFixed() {
-        return BoardImpl.isFixed(color);
+        return isFixed;
     }
 
     @Override
     public JellyImpl clone() {
-        return new JellyImpl(width, height, color, positions);
+        return new JellyImpl(width, height, color, isFixed, positions);
     }
 
     @Override
@@ -72,9 +77,10 @@ public class JellyImpl
         return "color=" + color + ";positions=" + Arrays.toString(positions);
     }
 
+    // TODO moveLeft, ...
     @Override
     public boolean hMove(final int move) {
-        if (isFixed()) {
+        if (isFixed) {
             return false;
         }
         for (int i = positions.length; --i >= 0;) {
@@ -87,7 +93,7 @@ public class JellyImpl
 
     @Override
     public boolean vMove(final int move) {
-        if (isFixed()) {
+        if (isFixed) {
             return false;
         }
         for (int i = positions.length; --i >= 0;) {

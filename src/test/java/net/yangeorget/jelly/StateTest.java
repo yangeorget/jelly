@@ -59,12 +59,12 @@ public class StateTest {
 
     @Test
     public void testMoveKO3() {
-        testMoveKO(new BoardImpl(" BBw "), 0, 1);
+        testMoveKO(new BoardImpl(" BB* "), 0, 1);
     }
 
     @Test
     public void testMoveKO4() {
-        testMoveKO(new BoardImpl(" BGw "), 0, 1);
+        testMoveKO(new BoardImpl(" BG* "), 0, 1);
     }
 
     private void testMoveKO(final Board input, final int index, final int move) {
@@ -91,7 +91,7 @@ public class StateTest {
 
     @Test
     public void testMoveOK4() {
-        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     w "), 2, 1, new BoardImpl("       ", " YYGGG ", " GGG wB"));
+        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     * "), 2, 1, new BoardImpl("       ", " YYGGG ", " GGG *B"));
     }
 
     private void testMoveOK(final Board input, final int index, final int move, final Board output) {

@@ -112,7 +112,7 @@ public class StateImpl
     public int getDistinctColorsNb() {
         final Set<Character> colors = new HashSet<>();
         for (final Jelly j : getJellies()) {
-            colors.add(BoardImpl.getColor(j.getColor()));
+            colors.add(BoardImpl.toFloating(j.getColor()));
         }
         return colors.size();
     }

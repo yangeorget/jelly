@@ -9,9 +9,9 @@ public interface Board {
                                      "            ",
                                      "            ",
                                      "       P    ",
-                                     "      **    ",
+                                     "      00    ",
                                      "  G     P B ",
-                                     "+B---G @@@@@"),
+                                     "1B222G 33333"),
 
                       new BoardImpl("            ",
                                     "            ",
@@ -20,40 +20,40 @@ public interface Board {
                                     "            ",
                                     "     Y   Y  ",
                                     "   R R   R  ",
-                                    "&&&& + = ///"),
+                                    "0000 1 2 333"),
 
                       new BoardImpl("            ",
                                     "            ",
                                     "            ",
                                     "            ",
-                                    "   BY  $ Y  ",
-                                    "== +++R$$$  ",
+                                    "   BY  0 Y  ",
+                                    "11 222R000  ",
                                     "      B     ",
-                                    "&& ###R@@@@@"),
+                                    "33 444R55555"),
                       new BoardImpl("            ",
                                     "       R    ",
                                     "       B    ",
-                                    "       _    ",
+                                    "       0    ",
                                     " B R        ",
                                     " B R      B ",
-                                    "&& &      ##",
-                                    "&&&& #######"),
+                                    "11 1      22",
+                                    "1111 2222222"),
                       new BoardImpl("            ",
                                     "            ",
                                     "            ",
                                     "RG  GG      ",
-                                    "++ ==== --  ",
+                                    "00 1111 22  ",
                                     "RG          ",
-                                    "&&&&  ##   (",
-                                    "&&&&& ##  (("),
-                      new BoardImpl("@@@@@@      ",
-                                    "@@@@@@ G    ",
-                                    "       ??   ",
+                                    "3333  44   5",
+                                    "33333 44  55"),
+                      new BoardImpl("000000      ",
+                                    "000000 G    ",
+                                    "       11   ",
                                     " R   B      ",
-                                    " + === - G  ",
-                                    "         & B",
-                                    "       R &&&",
-                                    "   &&&&&&&&&") };
+                                    " 2 333 4 G  ",
+                                    "         5 B",
+                                    "       R 555",
+                                    "   555555555") };
 
     int MAX_WIDTH = 16;
     int MAX_HEIGHT = 16;
@@ -65,10 +65,6 @@ public interface Board {
     int getWidth();
 
     List<Jelly> getJellies();
-
-    boolean cellIsFixed(int i, int j);
-
-    boolean cellHasColor(int i, int j, char c);
 
     void clear();
 

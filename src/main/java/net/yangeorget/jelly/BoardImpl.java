@@ -72,30 +72,13 @@ public class BoardImpl
         final List<Jelly> jellies = new LinkedList<>();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                if (!visited[i][j] && !Character.isWhitespace((matrix[i][j]))) {
-                    jellies.add(new JellyImpl(this, visited, matrix[i][j], i, j));
+                final char color = matrix[i][j];
+                if (color != 0 && color != ' ' && !visited[i][j]) {
+                    jellies.add(new JellyImpl(this, visited, color, i, j));
                 }
             }
         }
         return jellies;
-    }
-
-    @Override
-    public boolean cellIsFixed(final int i, final int j) {
-        return isFixed(matrix[i][j]);
-    }
-
-    public static boolean isFixed(final char color) {
-        return !Character.isUpperCase(color);
-    }
-
-    @Override
-    public boolean cellHasColor(final int i, final int j, final char color) {
-        return getColor(matrix[i][j]) == getColor(color);
-    }
-
-    public static char getColor(final char color) {
-        return Character.toUpperCase(color);
     }
 
     @Override
@@ -108,5 +91,15 @@ public class BoardImpl
     @Override
     public void set(final byte i, final byte j, final char color) {
         matrix[i][j] = color;
+    }
+
+    public static boolean isFixed(final char c) {
+        // return !Character.isUpperCase(c);
+        return (c & (1 << 5)) == 0;
+    }
+
+    public static char toFloating(final char c) {
+        // return Character.toUpperCase(c);
+        return (char) (c | (1 << 5));
     }
 }

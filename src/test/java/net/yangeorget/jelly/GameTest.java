@@ -35,19 +35,19 @@ public class GameTest {
 
     @Test
     public void testSolve6() {
-        Assert.assertTrue(new GameImpl(new BoardImpl(" R B R ", " ***** ", "       ")).solve());
+        Assert.assertTrue(new GameImpl(new BoardImpl(" R B R ", " 00000 ", "       ")).solve());
     }
 
 
     @Test
     public void testSolve7() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("  G       B ", "#B@@@G *****")).solve());
+        Assert.assertTrue(new GameImpl(new BoardImpl("  G       B ", "0B111G 22222")).solve());
     }
 
 
     @Test
     public void testSolve8() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("       P    ", "      **    ", "        P B ", "+B---GG@@@@@")).solve());
+        Assert.assertTrue(new GameImpl(new BoardImpl("       P    ", "      00    ", "        P B ", "1B222GG33333")).solve());
     }
 
     @Test

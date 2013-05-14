@@ -2,9 +2,11 @@ package net.yangeorget.jelly;
 
 
 public interface Jelly {
-    boolean hMove(int move);
+    boolean moveLeft();
 
-    boolean vMove(int move);
+    boolean moveRight();
+
+    boolean moveDown();
 
     boolean overlaps(Jelly j);
 

@@ -68,9 +68,7 @@ public class StateTest {
     }
 
     private void testMoveKO(final Board input, final int index, final int move) {
-        final State state = new StateImpl(input);
-        final Jelly[] stateJellies = state.getJellies();
-        Assert.assertNull(state.move(stateJellies[index], move));
+        Assert.assertNull(new StateImpl(input).move(index, move));
     }
 
     @Test
@@ -95,8 +93,7 @@ public class StateTest {
 
     private void testMoveOK(final Board input, final int index, final int move, final Board output) {
         final State state = new StateImpl(input);
-        final Jelly[] stateJellies = state.getJellies();
-        state.move(stateJellies[index], move);
+        state.move(index, move);
         Assert.assertEquals(state.toBoard(), output);
     }
 }

@@ -78,29 +78,41 @@ public class JellyImpl
         return "color=" + color + ";positions=" + Arrays.toString(positions);
     }
 
-    // TODO moveLeft, ...
     @Override
-    public boolean hMove(final int move) {
+    public boolean moveLeft() {
         if (isFixed) {
             return false;
         }
-        for (int i = positions.length; --i >= 0;) {
-            if (!hMove(i, move)) {
+        for (int index = 0; index < positions.length; index++) {
+            if (getJ(positions[index]) == 0) {
                 return false;
             }
+            positions[index]--;
         }
         return true;
     }
 
     @Override
-    public boolean vMove(final int move) {
+    public boolean moveRight() {
         if (isFixed) {
             return false;
         }
-        for (int i = positions.length; --i >= 0;) {
-            if (!vMove(i, move)) {
+        for (int index = positions.length; --index >= 0;) {
+            if (getJ(positions[index]) == width - 1) {
                 return false;
             }
+            positions[index]++;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean moveDown() {
+        if (isFixed || getI(positions[positions.length - 1]) == height - 1) {
+            return false;
+        }
+        for (int index = positions.length; --index >= 0;) {
+            positions[index] += 16;
         }
         return true;
     }
@@ -117,25 +129,6 @@ public class JellyImpl
         return (byte) ((i << 4) + j);
     }
 
-    private boolean hMove(final int index, final int move) {
-        final byte position = positions[index];
-        final int j = getJ(position) + move;
-        if (j < 0 || j >= width) {
-            return false;
-        }
-        positions[index] = value(getI(position), j);
-        return true;
-    }
-
-    private boolean vMove(final int index, final int move) {
-        final byte position = positions[index];
-        final int i = getI(position) + move;
-        if (i < 0 || i >= height) {
-            return false;
-        }
-        positions[index] = value(i, getJ(position));
-        return true;
-    }
 
     @Override
     public boolean overlaps(final Jelly jelly) {

@@ -52,8 +52,7 @@ public class GameImpl
 
     void move(final State state, final int j, final int move) {
         final State newState = state.clone();
-        final Jelly[] newStateJellies = newState.getJellies();
-        final String ser = newState.move(newStateJellies[j], move);
+        final String ser = newState.move(j, move);
         if (ser != null) {
             if (!explored.contains(ser)) {
                 explored.add(ser);

@@ -12,5 +12,5 @@ public interface State {
 
     int getDistinctColorsNb();
 
-    String move(final Jelly jelly, final int move);
+    String move(final int j, final int move);
 }

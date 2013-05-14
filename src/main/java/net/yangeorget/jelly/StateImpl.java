@@ -38,8 +38,8 @@ public class StateImpl
     }
 
     @Override
-    public String move(final Jelly jelly, final int move) {
-        if (!hMove(jelly, move)) {
+    public String move(final int j, final int move) {
+        if (!hMove(jellies[j], move)) {
             return null;
         }
         gravity();
@@ -49,8 +49,15 @@ public class StateImpl
     }
 
     boolean hMove(final Jelly jelly, final int move) {
-        if (!jelly.hMove(move)) {
-            return false;
+        // TODO: fix tnis
+        if (move == 1) {
+            if (!jelly.moveRight()) {
+                return false;
+            }
+        } else {
+            if (!jelly.moveLeft()) {
+                return false;
+            }
         }
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !hMove(j, move)) {
@@ -78,7 +85,7 @@ public class StateImpl
     }
 
     boolean gravity(final Jelly jelly) {
-        if (!jelly.vMove(1)) {
+        if (!jelly.moveDown()) {
             return false;
         }
         for (final Jelly j : jellies) {

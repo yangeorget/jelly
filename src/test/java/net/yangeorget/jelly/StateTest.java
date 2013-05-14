@@ -49,51 +49,51 @@ public class StateTest {
 
     @Test
     public void testMoveKO1() {
-        testMoveKO(new BoardImpl(" BBBB"), 0, 1);
+        testMoveKO(new BoardImpl(" BBBB"), 0);
     }
 
     @Test
     public void testMoveKO2() {
-        testMoveKO(new BoardImpl(" BBBG"), 0, 1);
+        testMoveKO(new BoardImpl(" BBBG"), 0);
     }
 
     @Test
     public void testMoveKO3() {
-        testMoveKO(new BoardImpl(" BB* "), 0, 1);
+        testMoveKO(new BoardImpl(" BB* "), 0);
     }
 
     @Test
     public void testMoveKO4() {
-        testMoveKO(new BoardImpl(" BG* "), 0, 1);
+        testMoveKO(new BoardImpl(" BG* "), 0);
     }
 
-    private void testMoveKO(final Board input, final int index, final int move) {
-        Assert.assertNull(new StateImpl(input).move(index, move));
+    private void testMoveKO(final Board input, final int index) {
+        Assert.assertNull(new StateImpl(input).moveRight(index));
     }
 
     @Test
     public void testMoveOK1() {
-        testMoveOK(new BoardImpl(" BB  "), 0, 1, new BoardImpl("  BB "));
+        testMoveOK(new BoardImpl(" BB  "), 0, new BoardImpl("  BB "));
     }
 
     @Test
     public void testMoveOK2() {
-        testMoveOK(new BoardImpl(" BB  ", " GBB "), 1, 1, new BoardImpl("  BB ", "  GBB"));
+        testMoveOK(new BoardImpl(" BB  ", " GBB "), 1, new BoardImpl("  BB ", "  GBB"));
     }
 
     @Test
     public void testMoveOK3() {
-        testMoveOK(new BoardImpl(" BBYRR ", " GBB R "), 0, 1, new BoardImpl("  BBYRR", " G BB R"));
+        testMoveOK(new BoardImpl(" BBYRR ", " GBB R "), 0, new BoardImpl("  BBYRR", " G BB R"));
     }
 
     @Test
     public void testMoveOK4() {
-        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     * "), 2, 1, new BoardImpl("       ", " YYGGG ", " GGG *B"));
+        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     * "), 2, new BoardImpl("       ", " YYGGG ", " GGG *B"));
     }
 
-    private void testMoveOK(final Board input, final int index, final int move, final Board output) {
+    private void testMoveOK(final Board input, final int index, final Board output) {
         final State state = new StateImpl(input);
-        state.move(index, move);
+        state.moveRight(index);
         Assert.assertEquals(state.toBoard(), output);
     }
 }

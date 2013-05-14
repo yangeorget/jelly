@@ -42,22 +42,27 @@ public class GameImpl
             }
             for (int j = 0; j < size; j++) {
                 if (!jellies[j].isFixed()) {
-                    move(state, j, -1);
-                    move(state, j, 1);
+                    moveLeft(state.clone(), j);
+                    moveRight(state.clone(), j);
                 }
             }
         }
         return false;
     }
 
-    void move(final State state, final int j, final int move) {
-        final State newState = state.clone();
-        final String ser = newState.move(j, move);
-        if (ser != null) {
-            if (!explored.contains(ser)) {
-                explored.add(ser);
-                states.addLast(newState);
-            }
+    void moveLeft(final State state, final int j) {
+        final String ser = state.moveLeft(j);
+        record(state, ser);
+    }
+
+    void moveRight(final State state, final int j) {
+        final String ser = state.moveRight(j);
+        record(state, ser);
+    }
+
+    void record(final State state, final String ser) {
+        if (ser != null && explored.add(ser)) {
+            states.addLast(state);
         }
     }
 

@@ -38,62 +38,68 @@ public class StateImpl
     }
 
     @Override
-    public String move(final int j, final int move) {
-        if (!hMove(jellies[j], move)) {
-            return null;
-        }
-        gravity();
-        final Board board = toBoard();
-        jellies = board.getJellies();
-        return board.toString();
+    public String moveLeft(final int j) {
+        return moveLeft(jellies[j]) ? gravity() : null;
     }
 
-    boolean hMove(final Jelly jelly, final int move) {
-        // TODO: fix tnis
-        if (move == 1) {
-            if (!jelly.moveRight()) {
-                return false;
-            }
-        } else {
-            if (!jelly.moveLeft()) {
-                return false;
-            }
+    @Override
+    public String moveRight(final int j) {
+        return moveRight(jellies[j]) ? gravity() : null;
+    }
+
+    boolean moveLeft(final Jelly jelly) {
+        if (!jelly.moveLeft()) {
+            return false;
         }
         for (final Jelly j : jellies) {
-            if (!jelly.equals(j) && jelly.overlaps(j) && !hMove(j, move)) {
+            if (!jelly.equals(j) && jelly.overlaps(j) && !moveLeft(j)) {
                 return false;
             }
         }
         return true;
     }
 
-    void gravity() {
-        boolean gravity = false;
-        for (int j = 0; j < jellies.length; j++) {
-            if (!jellies[j].isFixed()) {
-                final StateImpl clone = clone();
-                final Jelly[] cloneJellies = clone.getJellies();
-                if (clone.gravity(cloneJellies[j])) {
-                    jellies = cloneJellies;
-                    gravity = true;
-                }
+    boolean moveRight(final Jelly jelly) {
+        if (!jelly.moveRight()) {
+            return false;
+        }
+        for (final Jelly j : jellies) {
+            if (!jelly.equals(j) && jelly.overlaps(j) && !moveRight(j)) {
+                return false;
             }
         }
-        if (gravity) {
-            gravity();
-        }
+        return true;
     }
 
-    boolean gravity(final Jelly jelly) {
+    boolean moveDown(final Jelly jelly) {
         if (!jelly.moveDown()) {
             return false;
         }
         for (final Jelly j : jellies) {
-            if (!jelly.equals(j) && jelly.overlaps(j) && !gravity(j)) {
+            if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j)) {
                 return false;
             }
         }
         return true;
+    }
+
+    String gravity() { // TODO: use a cache to check if moves are possible
+        for (boolean gravity = true; gravity;) {
+            gravity = false;
+            for (int j = 0; j < jellies.length; j++) { // TODO : DFS
+                if (!jellies[j].isFixed()) {
+                    final StateImpl clone = clone();
+                    final Jelly[] cloneJellies = clone.getJellies();
+                    if (clone.moveDown(cloneJellies[j])) {
+                        jellies = cloneJellies;
+                        gravity = true;
+                    }
+                }
+            }
+        }
+        final Board board = toBoard();
+        jellies = board.getJellies();
+        return board.toString();
     }
 
     @Override

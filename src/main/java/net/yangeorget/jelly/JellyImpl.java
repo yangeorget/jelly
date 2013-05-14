@@ -139,15 +139,17 @@ public class JellyImpl
         int index = 0;
         int jIndex = 0;
         while (true) {
-            while (positions[index] < jPositions[jIndex]) {
+            final byte jPosition = jPositions[jIndex];
+            while (positions[index] < jPosition) {
                 if (++index == size) {
                     return false;
                 }
             }
-            if (positions[index] == jPositions[jIndex]) {
+            final byte position = positions[index];
+            if (position == jPosition) {
                 return true;
             }
-            while (positions[index] > jPositions[jIndex]) {
+            while (position > jPositions[jIndex]) {
                 if (++jIndex == jSize) {
                     return false;
                 }

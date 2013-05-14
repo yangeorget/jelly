@@ -1,15 +1,12 @@
 package net.yangeorget.jelly;
 
-import java.util.List;
 
 public interface State {
     State clone();
 
-    List<Jelly> getJellies();
+    Jelly[] getJellies();
 
     Board getBoard();
-
-    Jelly getJelly(int index);
 
     Board toBoard();
 

@@ -1,6 +1,5 @@
 package net.yangeorget.jelly;
 
-import java.util.List;
 
 
 public interface Board {
@@ -64,7 +63,7 @@ public interface Board {
 
     int getWidth();
 
-    List<Jelly> getJellies();
+    Jelly[] getJellies();
 
     void clear();
 

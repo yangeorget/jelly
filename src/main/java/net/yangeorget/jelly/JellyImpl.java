@@ -28,8 +28,9 @@ public class JellyImpl
                      final boolean isFixed,
                      final byte... positions) {
         this(width, height, color, isFixed);
-        this.positions = new byte[positions.length];
-        System.arraycopy(positions, 0, this.positions, 0, positions.length);
+        final int size = positions.length;
+        this.positions = new byte[size];
+        System.arraycopy(positions, 0, this.positions, 0, size);
     }
 
     public JellyImpl(final Board board, final boolean[][] visited, final char color, final int i, final int j) {
@@ -49,13 +50,13 @@ public class JellyImpl
             if (i > 0) {
                 free = update(board, visited, free, i - 1, j);
             }
-            if (i < board.getHeight() - 1) {
+            if (i < height - 1) {
                 free = update(board, visited, free, i + 1, j);
             }
             if (j > 0) {
                 free = update(board, visited, free, i, j - 1);
             }
-            if (j < board.getWidth() - 1) {
+            if (j < width - 1) {
                 free = update(board, visited, free, i, j + 1);
             }
         }
@@ -104,15 +105,15 @@ public class JellyImpl
         return true;
     }
 
-    static byte getI(final byte pos) {
+    final static byte getI(final byte pos) {
         return (byte) (pos >> 4);
     }
 
-    static byte getJ(final byte pos) {
+    final static byte getJ(final byte pos) {
         return (byte) (pos & 0xF);
     }
 
-    static byte value(final int i, final int j) {
+    final static byte value(final int i, final int j) {
         return (byte) ((i << 4) + j);
     }
 
@@ -139,19 +140,22 @@ public class JellyImpl
     @Override
     public boolean overlaps(final Jelly jelly) {
         final JellyImpl j = (JellyImpl) jelly;
+        final byte[] jPositions = j.positions;
+        final int size = positions.length;
+        final int jSize = jPositions.length;
         int index = 0;
         int jIndex = 0;
         while (true) {
-            while (positions[index] < j.positions[jIndex]) {
-                if (++index == positions.length) {
+            while (positions[index] < jPositions[jIndex]) {
+                if (++index == size) {
                     return false;
                 }
             }
-            if (positions[index] == j.positions[jIndex]) {
+            if (positions[index] == jPositions[jIndex]) {
                 return true;
             }
-            while (positions[index] > j.positions[jIndex]) {
-                if (++jIndex == j.positions.length) {
+            while (positions[index] > jPositions[jIndex]) {
+                if (++jIndex == jSize) {
                     return false;
                 }
             }

@@ -33,16 +33,15 @@ public class GameImpl
         while (!states.isEmpty()) {
             // LOG.debug(toString());
             final State state = states.removeFirst();
-            final int size = state.getJellies()
-                                  .size();
+            final Jelly[] jellies = state.getJellies();
+            final int size = jellies.length;
             if (size == distinctColorsNb) {
                 LOG.debug(state.toBoard()
                                .toString());
                 return true;
             }
             for (int j = 0; j < size; j++) {
-                if (!state.getJelly(j)
-                          .isFixed()) {
+                if (!jellies[j].isFixed()) {
                     move(state, j, -1);
                     move(state, j, 1);
                 }
@@ -53,7 +52,8 @@ public class GameImpl
 
     void move(final State state, final int j, final int move) {
         final State newState = state.clone();
-        final String ser = newState.move(newState.getJelly(j), move);
+        final Jelly[] newStateJellies = newState.getJellies();
+        final String ser = newState.move(newStateJellies[j], move);
         if (ser != null) {
             if (!explored.contains(ser)) {
                 explored.add(ser);

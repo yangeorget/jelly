@@ -1,8 +1,6 @@
 package net.yangeorget.jelly;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class BoardImpl
@@ -10,16 +8,12 @@ public class BoardImpl
     private final char[][] matrix;
     private final int height;
     private final int width;
-    final boolean[][] visited;
+
+    private final boolean[][] visited;
+    private final Jelly[] jelliesBuffer;
+
     private static final char MASK0 = (char) 223;
     private static final char MASK1 = (char) 32;
-
-    public BoardImpl(final char[][] matrix) {
-        this.matrix = matrix;
-        height = matrix.length;
-        width = matrix[0].length;
-        visited = new boolean[height][width];
-    }
 
     public BoardImpl(final String... strings) {
         height = strings.length;
@@ -29,6 +23,7 @@ public class BoardImpl
             matrix[i] = strings[i].toCharArray();
         }
         visited = new boolean[height][width];
+        jelliesBuffer = new Jelly[height * width];
     }
 
     @Override
@@ -67,19 +62,21 @@ public class BoardImpl
     }
 
     @Override
-    public List<Jelly> getJellies() {
+    public Jelly[] getJellies() {
         for (int i = 0; i < height; i++) {
             Arrays.fill(visited[i], false);
         }
-        final List<Jelly> jellies = new LinkedList<>();
+        int nb = 0;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 final char color = matrix[i][j];
                 if (color != 0 && color != ' ' && !visited[i][j]) {
-                    jellies.add(new JellyImpl(this, visited, color, i, j));
+                    jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
                 }
             }
         }
+        final Jelly[] jellies = new Jelly[nb];
+        System.arraycopy(jelliesBuffer, 0, jellies, 0, nb);
         return jellies;
     }
 

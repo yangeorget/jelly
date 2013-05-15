@@ -57,6 +57,11 @@ public class BoardImpl
     }
 
     @Override
+    public void set(final int i, final int j, final char color) {
+        matrix[i][j] = color;
+    }
+
+    @Override
     public boolean equals(final Object o) {
         return Arrays.deepEquals(matrix, ((BoardImpl) o).matrix);
     }
@@ -67,8 +72,8 @@ public class BoardImpl
             Arrays.fill(visited[i], false);
         }
         int nb = 0;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (byte i = 0; i < height; i++) {
+            for (byte j = 0; j < width; j++) {
                 final char color = matrix[i][j];
                 if (color != 0 && color != ' ' && !visited[i][j]) {
                     jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
@@ -85,11 +90,6 @@ public class BoardImpl
         for (int i = 0; i < height; i++) {
             Arrays.fill(matrix[i], ' ');
         }
-    }
-
-    @Override
-    public void set(final byte i, final byte j, final char color) {
-        matrix[i][j] = color;
     }
 
     public static boolean isFixed(final char c) {

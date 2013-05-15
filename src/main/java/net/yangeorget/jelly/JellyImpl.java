@@ -9,32 +9,28 @@ public class JellyImpl
         implements Jelly {
     private static byte[] BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
     private byte[] positions;
-    private final int width;
-    private final int height;
+    private final byte heightWidth;
     private final char color;
     private boolean isFixed;
 
+    // TODO: bounding box
+    // TODO: may move
 
-    private JellyImpl(final int width, final int height, final char color, final boolean isFixed) {
-        this.width = width;
-        this.height = height;
+    private JellyImpl(final byte heightWidth, final char color, final boolean isFixed) {
+        this.heightWidth = heightWidth;
         this.color = color;
         this.isFixed = isFixed;
     }
 
-    public JellyImpl(final int width,
-                     final int height,
-                     final char color,
-                     final boolean isFixed,
-                     final byte... positions) {
-        this(width, height, color, isFixed);
+    public JellyImpl(final byte heightWidth, final char color, final boolean isFixed, final byte... positions) {
+        this(heightWidth, color, isFixed);
         final int size = positions.length;
         this.positions = new byte[size];
         System.arraycopy(positions, 0, this.positions, 0, size);
     }
 
     public JellyImpl(final Board board, final boolean[][] visited, final char color, final int i, final int j) {
-        this(board.getWidth(), board.getHeight(), BoardImpl.toFloating(color), BoardImpl.isFixed(color));
+        this(value(board.getHeight(), board.getWidth()), BoardImpl.toFloating(color), BoardImpl.isFixed(color));
         final int free = update(board, visited, 0, i, j);
         positions = new byte[free];
         System.arraycopy(BUFFER, 0, positions, 0, free);
@@ -50,13 +46,13 @@ public class JellyImpl
             if (i > 0) {
                 free = update(board, visited, free, i - 1, j);
             }
-            if (i < height - 1) {
+            if (i < getHeight() - 1) {
                 free = update(board, visited, free, i + 1, j);
             }
             if (j > 0) {
                 free = update(board, visited, free, i, j - 1);
             }
-            if (j < width - 1) {
+            if (j < getWidth() - 1) {
                 free = update(board, visited, free, i, j + 1);
             }
         }
@@ -70,7 +66,7 @@ public class JellyImpl
 
     @Override
     public JellyImpl clone() {
-        return new JellyImpl(width, height, color, isFixed, positions);
+        return new JellyImpl(heightWidth, color, isFixed, positions);
     }
 
     @Override
@@ -98,7 +94,7 @@ public class JellyImpl
             return false;
         }
         for (int index = positions.length; --index >= 0;) {
-            if (getJ(positions[index]) == width - 1) {
+            if (getJ(positions[index]) == getWidth() - 1) {
                 return false;
             }
             positions[index]++;
@@ -108,7 +104,7 @@ public class JellyImpl
 
     @Override
     public boolean moveDown() {
-        if (isFixed || getI(positions[positions.length - 1]) == height - 1) {
+        if (isFixed || getI(positions[positions.length - 1]) == getHeight() - 1) {
             return false;
         }
         for (int index = positions.length; --index >= 0;) {
@@ -117,18 +113,27 @@ public class JellyImpl
         return true;
     }
 
-    final static byte getI(final byte pos) {
-        return (byte) (pos >> 4);
+    @Override
+    public int getWidth() {
+        return getJ(heightWidth);
     }
 
-    final static byte getJ(final byte pos) {
-        return (byte) (pos & 0xF);
+    @Override
+    public int getHeight() {
+        return getI(heightWidth);
+    }
+
+    final static int getI(final byte pos) {
+        return (pos >> 4) & 0xF;
+    }
+
+    final static int getJ(final byte pos) {
+        return pos & 0xF;
     }
 
     final static byte value(final int i, final int j) {
-        return (byte) ((i << 4) + j);
+        return (byte) ((i << 4) | j);
     }
-
 
     @Override
     public boolean overlaps(final Jelly jelly) {

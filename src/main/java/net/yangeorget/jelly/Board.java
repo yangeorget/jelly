@@ -1,7 +1,6 @@
 package net.yangeorget.jelly;
 
 
-
 public interface Board {
     Board[] LEVELS = { new BoardImpl("            ",
                                      "            ",
@@ -52,12 +51,32 @@ public interface Board {
                                     " 2 333 4 G  ",
                                     "         5 B",
                                     "       R 555",
-                                    "   555555555") };
+                                    "   555555555"),
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      new BoardImpl("000NNN111GB ",
+                                    "000N     BG ",
+                                    "000N    DD22",
+                                    "000NNN222222",
+                                    " FFF  222222",
+                                    "333     22g2",
+                                    "333   G    b",
+                                    "333   4     ") };
 
     int MAX_WIDTH = 16;
     int MAX_HEIGHT = 16;
 
     char get(int i, int j);
+
+    void set(int i, int j, char color);
 
     int getHeight();
 
@@ -67,5 +86,4 @@ public interface Board {
 
     void clear();
 
-    void set(byte i, byte j, char color);
 }

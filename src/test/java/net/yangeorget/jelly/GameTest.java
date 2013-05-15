@@ -80,9 +80,16 @@ public class GameTest {
         Assert.assertTrue(new GameImpl(Board.LEVELS[5]).solve());
     }
 
+    // @Test
+    public void testSolveLEVEL_17() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[16]).solve());
+    }
+
     public static void main(final String[] args) {
         for (final Board b : Board.LEVELS) {
-            new GameImpl(b).solve();
+            if (b != null) {
+                new GameImpl(b).solve();
+            }
         }
     }
 }

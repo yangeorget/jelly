@@ -86,7 +86,7 @@ public class StateImpl
     String gravity() { // TODO: use a cache to check if moves are possible
         for (boolean gravity = true; gravity;) {
             gravity = false;
-            for (int j = 0; j < jellies.length; j++) { // TODO : DFS
+            for (int j = 0; j < jellies.length; j++) {
                 if (!jellies[j].isFixed()) {
                     final StateImpl clone = clone();
                     final Jelly[] cloneJellies = clone.getJellies();
@@ -97,7 +97,7 @@ public class StateImpl
                 }
             }
         }
-        final Board board = toBoard();
+        updateBoard();
         jellies = board.getJellies();
         return board.toString();
     }
@@ -107,13 +107,11 @@ public class StateImpl
         return "jellies=" + jellies;
     }
 
-    @Override
-    public Board toBoard() {
+    private void updateBoard() {
         board.clear();
         for (final Jelly jelly : jellies) {
             jelly.updateBoard(board);
         }
-        return board;
     }
 
     @Override

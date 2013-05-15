@@ -8,8 +8,6 @@ public interface State {
 
     Board getBoard();
 
-    Board toBoard();
-
     int getDistinctColorsNb();
 
     String moveLeft(final int j);

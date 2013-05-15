@@ -17,4 +17,8 @@ public interface Jelly {
     char getColor();
 
     void updateBoard(Board board);
+
+    int getHeight();
+
+    int getWidth();
 }

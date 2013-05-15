@@ -9,13 +9,6 @@ public class StateTest {
     private static final Logger LOG = LoggerFactory.getLogger(StateTest.class);
 
     @Test
-    public void testClone() {
-        final State state = new StateImpl(Board.LEVELS[0]);
-        Assert.assertEquals(state.clone()
-                                 .toBoard(), state.toBoard());
-    }
-
-    @Test
     public void testGetDistinctColorsNb1() {
         Assert.assertEquals(new StateImpl(new BoardImpl("  R ")).getDistinctColorsNb(), 1);
     }
@@ -44,7 +37,7 @@ public class StateTest {
     private void testGravity(final Board input, final Board output) {
         final StateImpl state = new StateImpl(input);
         state.gravity();
-        Assert.assertEquals(state.toBoard(), output);
+        Assert.assertEquals(state.getBoard(), output);
     }
 
     @Test
@@ -94,6 +87,6 @@ public class StateTest {
     private void testMoveOK(final Board input, final int index, final Board output) {
         final State state = new StateImpl(input);
         state.moveRight(index);
-        Assert.assertEquals(state.toBoard(), output);
+        Assert.assertEquals(state.getBoard(), output);
     }
 }

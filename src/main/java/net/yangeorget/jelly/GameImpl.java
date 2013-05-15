@@ -36,7 +36,7 @@ public class GameImpl
             final Jelly[] jellies = state.getJellies();
             final int size = jellies.length;
             if (size == distinctColorsNb) {
-                LOG.debug(state.toBoard()
+                LOG.debug(state.getBoard()
                                .toString());
                 return true;
             }

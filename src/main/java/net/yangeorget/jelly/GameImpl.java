@@ -41,29 +41,30 @@ public class GameImpl
                 return true;
             }
             for (int j = 0; j < size; j++) {
-                if (!jellies[j].isFixed()) {
-                    moveLeft(state.clone(), j);
-                    moveRight(state.clone(), j);
+                final Jelly jelly = jellies[j];
+                if (jelly.mayMoveLeft()) {
+                    final State clone = state.clone();
+                    if (clone.moveLeft(j)) {
+                        clone.gravity();
+                        if (explored.add(clone.getBoard()
+                                              .toString())) {
+                            states.addLast(clone);
+                        }
+                    }
+                }
+                if (jelly.mayMoveRight()) {
+                    final State clone = state.clone();
+                    if (clone.moveRight(j)) {
+                        clone.gravity();
+                        if (explored.add(clone.getBoard()
+                                              .toString())) {
+                            states.addLast(clone);
+                        }
+                    }
                 }
             }
         }
         return false;
-    }
-
-    void moveLeft(final State state, final int j) {
-        final String ser = state.moveLeft(j);
-        record(state, ser);
-    }
-
-    void moveRight(final State state, final int j) {
-        final String ser = state.moveRight(j);
-        record(state, ser);
-    }
-
-    void record(final State state, final String ser) {
-        if (ser != null && explored.add(ser)) {
-            states.addLast(state);
-        }
     }
 
     @Override

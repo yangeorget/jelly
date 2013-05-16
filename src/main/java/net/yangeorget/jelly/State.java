@@ -10,7 +10,9 @@ public interface State {
 
     int getDistinctColorsNb();
 
-    String moveLeft(final int j);
+    boolean moveLeft(final int j);
 
-    String moveRight(final int j);
+    boolean moveRight(final int j);
+
+    void gravity();
 }

@@ -2,11 +2,17 @@ package net.yangeorget.jelly;
 
 
 public interface Jelly {
-    boolean moveLeft();
+    void moveLeft();
 
-    boolean moveRight();
+    void moveRight();
 
-    boolean moveDown();
+    void moveDown();
+
+    boolean mayMoveLeft();
+
+    boolean mayMoveRight();
+
+    boolean mayMoveDown();
 
     boolean overlaps(Jelly j);
 
@@ -21,4 +27,13 @@ public interface Jelly {
     int getHeight();
 
     int getWidth();
+
+    byte getLeftMin();
+
+    byte getTopMin();
+
+    byte getRightMax();
+
+    byte getBottomMax();
+
 }

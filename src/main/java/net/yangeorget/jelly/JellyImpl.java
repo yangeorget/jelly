@@ -7,14 +7,18 @@ import java.util.Arrays;
  */
 public class JellyImpl
         implements Jelly {
-    private static byte[] BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+    private static final byte[] BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
     private byte[] positions;
     private final byte heightWidth;
     private final char color;
     private boolean isFixed;
+    // bounding box
+    private byte leftMin;
+    private byte rightMax;
+    private byte topMin;
+    private byte bottomMax;
 
-    // TODO: bounding box
-    // TODO: may move
+    // TODO: maymove to avoid cloning and for future cache
 
     private JellyImpl(final byte heightWidth, final char color, final boolean isFixed) {
         this.heightWidth = heightWidth;
@@ -22,19 +26,32 @@ public class JellyImpl
         this.isFixed = isFixed;
     }
 
-    public JellyImpl(final byte heightWidth, final char color, final boolean isFixed, final byte... positions) {
+    public JellyImpl(final byte heightWidth,
+                     final char color,
+                     final boolean isFixed,
+                     final byte leftMin,
+                     final byte rightMax,
+                     final byte topMin,
+                     final byte bottomMax,
+                     final byte... positions) {
         this(heightWidth, color, isFixed);
-        final int size = positions.length;
-        this.positions = new byte[size];
-        System.arraycopy(positions, 0, this.positions, 0, size);
+        this.leftMin = leftMin;
+        this.rightMax = rightMax;
+        this.leftMin = leftMin;
+        this.bottomMax = bottomMax;
+        this.positions = new byte[positions.length];
+        System.arraycopy(positions, 0, this.positions, 0, this.positions.length);
     }
 
     public JellyImpl(final Board board, final boolean[][] visited, final char color, final int i, final int j) {
         this(value(board.getHeight(), board.getWidth()), BoardImpl.toFloating(color), BoardImpl.isFixed(color));
-        final int free = update(board, visited, 0, i, j);
-        positions = new byte[free];
-        System.arraycopy(BUFFER, 0, positions, 0, free);
-        Arrays.sort(positions);
+        this.leftMin = (byte) getWidth();
+        this.rightMax = -1;
+        this.leftMin = (byte) getHeight();
+        this.bottomMax = -1;
+        this.positions = new byte[update(board, visited, 0, i, j)];
+        System.arraycopy(BUFFER, 0, this.positions, 0, this.positions.length);
+        Arrays.sort(this.positions);
     }
 
     private int update(final Board board, final boolean[][] visited, int free, final int i, final int j) {
@@ -43,6 +60,18 @@ public class JellyImpl
             isFixed |= BoardImpl.isFixed(c);
             visited[i][j] = true;
             BUFFER[free++] = value(i, j);
+            if (j < leftMin) {
+                leftMin = (byte) j;
+            }
+            if (rightMax < j) {
+                rightMax = (byte) j;
+            }
+            if (i < topMin) {
+                topMin = (byte) i;
+            }
+            if (bottomMax < i) {
+                bottomMax = (byte) i;
+            }
             if (i > 0) {
                 free = update(board, visited, free, i - 1, j);
             }
@@ -66,7 +95,7 @@ public class JellyImpl
 
     @Override
     public JellyImpl clone() {
-        return new JellyImpl(heightWidth, color, isFixed, positions);
+        return new JellyImpl(heightWidth, color, isFixed, leftMin, rightMax, topMin, bottomMax, positions);
     }
 
     @Override
@@ -75,42 +104,45 @@ public class JellyImpl
     }
 
     @Override
-    public boolean moveLeft() {
-        if (isFixed) {
-            return false;
-        }
-        for (int index = 0; index < positions.length; index++) {
-            if (getJ(positions[index]) == 0) {
-                return false;
-            }
+    public boolean mayMoveLeft() {
+        return !isFixed && leftMin != 0;
+    }
+
+    @Override
+    public void moveLeft() {
+        for (int index = positions.length; --index >= 0;) {
             positions[index]--;
         }
-        return true;
+        leftMin--;
+        rightMax--;
     }
 
     @Override
-    public boolean moveRight() {
-        if (isFixed) {
-            return false;
-        }
+    public boolean mayMoveRight() {
+        return !isFixed && rightMax != getWidth() - 1;
+    }
+
+    @Override
+    public void moveRight() {
         for (int index = positions.length; --index >= 0;) {
-            if (getJ(positions[index]) == getWidth() - 1) {
-                return false;
-            }
             positions[index]++;
         }
-        return true;
+        leftMin++;
+        rightMax++;
     }
 
     @Override
-    public boolean moveDown() {
-        if (isFixed || getI(positions[positions.length - 1]) == getHeight() - 1) {
-            return false;
-        }
+    public boolean mayMoveDown() {
+        return !isFixed && bottomMax != getHeight() - 1;
+    }
+
+    @Override
+    public void moveDown() {
         for (int index = positions.length; --index >= 0;) {
             positions[index] += 16;
         }
-        return true;
+        topMin++;
+        bottomMax++;
     }
 
     @Override
@@ -137,6 +169,12 @@ public class JellyImpl
 
     @Override
     public boolean overlaps(final Jelly jelly) {
+        if (jelly.getRightMax() < leftMin
+            || rightMax < jelly.getLeftMin()
+            || jelly.getBottomMax() < topMin
+            || bottomMax < jelly.getTopMin()) {
+            return false;
+        }
         final JellyImpl j = (JellyImpl) jelly;
         final byte[] jPositions = j.positions;
         final int size = positions.length;
@@ -172,5 +210,25 @@ public class JellyImpl
         for (final byte position : positions) {
             board.set(getI(position), getJ(position), color);
         }
+    }
+
+    @Override
+    public byte getLeftMin() {
+        return leftMin;
+    }
+
+    @Override
+    public byte getTopMin() {
+        return topMin;
+    }
+
+    @Override
+    public byte getRightMax() {
+        return rightMax;
+    }
+
+    @Override
+    public byte getBottomMax() {
+        return bottomMax;
     }
 }

@@ -35,7 +35,7 @@ public class StateTest {
     }
 
     private void testGravity(final Board input, final Board output) {
-        final StateImpl state = new StateImpl(input);
+        final State state = new StateImpl(input);
         state.gravity();
         Assert.assertEquals(state.getBoard(), output);
     }
@@ -61,7 +61,7 @@ public class StateTest {
     }
 
     private void testMoveKO(final Board input, final int index) {
-        Assert.assertNull(new StateImpl(input).moveRight(index));
+        Assert.assertFalse(new StateImpl(input).moveRight(index));
     }
 
     @Test
@@ -87,6 +87,7 @@ public class StateTest {
     private void testMoveOK(final Board input, final int index, final Board output) {
         final State state = new StateImpl(input);
         state.moveRight(index);
+        state.gravity();
         Assert.assertEquals(state.getBoard(), output);
     }
 }

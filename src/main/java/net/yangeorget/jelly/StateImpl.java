@@ -38,19 +38,15 @@ public class StateImpl
     }
 
     @Override
-    public String moveLeft(final int j) {
-        return moveLeft(jellies[j]) ? gravity() : null;
-    }
-
-    @Override
-    public String moveRight(final int j) {
-        return moveRight(jellies[j]) ? gravity() : null;
+    public boolean moveLeft(final int j) {
+        return moveLeft(jellies[j]);
     }
 
     boolean moveLeft(final Jelly jelly) {
-        if (!jelly.moveLeft()) {
+        if (!jelly.mayMoveLeft()) {
             return false;
         }
+        jelly.moveLeft();
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveLeft(j)) {
                 return false;
@@ -59,10 +55,16 @@ public class StateImpl
         return true;
     }
 
+    @Override
+    public boolean moveRight(final int j) {
+        return moveRight(jellies[j]);
+    }
+
     boolean moveRight(final Jelly jelly) {
-        if (!jelly.moveRight()) {
+        if (!jelly.mayMoveRight()) {
             return false;
         }
+        jelly.moveRight();
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveRight(j)) {
                 return false;
@@ -72,9 +74,10 @@ public class StateImpl
     }
 
     boolean moveDown(final Jelly jelly) {
-        if (!jelly.moveDown()) {
+        if (!jelly.mayMoveDown()) {
             return false;
         }
+        jelly.moveDown();
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j)) {
                 return false;
@@ -83,12 +86,13 @@ public class StateImpl
         return true;
     }
 
-    String gravity() { // TODO: use a cache to check if moves are possible
+    @Override
+    public void gravity() { // TODO: use a cache to check if moves are possible
         for (boolean gravity = true; gravity;) {
             gravity = false;
             for (int j = 0; j < jellies.length; j++) {
-                if (!jellies[j].isFixed()) {
-                    final StateImpl clone = clone();
+                if (jellies[j].mayMoveDown()) {
+                    final StateImpl clone = clone(); // TODO: avoid cloning when movedown (moveup instead)
                     final Jelly[] cloneJellies = clone.getJellies();
                     if (clone.moveDown(cloneJellies[j])) {
                         jellies = cloneJellies;
@@ -97,21 +101,16 @@ public class StateImpl
                 }
             }
         }
-        updateBoard();
+        board.clear();
+        for (final Jelly jelly : jellies) {
+            jelly.updateBoard(board);
+        }
         jellies = board.getJellies();
-        return board.toString();
     }
 
     @Override
     public String toString() {
         return "jellies=" + jellies;
-    }
-
-    private void updateBoard() {
-        board.clear();
-        for (final Jelly jelly : jellies) {
-            jelly.updateBoard(board);
-        }
     }
 
     @Override

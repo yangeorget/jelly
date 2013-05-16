@@ -18,22 +18,7 @@ public interface Jelly {
 
     Jelly clone();
 
-    boolean isFixed();
-
     char getColor();
 
     void updateBoard(Board board);
-
-    int getHeight();
-
-    int getWidth();
-
-    byte getLeftMin();
-
-    byte getTopMin();
-
-    byte getRightMax();
-
-    byte getBottomMax();
-
 }

@@ -89,11 +89,6 @@ public class JellyImpl
     }
 
     @Override
-    public boolean isFixed() {
-        return isFixed;
-    }
-
-    @Override
     public JellyImpl clone() {
         return new JellyImpl(heightWidth, color, isFixed, leftMin, rightMax, topMin, bottomMax, positions);
     }
@@ -145,13 +140,11 @@ public class JellyImpl
         bottomMax++;
     }
 
-    @Override
-    public int getWidth() {
+    int getWidth() {
         return getJ(heightWidth);
     }
 
-    @Override
-    public int getHeight() {
+    int getHeight() {
         return getI(heightWidth);
     }
 
@@ -169,13 +162,13 @@ public class JellyImpl
 
     @Override
     public boolean overlaps(final Jelly jelly) {
-        if (jelly.getRightMax() < leftMin
-            || rightMax < jelly.getLeftMin()
-            || jelly.getBottomMax() < topMin
-            || bottomMax < jelly.getTopMin()) {
+        final JellyImpl j = (JellyImpl) jelly;
+        if (j.getRightMax() < leftMin
+            || rightMax < j.getLeftMin()
+            || j.getBottomMax() < topMin
+            || bottomMax < j.getTopMin()) {
             return false;
         }
-        final JellyImpl j = (JellyImpl) jelly;
         final byte[] jPositions = j.positions;
         final int size = positions.length;
         final int jSize = jPositions.length;
@@ -212,23 +205,19 @@ public class JellyImpl
         }
     }
 
-    @Override
-    public byte getLeftMin() {
+    byte getLeftMin() {
         return leftMin;
     }
 
-    @Override
-    public byte getTopMin() {
+    byte getTopMin() {
         return topMin;
     }
 
-    @Override
-    public byte getRightMax() {
+    byte getRightMax() {
         return rightMax;
     }
 
-    @Override
-    public byte getBottomMax() {
+    byte getBottomMax() {
         return bottomMax;
     }
 }

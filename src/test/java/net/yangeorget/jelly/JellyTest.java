@@ -23,25 +23,25 @@ public class JellyTest {
 
     @Test
     public void testGetHeight1() {
-        final Jelly jelly = new JellyImpl((byte) 0x8D, 'B', false, (byte) 0, (byte) 0, (byte) 0, (byte) 0);
+        final JellyImpl jelly = new JellyImpl((byte) 0x8D, 'B', false, (byte) 0, (byte) 0, (byte) 0, (byte) 0);
         Assert.assertEquals(jelly.getHeight(), 8);
     }
 
     @Test
     public void testGetWidth1() {
-        final Jelly jelly = new JellyImpl((byte) 0x8D, 'B', false, (byte) 0, (byte) 0, (byte) 0, (byte) 0);
+        final JellyImpl jelly = new JellyImpl((byte) 0x8D, 'B', false, (byte) 0, (byte) 0, (byte) 0, (byte) 0);
         Assert.assertEquals(jelly.getWidth(), 13);
     }
 
     @Test
     public void testGetHeight2() {
-        final Jelly jelly = new JellyImpl((byte) 0xD8, 'B', false, (byte) 0, (byte) 0, (byte) 0, (byte) 0);
+        final JellyImpl jelly = new JellyImpl((byte) 0xD8, 'B', false, (byte) 0, (byte) 0, (byte) 0, (byte) 0);
         Assert.assertEquals(jelly.getHeight(), 13);
     }
 
     @Test
     public void testGetWidth2() {
-        final Jelly jelly = new JellyImpl((byte) 0xD8, 'B', false, (byte) 0, (byte) 0, (byte) 0, (byte) 0);
+        final JellyImpl jelly = new JellyImpl((byte) 0xD8, 'B', false, (byte) 0, (byte) 0, (byte) 0, (byte) 0);
         Assert.assertEquals(jelly.getWidth(), 8);
     }
 

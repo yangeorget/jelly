@@ -1,6 +1,8 @@
 package net.yangeorget.jelly;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ public class StateImpl
 
     private Jelly[] jellies;
     private final Board board;
+    private static final List<Jelly> MOVED_JELLIES = new LinkedList<>();
 
     public StateImpl(final Board board) {
         this.board = board;
@@ -73,13 +76,14 @@ public class StateImpl
         return true;
     }
 
-    boolean moveDown(final Jelly jelly) {
+    boolean moveDown(final Jelly jelly, final List<Jelly> movedJellies) {
         if (!jelly.mayMoveDown()) {
             return false;
         }
         jelly.moveDown();
+        movedJellies.add(jelly);
         for (final Jelly j : jellies) {
-            if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j)) {
+            if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j, movedJellies)) {
                 return false;
             }
         }
@@ -90,13 +94,15 @@ public class StateImpl
     public void gravity() { // TODO: use a cache to check if moves are possible
         for (boolean gravity = true; gravity;) {
             gravity = false;
-            for (int j = 0; j < jellies.length; j++) {
-                if (jellies[j].mayMoveDown()) {
-                    final StateImpl clone = clone(); // TODO: avoid cloning when movedown (moveup instead)
-                    final Jelly[] cloneJellies = clone.getJellies();
-                    if (clone.moveDown(cloneJellies[j])) {
-                        jellies = cloneJellies;
+            for (final Jelly jelly : jellies) {
+                if (jelly.mayMoveDown()) {
+                    MOVED_JELLIES.clear();
+                    if (moveDown(jelly, MOVED_JELLIES)) {
                         gravity = true;
+                    } else {
+                        for (final Jelly je : MOVED_JELLIES) {
+                            je.moveUp();
+                        }
                     }
                 }
             }

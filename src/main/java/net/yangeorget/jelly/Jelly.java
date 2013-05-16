@@ -8,6 +8,8 @@ public interface Jelly {
 
     void moveDown();
 
+    void moveUp();
+
     boolean mayMoveLeft();
 
     boolean mayMoveRight();

@@ -81,7 +81,7 @@ public class StateTest {
 
     @Test
     public void testMoveOK4() {
-        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     * "), 2, new BoardImpl("       ", " YYGGG ", " GGG *B"));
+        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     0 "), 3, new BoardImpl("       ", " YYGGG ", " GGG 0B"));
     }
 
     private void testMoveOK(final Board input, final int index, final Board output) {

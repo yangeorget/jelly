@@ -55,8 +55,11 @@ public class JellyImpl
     }
 
     private int update(final Board board, final boolean[][] visited, int free, final int i, final int j) {
+        if (visited[i][j]) {
+            return free;
+        }
         final char c = board.get(i, j);
-        if (!visited[i][j] && BoardImpl.toFloating(c) == color) {
+        if (BoardImpl.toFloating(c) == color) {
             isFixed |= BoardImpl.isFixed(c);
             visited[i][j] = true;
             BUFFER[free++] = value(i, j);
@@ -138,6 +141,15 @@ public class JellyImpl
         }
         topMin++;
         bottomMax++;
+    }
+
+    @Override
+    public void moveUp() {
+        for (int index = positions.length; --index >= 0;) {
+            positions[index] -= 16;
+        }
+        topMin--;
+        bottomMax--;
     }
 
     int getWidth() {

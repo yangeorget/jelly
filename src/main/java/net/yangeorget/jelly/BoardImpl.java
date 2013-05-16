@@ -11,9 +11,11 @@ public class BoardImpl
 
     private final boolean[][] visited;
     private final Jelly[] jelliesBuffer;
+    private final int wallNb;
 
-    private static final char MASK0 = (char) 223;
-    private static final char MASK1 = (char) 32;
+    private static final char FIXED_FLAG = (char) 32;
+    private static final char BLANK_CHAR = ' ';
+    private static final char A_CHAR = 'A';
 
     public BoardImpl(final String... strings) {
         height = strings.length;
@@ -24,6 +26,7 @@ public class BoardImpl
         }
         visited = new boolean[height][width];
         jelliesBuffer = new Jelly[height * width];
+        wallNb = computeWalls(0);
     }
 
     @Override
@@ -44,11 +47,12 @@ public class BoardImpl
     }
 
     private void toString(final StringBuilder builder) {
-        for (int i = 0; i < height - 1; i++) {
+        final int height1 = height - 1;
+        for (int i = 0; i < height1; i++) {
             builder.append(matrix[i]);
             builder.append('\n');
         }
-        builder.append(matrix[height - 1]);
+        builder.append(matrix[height1]);
     }
 
     @Override
@@ -71,32 +75,48 @@ public class BoardImpl
         for (int i = 0; i < height; i++) {
             Arrays.fill(visited[i], false);
         }
-        int nb = 0;
-        for (byte i = 0; i < height; i++) {
-            for (byte j = 0; j < width; j++) {
-                final char color = matrix[i][j];
-                if (color != 0 && color != ' ' && !visited[i][j]) {
-                    jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
-                }
-            }
-        }
+        final int nb = computeJellies(wallNb);
         final Jelly[] jellies = new Jelly[nb];
         System.arraycopy(jelliesBuffer, 0, jellies, 0, nb);
         return jellies;
     }
 
+    private int computeJellies(int nb) {
+        for (byte i = 0; i < height; i++) {
+            for (byte j = 0; j < width; j++) {
+                final char color = matrix[i][j];
+                if (color != BLANK_CHAR && color >= A_CHAR && !visited[i][j]) {
+                    jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
+                }
+            }
+        }
+        return nb;
+    }
+
+    private int computeWalls(int nb) {
+        for (byte i = 0; i < height; i++) {
+            for (byte j = 0; j < width; j++) {
+                final char color = matrix[i][j];
+                if (color != BLANK_CHAR && color < A_CHAR && !visited[i][j]) {
+                    jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
+                }
+            }
+        }
+        return nb;
+    }
+
     @Override
     public void clear() {
         for (int i = 0; i < height; i++) {
-            Arrays.fill(matrix[i], ' ');
+            Arrays.fill(matrix[i], BLANK_CHAR);
         }
     }
 
     public static boolean isFixed(final char c) {
-        return (c & MASK1) != 0;
+        return (c & FIXED_FLAG) != 0;
     }
 
     public static char toFloating(final char c) {
-        return c < 'A' ? c : (char) (c & MASK0);
+        return c < A_CHAR ? c : (char) (c & ~FIXED_FLAG);
     }
 }

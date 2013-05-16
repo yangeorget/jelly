@@ -48,15 +48,15 @@ public class BoardTest {
     public void testGetJellies() {
         final Jelly[] jellies = Board.LEVELS[0].getJellies();
         Assert.assertEquals(jellies.length, 10);
-        Assert.assertEquals(jellies[0].getColor(), 'P');
-        Assert.assertEquals(jellies[1].getColor(), '0');
-        Assert.assertEquals(jellies[2].getColor(), 'G');
-        Assert.assertEquals(jellies[3].getColor(), 'P');
-        Assert.assertEquals(jellies[4].getColor(), 'B');
-        Assert.assertEquals(jellies[5].getColor(), '1');
-        Assert.assertEquals(jellies[6].getColor(), 'B');
-        Assert.assertEquals(jellies[7].getColor(), '2');
-        Assert.assertEquals(jellies[8].getColor(), 'G');
-        Assert.assertEquals(jellies[9].getColor(), '3');
+        Assert.assertEquals(jellies[0].getColor(), '0');
+        Assert.assertEquals(jellies[1].getColor(), '1');
+        Assert.assertEquals(jellies[2].getColor(), '2');
+        Assert.assertEquals(jellies[3].getColor(), '3');
+        Assert.assertEquals(jellies[4].getColor(), 'P');
+        Assert.assertEquals(jellies[5].getColor(), 'G');
+        Assert.assertEquals(jellies[6].getColor(), 'P');
+        Assert.assertEquals(jellies[7].getColor(), 'B');
+        Assert.assertEquals(jellies[8].getColor(), 'B');
+        Assert.assertEquals(jellies[9].getColor(), 'G');
     }
 }

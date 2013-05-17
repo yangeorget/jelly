@@ -15,7 +15,7 @@ public class StateTest {
 
     @Test
     public void testGetDistinctColorsNb2() {
-        Assert.assertEquals(new StateImpl(Board.LEVELS[0]).getDistinctColorsNb(), 7);
+        Assert.assertEquals(new StateImpl(Board.LEVELS[0]).getDistinctColorsNb(), 3);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class StateTest {
 
     @Test
     public void testMoveOK4() {
-        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     0 "), 3, new BoardImpl("       ", " YYGGG ", " GGG 0B"));
+        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     0 "), 2, new BoardImpl("       ", " YYGGG ", " GGG  B"));
     }
 
     private void testMoveOK(final Board input, final int index, final Board output) {

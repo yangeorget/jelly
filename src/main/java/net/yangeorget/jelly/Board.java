@@ -84,6 +84,8 @@ public interface Board {
 
     Jelly[] getJellies();
 
+    Jelly[] getWalls();
+
     void clear();
 
 }

@@ -8,10 +8,10 @@ public class BoardImpl
     private final char[][] matrix;
     private final int height;
     private final int width;
-
-    private final boolean[][] visited;
+    private final boolean[][] visited; // TODO: get rid of
     private final Jelly[] jelliesBuffer;
-    private final int wallNb;
+    private final Jelly[] walls;
+    private int nb;
 
     private static final char FIXED_FLAG = (char) 32;
     private static final char BLANK_CHAR = ' ';
@@ -26,7 +26,9 @@ public class BoardImpl
         }
         visited = new boolean[height][width];
         jelliesBuffer = new Jelly[height * width];
-        wallNb = computeWalls(0);
+        computeWalls();
+        walls = new Jelly[nb];
+        System.arraycopy(jelliesBuffer, 0, walls, 0, nb);
     }
 
     @Override
@@ -71,38 +73,46 @@ public class BoardImpl
     }
 
     @Override
+    public Jelly[] getWalls() {
+        return walls;
+    }
+
+    @Override
     public Jelly[] getJellies() {
         for (int i = 0; i < height; i++) {
             Arrays.fill(visited[i], false);
         }
-        final int nb = computeJellies(wallNb);
+        nb = 0;
+        computeJellies();
         final Jelly[] jellies = new Jelly[nb];
         System.arraycopy(jelliesBuffer, 0, jellies, 0, nb);
         return jellies;
     }
 
-    private int computeJellies(int nb) {
+    private void computeJellies() {
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
-                final char color = matrix[i][j];
-                if (color != BLANK_CHAR && color >= A_CHAR && !visited[i][j]) {
-                    jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
+                if (!visited[i][j]) {
+                    final char color = matrix[i][j];
+                    if (color != BLANK_CHAR && color >= A_CHAR) {
+                        jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
+                    }
                 }
             }
         }
-        return nb;
     }
 
-    private int computeWalls(int nb) {
+    private void computeWalls() {
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
-                final char color = matrix[i][j];
-                if (color != BLANK_CHAR && color < A_CHAR && !visited[i][j]) {
-                    jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
+                if (!visited[i][j]) {
+                    final char color = matrix[i][j];
+                    if (color != BLANK_CHAR && color < A_CHAR) {
+                        jelliesBuffer[nb++] = new JellyImpl(this, visited, color, i, j);
+                    }
                 }
             }
         }
-        return nb;
     }
 
     @Override

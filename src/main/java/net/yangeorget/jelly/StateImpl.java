@@ -50,6 +50,11 @@ public class StateImpl
             return false;
         }
         jelly.moveLeft();
+        for (final Jelly w : board.getWalls()) {
+            if (jelly.overlaps(w)) {
+                return false;
+            }
+        }
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveLeft(j)) {
                 return false;
@@ -68,6 +73,11 @@ public class StateImpl
             return false;
         }
         jelly.moveRight();
+        for (final Jelly w : board.getWalls()) {
+            if (jelly.overlaps(w)) {
+                return false;
+            }
+        }
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveRight(j)) {
                 return false;
@@ -82,6 +92,11 @@ public class StateImpl
         }
         jelly.moveDown();
         movedJellies.add(jelly);
+        for (final Jelly w : board.getWalls()) {
+            if (jelly.overlaps(w)) {
+                return false;
+            }
+        }
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j, movedJellies)) {
                 return false;

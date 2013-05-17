@@ -75,14 +75,16 @@ public class JellyImpl
             if (i > 0) {
                 free = update(matrix, free, i - 1, j);
             }
-            if (i < getHeight() - 1) {
-                free = update(matrix, free, i + 1, j);
+            final int i1 = i + 1;
+            if (i1 < getHeight()) {
+                free = update(matrix, free, i1, j);
             }
             if (j > 0) {
                 free = update(matrix, free, i, j - 1);
             }
-            if (j < getWidth() - 1) {
-                free = update(matrix, free, i, j + 1);
+            final int j1 = j + 1;
+            if (j1 < getWidth()) {
+                free = update(matrix, free, i, j1);
             }
         }
         return free;

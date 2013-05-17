@@ -19,7 +19,7 @@ public class StateImpl
 
     public StateImpl(final Board board) {
         this.board = board.clone();
-        serialization = board.toString();
+        serialization = this.board.serialize();
         jellies = this.board.extractJellies();
     }
 
@@ -111,13 +111,13 @@ public class StateImpl
 
     @Override
     public void gravity() { // TODO: use a cache to check if moves are possible
-        for (boolean gravity = true; gravity;) {
-            gravity = false;
+        for (boolean gravityAgain = true; gravityAgain;) {
+            gravityAgain = false;
             for (final Jelly jelly : jellies) {
                 if (jelly.mayMoveDown()) {
                     MOVED_JELLIES.clear();
                     if (moveDown(jelly, MOVED_JELLIES)) {
-                        gravity = true;
+                        gravityAgain = true;
                     } else {
                         for (final Jelly je : MOVED_JELLIES) {
                             je.moveUp();
@@ -127,7 +127,7 @@ public class StateImpl
             }
         }
         board.apply(jellies);
-        serialization = board.toString();
+        serialization = board.serialize();
         jellies = board.extractJellies();
     }
 

@@ -90,4 +90,6 @@ public interface Board {
     Board clone();
 
     void apply(Jelly[] jellies);
+
+    String serialize();
 }

@@ -85,6 +85,25 @@ public class BoardImpl
     }
 
     @Override
+    public String serialize() {
+        final StringBuilder builder = new StringBuilder();
+        serialize(builder);
+        String serialization = builder.toString();
+        int i = 0;
+        while (serialization.charAt(i) == Board.BLANK_CHAR) {
+            i++;
+        }
+        serialization = serialization.substring(i);
+        return serialization;
+    }
+
+    private void serialize(final StringBuilder builder) {
+        for (int i = 0; i < height; i++) {
+            builder.append(matrix[i]);
+        }
+    }
+
+    @Override
     public boolean equals(final Object o) {
         return Arrays.deepEquals(matrix, ((Board) o).getMatrix());
     }

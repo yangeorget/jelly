@@ -15,14 +15,17 @@ public class StateImpl
     private Jelly[] jellies;
     private final Board board;
     private static final List<Jelly> MOVED_JELLIES = new LinkedList<>();
+    private String serialization;
 
     public StateImpl(final Board board) {
         this.board = board.clone();
+        serialization = board.toString();
         jellies = this.board.extractJellies();
     }
 
     public StateImpl(final State state) {
         board = state.getBoard();
+        this.serialization = state.getSerialization();
         final Jelly[] stateJellies = state.getJellies();
         final int size = stateJellies.length;
         jellies = new Jelly[size];
@@ -124,6 +127,7 @@ public class StateImpl
             }
         }
         board.apply(jellies);
+        serialization = board.toString();
         jellies = board.extractJellies();
     }
 
@@ -144,5 +148,10 @@ public class StateImpl
     @Override
     public Board getBoard() {
         return board;
+    }
+
+    @Override
+    public String getSerialization() {
+        return serialization;
     }
 }

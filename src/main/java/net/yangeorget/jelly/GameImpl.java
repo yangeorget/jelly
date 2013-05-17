@@ -40,8 +40,7 @@ public class GameImpl
                             LOG.debug(new BoardImpl(clone).toString());
                             return true;
                         }
-                        if (explored.add(clone.getBoard()
-                                              .getSerialization())) {
+                        if (explored.add(clone.getSerialization())) {
                             states.addLast(clone);
                         }
                     }
@@ -54,8 +53,7 @@ public class GameImpl
                             LOG.debug(new BoardImpl(clone).toString());
                             return true;
                         }
-                        if (explored.add(clone.getBoard()
-                                              .getSerialization())) {
+                        if (explored.add(clone.getSerialization())) {
                             states.addLast(clone);
                         }
                     }

@@ -15,4 +15,6 @@ public interface State {
     boolean moveRight(final int j);
 
     void gravity();
+
+    String getSerialization();
 }

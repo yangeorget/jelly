@@ -37,8 +37,9 @@ public class JellyImpl
         this.rightMax = rightMax;
         this.leftMin = leftMin;
         this.bottomMax = bottomMax;
-        this.positions = new byte[positions.length];
-        System.arraycopy(positions, 0, this.positions, 0, this.positions.length);
+        final int size = positions.length;
+        this.positions = new byte[size];
+        System.arraycopy(positions, 0, this.positions, 0, size);
     }
 
     public JellyImpl(final Board board, final char color, final int i, final int j) {
@@ -47,14 +48,15 @@ public class JellyImpl
         this.rightMax = -1;
         this.leftMin = (byte) getHeight();
         this.bottomMax = -1;
-        this.positions = new byte[update(board.getMatrix(), 0, i, j)];
-        System.arraycopy(BUFFER, 0, this.positions, 0, this.positions.length);
+        final int size = update(board.getMatrix(), 0, i, j);
+        this.positions = new byte[size];
+        System.arraycopy(BUFFER, 0, this.positions, 0, size);
         Arrays.sort(this.positions);
     }
 
     private int update(final char[][] matrix, int free, final int i, final int j) {
         final char c = matrix[i][j];
-        if (c != Board.BLANK_CHAR && BoardImpl.toFloating(c) == color) {
+        if (BoardImpl.toFloating(c) == color) {
             isFixed |= BoardImpl.isFixed(c);
             matrix[i][j] = Board.BLANK_CHAR;
             BUFFER[free++] = value(i, j);

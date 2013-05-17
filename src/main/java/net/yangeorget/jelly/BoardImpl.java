@@ -10,7 +10,6 @@ public class BoardImpl
     private final int width;
     private final Jelly[] jelliesBuffer;
     private Jelly[] walls;
-    private String serialization;
 
     private BoardImpl(final int height, final int width) {
         this.height = height;
@@ -40,7 +39,6 @@ public class BoardImpl
         }
         walls = new Jelly[wallsSize];
         System.arraycopy(jelliesBuffer, 0, walls, 0, wallsSize);
-        serialization = toString();
     }
 
     private BoardImpl(final Board board) {
@@ -53,17 +51,11 @@ public class BoardImpl
         final int wallsSize = boardWalls.length;
         walls = new Jelly[wallsSize];
         System.arraycopy(boardWalls, 0, walls, 0, wallsSize);
-        serialization = board.getSerialization();
     }
 
     @Override
     public Board clone() {
         return new BoardImpl(this);
-    }
-
-    @Override
-    public String getSerialization() {
-        return serialization;
     }
 
     @Override
@@ -108,7 +100,7 @@ public class BoardImpl
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
                 final char color = matrix[i][j];
-                if (color != BLANK_CHAR && color >= A_CHAR) {
+                if (color >= A_CHAR) {
                     jelliesBuffer[nb++] = new JellyImpl(this, color, i, j);
                 }
             }
@@ -123,7 +115,6 @@ public class BoardImpl
         for (final Jelly jelly : jellies) {
             jelly.updateBoard(this);
         }
-        serialization = toString();
     }
 
     public static boolean isFixed(final char c) {

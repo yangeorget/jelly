@@ -16,9 +16,6 @@ public class GameImpl
     private final LinkedList<State> states;
     private final Set<String> explored;
 
-    /**
-     * @param board
-     */
     public GameImpl(final Board board) {
         final State state = new StateImpl(board);
         explored = new HashSet<>();
@@ -31,23 +28,20 @@ public class GameImpl
     @Override
     public boolean solve() {
         while (!states.isEmpty()) {
-            // LOG.debug(toString());
             final State state = states.removeFirst();
             final Jelly[] jellies = state.getJellies();
-            final int size = jellies.length;
-            if (size == distinctColorsNb) {
-                LOG.debug(state.getBoard()
-                               .toString());
-                return true;
-            }
-            for (int j = 0; j < size; j++) {
+            for (int j = 0; j < jellies.length; j++) {
                 final Jelly jelly = jellies[j];
                 if (jelly.mayMoveLeft()) {
                     final State clone = state.clone();
                     if (clone.moveLeft(j)) {
                         clone.gravity();
+                        if (clone.getJellies().length == distinctColorsNb) {
+                            LOG.debug(new BoardImpl(clone).toString());
+                            return true;
+                        }
                         if (explored.add(clone.getBoard()
-                                              .toString())) {
+                                              .getSerialization())) {
                             states.addLast(clone);
                         }
                     }
@@ -56,8 +50,12 @@ public class GameImpl
                     final State clone = state.clone();
                     if (clone.moveRight(j)) {
                         clone.gravity();
+                        if (clone.getJellies().length == distinctColorsNb) {
+                            LOG.debug(new BoardImpl(clone).toString());
+                            return true;
+                        }
                         if (explored.add(clone.getBoard()
-                                              .toString())) {
+                                              .getSerialization())) {
                             states.addLast(clone);
                         }
                     }

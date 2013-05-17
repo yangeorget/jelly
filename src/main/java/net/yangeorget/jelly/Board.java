@@ -2,6 +2,12 @@ package net.yangeorget.jelly;
 
 
 public interface Board {
+    int MAX_WIDTH = 16;
+    int MAX_HEIGHT = 16;
+    char FIXED_FLAG = (char) 32;
+    char BLANK_CHAR = ' ';
+    char A_CHAR = 'A';
+
     Board[] LEVELS = { new BoardImpl("            ",
                                      "            ",
                                      "            ",
@@ -71,21 +77,19 @@ public interface Board {
                                     "333   G    b",
                                     "333   4     ") };
 
-    int MAX_WIDTH = 16;
-    int MAX_HEIGHT = 16;
-
-    char get(int i, int j);
-
-    void set(int i, int j, char color);
+    char[][] getMatrix();
 
     int getHeight();
 
     int getWidth();
 
-    Jelly[] getJellies();
+    Jelly[] extractJellies();
 
     Jelly[] getWalls();
 
-    void clear();
+    Board clone();
 
+    void apply(Jelly[] jellies);
+
+    String getSerialization();
 }

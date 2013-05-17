@@ -30,23 +30,9 @@ public class BoardTest {
     }
 
     @Test
-    public void testGet() {
-        Assert.assertEquals(Board.LEVELS[0].get(0, 0), ' ');
-        Assert.assertEquals(Board.LEVELS[0].get(0, 1), ' ');
-        Assert.assertEquals(Board.LEVELS[0].get(1, 0), ' ');
-        Assert.assertEquals(Board.LEVELS[0].get(1, 1), ' ');
-        Assert.assertEquals(Board.LEVELS[0].get(7, 0), '1');
-        Assert.assertEquals(Board.LEVELS[0].get(7, 1), 'B');
-        Assert.assertEquals(Board.LEVELS[0].get(7, 2), '2');
-        Assert.assertEquals(Board.LEVELS[0].get(7, 3), '2');
-        Assert.assertEquals(Board.LEVELS[0].get(7, 4), '2');
-        Assert.assertEquals(Board.LEVELS[0].get(7, 5), 'G');
-        Assert.assertEquals(Board.LEVELS[0].get(7, 6), ' ');
-    }
-
-    @Test
     public void testGetJellies() {
-        final Jelly[] jellies = Board.LEVELS[0].getJellies();
+        final Jelly[] jellies = Board.LEVELS[0].clone()
+                                               .extractJellies();
         Assert.assertEquals(jellies.length, 6);
         Assert.assertEquals(jellies[0].getColor(), 'P');
         Assert.assertEquals(jellies[1].getColor(), 'G');

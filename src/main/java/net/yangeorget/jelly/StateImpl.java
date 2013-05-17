@@ -1,5 +1,6 @@
 package net.yangeorget.jelly;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,8 +17,8 @@ public class StateImpl
     private static final List<Jelly> MOVED_JELLIES = new LinkedList<>();
 
     public StateImpl(final Board board) {
-        this.board = board;
-        jellies = board.getJellies();
+        this.board = board.clone();
+        jellies = this.board.extractJellies();
     }
 
     public StateImpl(final State state) {
@@ -122,16 +123,13 @@ public class StateImpl
                 }
             }
         }
-        board.clear();
-        for (final Jelly jelly : jellies) {
-            jelly.updateBoard(board);
-        }
-        jellies = board.getJellies();
+        board.apply(jellies);
+        jellies = board.extractJellies();
     }
 
     @Override
     public String toString() {
-        return "jellies=" + jellies;
+        return "board=" + board + ";walls=" + Arrays.asList(board.getWalls()) + ";jellies=" + Arrays.asList(jellies);
     }
 
     @Override

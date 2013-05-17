@@ -18,8 +18,6 @@ public class JellyImpl
     private byte topMin;
     private byte bottomMax;
 
-    // TODO: maymove to avoid cloning and for future cache
-
     private JellyImpl(final byte heightWidth, final char color, final boolean isFixed) {
         this.heightWidth = heightWidth;
         this.color = color;
@@ -43,25 +41,22 @@ public class JellyImpl
         System.arraycopy(positions, 0, this.positions, 0, this.positions.length);
     }
 
-    public JellyImpl(final Board board, final boolean[][] visited, final char color, final int i, final int j) {
+    public JellyImpl(final Board board, final char color, final int i, final int j) {
         this(value(board.getHeight(), board.getWidth()), BoardImpl.toFloating(color), BoardImpl.isFixed(color));
         this.leftMin = (byte) getWidth();
         this.rightMax = -1;
         this.leftMin = (byte) getHeight();
         this.bottomMax = -1;
-        this.positions = new byte[update(board, visited, 0, i, j)];
+        this.positions = new byte[update(board.getMatrix(), 0, i, j)];
         System.arraycopy(BUFFER, 0, this.positions, 0, this.positions.length);
         Arrays.sort(this.positions);
     }
 
-    private int update(final Board board, final boolean[][] visited, int free, final int i, final int j) {
-        if (visited[i][j]) {
-            return free;
-        }
-        final char c = board.get(i, j);
-        if (BoardImpl.toFloating(c) == color) {
+    private int update(final char[][] matrix, int free, final int i, final int j) {
+        final char c = matrix[i][j];
+        if (c != Board.BLANK_CHAR && BoardImpl.toFloating(c) == color) {
             isFixed |= BoardImpl.isFixed(c);
-            visited[i][j] = true;
+            matrix[i][j] = Board.BLANK_CHAR;
             BUFFER[free++] = value(i, j);
             if (j < leftMin) {
                 leftMin = (byte) j;
@@ -76,16 +71,16 @@ public class JellyImpl
                 bottomMax = (byte) i;
             }
             if (i > 0) {
-                free = update(board, visited, free, i - 1, j);
+                free = update(matrix, free, i - 1, j);
             }
             if (i < getHeight() - 1) {
-                free = update(board, visited, free, i + 1, j);
+                free = update(matrix, free, i + 1, j);
             }
             if (j > 0) {
-                free = update(board, visited, free, i, j - 1);
+                free = update(matrix, free, i, j - 1);
             }
             if (j < getWidth() - 1) {
-                free = update(board, visited, free, i, j + 1);
+                free = update(matrix, free, i, j + 1);
             }
         }
         return free;
@@ -212,8 +207,9 @@ public class JellyImpl
 
     @Override
     public void updateBoard(final Board board) {
+        final char[][] matrix = board.getMatrix();
         for (final byte position : positions) {
-            board.set(getI(position), getJ(position), color);
+            matrix[getI(position)][getJ(position)] = color;
         }
     }
 

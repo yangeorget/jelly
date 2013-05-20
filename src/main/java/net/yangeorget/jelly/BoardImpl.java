@@ -1,6 +1,8 @@
 package net.yangeorget.jelly;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class BoardImpl
@@ -10,6 +12,7 @@ public class BoardImpl
     private final int width;
     private final Jelly[] jelliesBuffer;
     private Jelly[] walls;
+    private int jellyColorNb;
 
     private BoardImpl(final int height, final int width) {
         this.height = height;
@@ -21,6 +24,19 @@ public class BoardImpl
     public BoardImpl(final State state) {
         this(state.getBoard());
         apply(state.getJellies());
+    }
+
+    private BoardImpl(final Board board) {
+        this(board.getHeight(), board.getWidth());
+        for (int i = 0; i < height; i++) {
+            matrix[i] = new char[width];
+            System.arraycopy(board.getMatrix()[i], 0, matrix[i], 0, width);
+        }
+        final Jelly[] boardWalls = board.getWalls();
+        final int wallsSize = boardWalls.length;
+        walls = new Jelly[wallsSize];
+        System.arraycopy(boardWalls, 0, walls, 0, wallsSize);
+        computeJellyColorNb();
     }
 
     public BoardImpl(final String... strings) {
@@ -39,18 +55,25 @@ public class BoardImpl
         }
         walls = new Jelly[wallsSize];
         System.arraycopy(jelliesBuffer, 0, walls, 0, wallsSize);
+        computeJellyColorNb();
     }
 
-    private BoardImpl(final Board board) {
-        this(board.getHeight(), board.getWidth());
-        for (int i = 0; i < height; i++) {
-            matrix[i] = new char[width];
-            System.arraycopy(board.getMatrix()[i], 0, matrix[i], 0, width);
+    private void computeJellyColorNb() {
+        final Set<Character> colors = new HashSet<>();
+        for (byte i = 0; i < height; i++) {
+            for (byte j = 0; j < width; j++) {
+                final char color = matrix[i][j];
+                if (color != Board.BLANK_CHAR) {
+                    colors.add(BoardImpl.toFloating(color));
+                }
+            }
         }
-        final Jelly[] boardWalls = board.getWalls();
-        final int wallsSize = boardWalls.length;
-        walls = new Jelly[wallsSize];
-        System.arraycopy(boardWalls, 0, walls, 0, wallsSize);
+        jellyColorNb = colors.size();
+    }
+
+    @Override
+    public int getJellyColorNb() {
+        return jellyColorNb;
     }
 
     @Override

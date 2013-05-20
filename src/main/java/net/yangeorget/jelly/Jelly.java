@@ -20,7 +20,5 @@ public interface Jelly {
 
     Jelly clone();
 
-    char getColor();
-
     void updateBoard(Board board);
 }

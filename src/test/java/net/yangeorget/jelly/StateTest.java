@@ -9,16 +9,6 @@ public class StateTest {
     private static final Logger LOG = LoggerFactory.getLogger(StateTest.class);
 
     @Test
-    public void testGetDistinctColorsNb1() {
-        Assert.assertEquals(new StateImpl(new BoardImpl("  R ")).getDistinctColorsNb(), 1);
-    }
-
-    @Test
-    public void testGetDistinctColorsNb2() {
-        Assert.assertEquals(new StateImpl(Board.LEVELS[0]).getDistinctColorsNb(), 3);
-    }
-
-    @Test
     public void testGravity1() {
         testGravity(new BoardImpl(" BB ", "    ", "    "), new BoardImpl("    ", "    ", " BB "));
     }

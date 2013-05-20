@@ -1,10 +1,8 @@
 package net.yangeorget.jelly;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,14 +134,6 @@ public class StateImpl
         return "board=" + board + ";walls=" + Arrays.asList(board.getWalls()) + ";jellies=" + Arrays.asList(jellies);
     }
 
-    @Override
-    public int getDistinctColorsNb() {
-        final Set<Character> colors = new HashSet<>();
-        for (final Jelly j : getJellies()) {
-            colors.add(BoardImpl.toFloating(j.getColor()));
-        }
-        return colors.size();
-    }
 
     @Override
     public Board getBoard() {
@@ -153,5 +143,10 @@ public class StateImpl
     @Override
     public String getSerialization() {
         return serialization;
+    }
+
+    @Override
+    public boolean isSolved() {
+        return getJellies().length == board.getJellyColorNb();
     }
 }

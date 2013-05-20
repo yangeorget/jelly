@@ -205,11 +205,6 @@ public class JellyImpl
     }
 
     @Override
-    public char getColor() {
-        return color;
-    }
-
-    @Override
     public void updateBoard(final Board board) {
         final char[][] matrix = board.getMatrix();
         for (final byte position : positions) {

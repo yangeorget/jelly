@@ -125,4 +125,6 @@ public interface Board {
     void apply(Jelly[] jellies);
 
     String serialize();
+
+    int getJellyColorNb();
 }

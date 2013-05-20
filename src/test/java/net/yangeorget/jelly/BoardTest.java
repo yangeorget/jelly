@@ -28,17 +28,4 @@ public class BoardTest {
     public void testWidth() {
         Assert.assertEquals(Board.LEVELS[0].getWidth(), 12);
     }
-
-    @Test
-    public void testGetJellies() {
-        final Jelly[] jellies = Board.LEVELS[0].clone()
-                                               .extractJellies();
-        Assert.assertEquals(jellies.length, 6);
-        Assert.assertEquals(jellies[0].getColor(), 'P');
-        Assert.assertEquals(jellies[1].getColor(), 'G');
-        Assert.assertEquals(jellies[2].getColor(), 'P');
-        Assert.assertEquals(jellies[3].getColor(), 'B');
-        Assert.assertEquals(jellies[4].getColor(), 'B');
-        Assert.assertEquals(jellies[5].getColor(), 'G');
-    }
 }

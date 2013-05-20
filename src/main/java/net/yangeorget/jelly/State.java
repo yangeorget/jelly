@@ -8,8 +8,6 @@ public interface State {
 
     Board getBoard();
 
-    int getDistinctColorsNb();
-
     boolean moveLeft(final int j);
 
     boolean moveRight(final int j);
@@ -17,4 +15,6 @@ public interface State {
     void gravity();
 
     String getSerialization();
+
+    boolean isSolved();
 }

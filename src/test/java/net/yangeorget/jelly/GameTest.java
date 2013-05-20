@@ -10,44 +10,56 @@ public class GameTest {
 
     @Test
     public void testSolve1() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("     R")).solve());
+        testSolveOK(new BoardImpl("     R"));
     }
 
     @Test
     public void testSolve2() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("R R")).solve());
+        testSolveOK(new BoardImpl("R R"));
     }
 
     @Test
     public void testSolve3() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("R R R")).solve());
+        testSolveOK(new BoardImpl("R R R"));
     }
 
     @Test
     public void testSolve4() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("R R B B")).solve());
+        testSolveOK(new BoardImpl("R R B B"));
     }
 
     @Test
     public void testSolve5() {
-        Assert.assertFalse(new GameImpl(new BoardImpl("R R B R")).solve());
+        testSolveKO(new BoardImpl("R R B R"));
     }
 
     @Test
     public void testSolve6() {
-        Assert.assertTrue(new GameImpl(new BoardImpl(" R B R ", " 00000 ", "       ")).solve());
+        testSolveOK(new BoardImpl(" R B R ", " 00000 ", "       "));
     }
 
 
     @Test
     public void testSolve7() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("  G       B ", "0B111G 22222")).solve());
+        testSolveOK(new BoardImpl("  G       B ", "0B111G 22222"));
     }
 
 
     @Test
     public void testSolve8() {
-        Assert.assertTrue(new GameImpl(new BoardImpl("       P    ", "      00    ", "        P B ", "1B222GG33333")).solve());
+        testSolveOK(new BoardImpl("       P    ", "      00    ", "        P B ", "1B222GG33333"));
+    }
+
+    private void testSolveOK(final Board board) {
+        final Game game = new GameImpl(board);
+        LOG.debug(game.toString());
+        Assert.assertTrue(game.solve());
+    }
+
+    private void testSolveKO(final Board board) {
+        final Game game = new GameImpl(board);
+        LOG.debug(game.toString());
+        Assert.assertFalse(game.solve());
     }
 
     @Test

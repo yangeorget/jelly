@@ -12,17 +12,17 @@ import org.slf4j.LoggerFactory;
 public class GameImpl
         implements Game {
     private static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
-    private final int distinctColorsNb;
+    private final Board board;
     private final LinkedList<State> states;
     private final Set<String> explored;
 
     public GameImpl(final Board board) {
+        this.board = board;
         final State state = new StateImpl(board);
         explored = new HashSet<>();
         explored.add(board.toString());
         states = new LinkedList<>();
         states.add(state);
-        distinctColorsNb = state.getDistinctColorsNb();
     }
 
     @Override
@@ -34,28 +34,14 @@ public class GameImpl
                 final Jelly jelly = jellies[j];
                 if (jelly.mayMoveLeft()) {
                     final State clone = state.clone();
-                    if (clone.moveLeft(j)) {
-                        clone.gravity();
-                        if (clone.getJellies().length == distinctColorsNb) {
-                            LOG.debug(new BoardImpl(clone).toString());
-                            return true;
-                        }
-                        if (explored.add(clone.getSerialization())) {
-                            states.addLast(clone);
-                        }
+                    if (clone.moveLeft(j) && process(clone)) {
+                        return true;
                     }
                 }
                 if (jelly.mayMoveRight()) {
                     final State clone = state.clone();
-                    if (clone.moveRight(j)) {
-                        clone.gravity();
-                        if (clone.getJellies().length == distinctColorsNb) {
-                            LOG.debug(new BoardImpl(clone).toString());
-                            return true;
-                        }
-                        if (explored.add(clone.getSerialization())) {
-                            states.addLast(clone);
-                        }
+                    if (clone.moveRight(j) && process(clone)) {
+                        return true;
                     }
                 }
             }
@@ -63,8 +49,20 @@ public class GameImpl
         return false;
     }
 
+    private boolean process(final State clone) {
+        clone.gravity();
+        if (clone.isSolved()) {
+            LOG.debug(new BoardImpl(clone).toString());
+            return true;
+        }
+        if (explored.add(clone.getSerialization())) {
+            states.addLast(clone);
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
-        return "distinctColorsNb=" + distinctColorsNb + ";#states=" + states.size() + ";#explored=" + explored.size();
+        return "#colors=" + board.getJellyColorNb() + "#states=" + states.size() + ";#explored=" + explored.size();
     }
 }

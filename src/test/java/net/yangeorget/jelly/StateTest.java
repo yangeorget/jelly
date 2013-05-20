@@ -27,7 +27,7 @@ public class StateTest {
     private void testGravity(final Board input, final Board output) {
         final State state = new StateImpl(input);
         state.gravity();
-        Assert.assertEquals(new BoardImpl(state), output);
+        Assert.assertEquals(new BoardImpl(state).serialize(), output.serialize());
     }
 
     @Test
@@ -42,12 +42,12 @@ public class StateTest {
 
     @Test
     public void testMoveKO3() {
-        testMoveKO(new BoardImpl(" BB0 "), 0);
+        testMoveKO(new BoardImpl(" BB# "), 0);
     }
 
     @Test
     public void testMoveKO4() {
-        testMoveKO(new BoardImpl(" BG0 "), 0);
+        testMoveKO(new BoardImpl(" BG# "), 0);
     }
 
     private void testMoveKO(final Board input, final int index) {
@@ -71,13 +71,13 @@ public class StateTest {
 
     @Test
     public void testMoveOK4() {
-        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     0 "), 2, new BoardImpl("       ", " YYGGG ", " GGG  B"));
+        testMoveOK(new BoardImpl(" YYGGG ", " GGG B ", "     # "), 2, new BoardImpl("       ", " YYGGG ", " GGG #B"));
     }
 
     private void testMoveOK(final Board input, final int index, final Board output) {
         final State state = new StateImpl(input);
         state.moveRight(index);
         state.gravity();
-        Assert.assertEquals(new BoardImpl(state), output);
+        Assert.assertEquals(new BoardImpl(state).serialize(), output.serialize());
     }
 }

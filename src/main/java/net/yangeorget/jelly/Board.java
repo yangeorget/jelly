@@ -6,7 +6,7 @@ public interface Board {
     int MAX_HEIGHT = 16;
     char FIXED_FLAG = (char) 32;
     char BLANK_CHAR = ' ';
-    char A_CHAR = 'A';
+    char WALL_CHAR = '#';
 
     Board[] LEVELS = { // board 1
             new BoardImpl("            ",
@@ -14,9 +14,9 @@ public interface Board {
                           "            ",
                           "            ",
                           "       P    ",
-                          "      00    ",
+                          "      ##    ",
                           "  G     P B ",
-                          "1B222G 33333"),
+                          "#B###G #####"),
             // board 2
             new BoardImpl("            ",
                           "            ",
@@ -25,79 +25,79 @@ public interface Board {
                           "            ",
                           "     Y   Y  ",
                           "   R R   R  ",
-                          "0000 1 2 333"),
+                          "#### # # ###"),
             // board 3
             new BoardImpl("            ",
                           "            ",
                           "            ",
                           "            ",
-                          "   BY  0 Y  ",
-                          "11 222R000  ",
+                          "   BY  # Y  ",
+                          "## ###R###  ",
                           "      B     ",
-                          "33 444R55555"),
+                          "## ###R#####"),
             // board 4
             new BoardImpl("            ",
                           "       R    ",
                           "       B    ",
-                          "       0    ",
+                          "       #    ",
                           " B R        ",
                           " B R      B ",
-                          "11 1      22",
-                          "1111 2222222"),
+                          "## #      ##",
+                          "#### #######"),
             // board 5
             new BoardImpl("            ",
                           "            ",
                           "            ",
                           "RG  GG      ",
-                          "00 1111 22  ",
+                          "## #### ##  ",
                           "RG          ",
-                          "3333  44   5",
-                          "33333 44  55"),
+                          "####  ##   #",
+                          "##### ##  ##"),
             // board 6
-            new BoardImpl("000000      ",
-                          "000000 G    ",
-                          "       11   ",
+            new BoardImpl("######      ",
+                          "###### G    ",
+                          "       ##   ",
                           " R   B      ",
-                          " 2 333 4 G  ",
-                          "         5 B",
-                          "       R 555",
-                          "   555555555"),
+                          " # ### # G  ",
+                          "         # B",
+                          "       R ###",
+                          "   #########"),
             // board 7
             new BoardImpl("            ",
                           "          P ",
-                          "          0 ",
+                          "          # ",
                           "     B   B  ",
-                          "     1  PP  ",
-                          "         2  ",
-                          " p  b4 5 2  ",
-                          " 3  44 5 2  "),
+                          "     #  PP  ",
+                          "         #  ",
+                          " p  b# # #  ",
+                          " #  ## # #  "),
             // board 8
-            new BoardImpl("000 1  2 000",
-                          "00  G  B  00",
-                          "0   3  4   0",
-                          "0   b  g   0",
-                          "0G        B0",
-                          "00G      B00",
-                          "000      000",
-                          "000000000000"),
+            new BoardImpl("### #  # ###",
+                          "##  G  B  ##",
+                          "#   #  #   #",
+                          "#   b  g   #",
+                          "#G        B#",
+                          "##G      B##",
+                          "###      ###",
+                          "############"),
             // board 9
             new BoardImpl("            ",
                           "            ",
                           "            ",
                           "            ",
                           "          RB",
-                          "    0     11",
-                          "B        DD1",
-                          "2  r3  4 111"),
+                          "    #     ##",
+                          "B        DD#",
+                          "#  r#  # ###"),
             // board 10
             new BoardImpl("   GR       ",
                           "   DD B     ",
-                          "    0 1 2222",
+                          "    # # ####",
                           "            ",
-                          "  3  4      ",
-                          "        5  r",
-                          "6   7     g8",
-                          "          88"),
+                          "  #  #      ",
+                          "        #  r",
+                          "#   #     g#",
+                          "          ##"),
             null,
             null,
             null,
@@ -106,8 +106,8 @@ public interface Board {
             null,
     // board 17
     /*
-     * new BoardImpl("000NNN111GB ", "000N     BG ", "000N    DD22", "000NNN222222", " FFF  222222", "333     22g2",
-     * "333   G    b", "333   4     ")
+     * new BoardImpl("###NNN###GB ", "###N     BG ", "###N    DD##", "###NNN######", " FFF  ######", "###     ##g#",
+     * "###   G    b", "###   #     ")
      */};
 
     char[][] getMatrix();
@@ -118,9 +118,7 @@ public interface Board {
 
     Jelly[] extractJellies();
 
-    Jelly[] getWalls();
-
-    Board clone();
+    boolean[][] getWalls();
 
     void apply(Jelly[] jellies);
 

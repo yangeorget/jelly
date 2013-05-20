@@ -7,6 +7,8 @@ import java.util.Arrays;
  */
 public class JellyImpl
         implements Jelly {
+
+    // TODO : use accents to fix jellies to each other
     private static final byte[] BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
     private byte[] positions;
     private final byte heightWidth;
@@ -202,6 +204,16 @@ public class JellyImpl
                 }
             }
         }
+    }
+
+    @Override
+    public boolean overlaps(final boolean[][] walls) {
+        for (final byte position : positions) {
+            if (walls[getI(position)][getJ(position)]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

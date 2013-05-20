@@ -18,6 +18,8 @@ public interface Jelly {
 
     boolean overlaps(Jelly j);
 
+    boolean overlaps(boolean[][] walls);
+
     Jelly clone();
 
     void updateBoard(Board board);

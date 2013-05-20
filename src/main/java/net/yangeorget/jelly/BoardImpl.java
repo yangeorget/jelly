@@ -1,41 +1,37 @@
 package net.yangeorget.jelly;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 
 public class BoardImpl
         implements Board {
-    private final char[][] matrix;
     private final int height;
     private final int width;
-    private final Jelly[] jelliesBuffer;
-    private Jelly[] walls;
+    private final char[][] matrix;
+    private boolean[][] walls;
     private int jellyColorNb;
+    private final Jelly[] jelliesBuffer;
 
     private BoardImpl(final int height, final int width) {
         this.height = height;
         this.width = width;
         jelliesBuffer = new Jelly[height * width];
-        matrix = new char[height][];
+        matrix = new char[height][width];
     }
 
     public BoardImpl(final State state) {
-        this(state.getBoard());
-        apply(state.getJellies());
-    }
-
-    private BoardImpl(final Board board) {
-        this(board.getHeight(), board.getWidth());
-        for (int i = 0; i < height; i++) {
-            matrix[i] = new char[width];
-            System.arraycopy(board.getMatrix()[i], 0, matrix[i], 0, width);
+        this(state.getBoard()
+                  .getHeight(), state.getBoard()
+                                     .getWidth());
+        walls = state.getBoard()
+                     .getWalls();
+        for (byte i = 0; i < height; i++) {
+            for (byte j = 0; j < width; j++) {
+                matrix[i][j] = walls[i][j] ? Board.WALL_CHAR : Board.BLANK_CHAR;
+            }
         }
-        final Jelly[] boardWalls = board.getWalls();
-        final int wallsSize = boardWalls.length;
-        walls = new Jelly[wallsSize];
-        System.arraycopy(boardWalls, 0, walls, 0, wallsSize);
+        apply(state.getJellies());
         computeJellyColorNb();
     }
 
@@ -44,18 +40,17 @@ public class BoardImpl
         for (int i = 0; i < height; i++) {
             matrix[i] = strings[i].toCharArray();
         }
-        int wallsSize = 0;
+        computeWalls();
+        computeJellyColorNb();
+    }
+
+    private void computeWalls() {
+        walls = new boolean[height][width];
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
-                final char color = matrix[i][j];
-                if (color != BLANK_CHAR && color < A_CHAR) {
-                    jelliesBuffer[wallsSize++] = new JellyImpl(this, color, i, j);
-                }
+                walls[i][j] = matrix[i][j] == WALL_CHAR;
             }
         }
-        walls = new Jelly[wallsSize];
-        System.arraycopy(jelliesBuffer, 0, walls, 0, wallsSize);
-        computeJellyColorNb();
     }
 
     private void computeJellyColorNb() {
@@ -63,7 +58,7 @@ public class BoardImpl
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
                 final char color = matrix[i][j];
-                if (color != Board.BLANK_CHAR) {
+                if (color != Board.BLANK_CHAR && color != Board.WALL_CHAR) {
                     colors.add(BoardImpl.toFloating(color));
                 }
             }
@@ -74,11 +69,6 @@ public class BoardImpl
     @Override
     public int getJellyColorNb() {
         return jellyColorNb;
-    }
-
-    @Override
-    public Board clone() {
-        return new BoardImpl(this);
     }
 
     @Override
@@ -127,12 +117,7 @@ public class BoardImpl
     }
 
     @Override
-    public boolean equals(final Object o) {
-        return Arrays.deepEquals(matrix, ((Board) o).getMatrix());
-    }
-
-    @Override
-    public Jelly[] getWalls() {
+    public boolean[][] getWalls() {
         return walls;
     }
 
@@ -142,7 +127,7 @@ public class BoardImpl
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
                 final char color = matrix[i][j];
-                if (color >= A_CHAR) {
+                if (color != BLANK_CHAR && color != WALL_CHAR) {
                     jelliesBuffer[nb++] = new JellyImpl(this, color, i, j);
                 }
             }
@@ -164,7 +149,7 @@ public class BoardImpl
     }
 
     public static char toFloating(final char c) {
-        return c < A_CHAR ? c : (char) (c & ~FIXED_FLAG);
+        return (char) (c & ~FIXED_FLAG);
     }
 
     @Override

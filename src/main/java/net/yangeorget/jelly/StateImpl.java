@@ -16,7 +16,7 @@ public class StateImpl
     private String serialization;
 
     public StateImpl(final Board board) {
-        this.board = board.clone();
+        this.board = board;
         serialization = this.board.serialize();
         jellies = this.board.extractJellies();
     }
@@ -52,10 +52,8 @@ public class StateImpl
             return false;
         }
         jelly.moveLeft();
-        for (final Jelly w : board.getWalls()) {
-            if (jelly.overlaps(w)) {
-                return false;
-            }
+        if (jelly.overlaps(board.getWalls())) {
+            return false;
         }
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveLeft(j)) {
@@ -75,10 +73,8 @@ public class StateImpl
             return false;
         }
         jelly.moveRight();
-        for (final Jelly w : board.getWalls()) {
-            if (jelly.overlaps(w)) {
-                return false;
-            }
+        if (jelly.overlaps(board.getWalls())) {
+            return false;
         }
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveRight(j)) {
@@ -94,10 +90,8 @@ public class StateImpl
         }
         jelly.moveDown();
         movedJellies.add(jelly);
-        for (final Jelly w : board.getWalls()) {
-            if (jelly.overlaps(w)) {
-                return false;
-            }
+        if (jelly.overlaps(board.getWalls())) {
+            return false;
         }
         for (final Jelly j : jellies) {
             if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j, movedJellies)) {
@@ -131,7 +125,7 @@ public class StateImpl
 
     @Override
     public String toString() {
-        return "board=" + board + ";walls=" + Arrays.asList(board.getWalls()) + ";jellies=" + Arrays.asList(jellies);
+        return "board=" + board + ";walls=" + board.getWalls() + ";jellies=" + Arrays.asList(jellies);
     }
 
 

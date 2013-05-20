@@ -35,30 +35,28 @@ public class GameTest {
 
     @Test
     public void testSolve6() {
-        testSolveOK(new BoardImpl(" R B R ", " 00000 ", "       "));
+        testSolveOK(new BoardImpl(" R B R ", " ##### ", "       "));
     }
 
 
     @Test
     public void testSolve7() {
-        testSolveOK(new BoardImpl("  G       B ", "0B111G 22222"));
+        testSolveOK(new BoardImpl("  G       B ", "#B###G #####"));
     }
 
 
     @Test
     public void testSolve8() {
-        testSolveOK(new BoardImpl("       P    ", "      00    ", "        P B ", "1B222GG33333"));
+        testSolveOK(new BoardImpl("       P    ", "      ##    ", "        P B ", "#B###GG#####"));
     }
 
     private void testSolveOK(final Board board) {
         final Game game = new GameImpl(board);
-        LOG.debug(game.toString());
         Assert.assertTrue(game.solve());
     }
 
     private void testSolveKO(final Board board) {
         final Game game = new GameImpl(board);
-        LOG.debug(game.toString());
         Assert.assertFalse(game.solve());
     }
 

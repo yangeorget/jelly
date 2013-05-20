@@ -80,6 +80,26 @@ public class GameTest {
         Assert.assertTrue(new GameImpl(Board.LEVELS[5]).solve());
     }
 
+    @Test
+    public void testSolveLEVEL_7() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[6]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_8() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[7]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_9() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[8]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_10() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[9]).solve());
+    }
+
     // @Test
     public void testSolveLEVEL_17() {
         Assert.assertTrue(new GameImpl(Board.LEVELS[16]).solve());

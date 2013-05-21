@@ -17,8 +17,8 @@ public class StateImpl
 
     public StateImpl(final Board board) {
         this.board = board;
-        serialization = this.board.serialize();
-        jellies = this.board.extractJellies();
+        serialization = board.serialize();
+        jellies = board.extractJellies();
     }
 
     public StateImpl(final State state) {

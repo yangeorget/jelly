@@ -20,17 +20,18 @@ public class BoardImpl
         matrix = new char[height][width];
     }
 
-    public BoardImpl(final State state) {
-        this(state.getBoard()
-                  .getHeight(), state.getBoard()
-                                     .getWidth());
-        walls = state.getBoard()
-                     .getWalls();
+    private BoardImpl(final Board board) {
+        this(board.getHeight(), board.getWidth());
+        walls = board.getWalls();
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
                 matrix[i][j] = walls[i][j] ? Board.WALL_CHAR : Board.BLANK_CHAR;
             }
         }
+    }
+
+    public BoardImpl(final State state) {
+        this(state.getBoard());
         apply(state.getJellies());
         computeJellyColorNb();
     }
@@ -128,7 +129,8 @@ public class BoardImpl
             for (byte j = 0; j < width; j++) {
                 final char color = matrix[i][j];
                 if (color != BLANK_CHAR && color != WALL_CHAR) {
-                    jelliesBuffer[nb++] = new JellyImpl(this, color, i, j);
+                    final Jelly jelly = new JellyImpl(this, i, j);
+                    jelliesBuffer[nb++] = jelly;
                 }
             }
         }

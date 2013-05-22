@@ -7,12 +7,16 @@ import java.util.Arrays;
  */
 public class JellyImpl
         implements Jelly {
-
     // TODO : use accents to fix jellies to each other
-    private static final byte[] BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
-    private byte[] positions;
+    private static final byte[] POSITIONS_BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+    private static final char[] COLOR_BUFFER = new char[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+    private static final int[] END_BUFFER = new int[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+
+    private final byte[] positions;
+    private final char[] color;
+    private final int[] end;
+
     private final byte heightWidth;
-    private final char color;
     private boolean isFixed;
     // bounding box
     private byte leftMin;
@@ -20,48 +24,77 @@ public class JellyImpl
     private byte topMin;
     private byte bottomMax;
 
-    private JellyImpl(final byte heightWidth, final char color, final boolean isFixed) {
-        this.heightWidth = heightWidth;
-        this.color = color;
-        this.isFixed = isFixed;
-    }
-
     public JellyImpl(final byte heightWidth,
-                     final char color,
                      final boolean isFixed,
                      final byte leftMin,
                      final byte rightMax,
                      final byte topMin,
                      final byte bottomMax,
+                     final char color,
                      final byte... positions) {
-        this(heightWidth, color, isFixed);
+        this(heightWidth,
+             isFixed,
+             leftMin,
+             rightMax,
+             topMin,
+             bottomMax,
+             new int[] { positions.length },
+             new char[] { color },
+             positions);
+    }
+
+    public JellyImpl(final byte heightWidth,
+                     final boolean isFixed,
+                     final byte leftMin,
+                     final byte rightMax,
+                     final byte topMin,
+                     final byte bottomMax,
+                     final int[] end,
+                     final char[] color,
+                     final byte[] positions) {
+        this.heightWidth = heightWidth;
+        this.isFixed = isFixed;
         this.leftMin = leftMin;
         this.rightMax = rightMax;
         this.leftMin = leftMin;
         this.bottomMax = bottomMax;
-        final int size = positions.length;
-        this.positions = new byte[size];
-        System.arraycopy(positions, 0, this.positions, 0, size);
+        this.positions = new byte[positions.length];
+        System.arraycopy(positions, 0, this.positions, 0, positions.length);
+        this.color = new char[color.length];
+        System.arraycopy(color, 0, this.color, 0, color.length);
+        this.end = new int[end.length];
+        System.arraycopy(end, 0, this.end, 0, end.length);
     }
 
-    public JellyImpl(final Board board, final char color, final int i, final int j) {
-        this(value(board.getHeight(), board.getWidth()), BoardImpl.toFloating(color), BoardImpl.isFixed(color));
-        this.leftMin = (byte) getWidth();
-        this.rightMax = -1;
-        this.leftMin = (byte) getHeight();
-        this.bottomMax = -1;
-        final int size = update(board.getMatrix(), 0, i, j);
-        this.positions = new byte[size];
-        System.arraycopy(BUFFER, 0, this.positions, 0, size);
-        Arrays.sort(this.positions);
+    public JellyImpl(final Board board, final int i, final int j) {
+        heightWidth = value(board.getHeight(), board.getWidth());
+        leftMin = (byte) getWidth();
+        rightMax = -1;
+        leftMin = (byte) getHeight();
+        bottomMax = -1;
+        final char[][] matrix = board.getMatrix();
+        COLOR_BUFFER[0] = BoardImpl.toFloating(matrix[i][j]);
+        END_BUFFER[0] = 0;
+        final int index = update(matrix, 0, i, j);
+        final int colorSize = index + 1;
+        color = new char[colorSize];
+        System.arraycopy(COLOR_BUFFER, 0, color, 0, colorSize);
+        final int endSize = index + 1;
+        end = new int[endSize];
+        System.arraycopy(END_BUFFER, 0, end, 0, endSize);
+        final int positionSize = getEnd(index);
+        positions = new byte[positionSize];
+        System.arraycopy(POSITIONS_BUFFER, 0, positions, 0, positionSize);
+        Arrays.sort(positions);
     }
 
     private int update(final char[][] matrix, int free, final int i, final int j) {
         final char c = matrix[i][j];
-        if (BoardImpl.toFloating(c) == color) {
+        if (BoardImpl.toFloating(c) == COLOR_BUFFER[free]) {
             isFixed |= BoardImpl.isFixed(c);
             matrix[i][j] = Board.BLANK_CHAR;
-            BUFFER[free++] = value(i, j);
+            POSITIONS_BUFFER[END_BUFFER[free]] = value(i, j);
+            END_BUFFER[free]++;
             if (j < leftMin) {
                 leftMin = (byte) j;
             }
@@ -94,12 +127,17 @@ public class JellyImpl
 
     @Override
     public JellyImpl clone() {
-        return new JellyImpl(heightWidth, color, isFixed, leftMin, rightMax, topMin, bottomMax, positions);
+        return new JellyImpl(heightWidth, isFixed, leftMin, rightMax, topMin, bottomMax, end, color, positions);
     }
 
     @Override
     public String toString() {
-        return "color=" + color + ";positions=" + Arrays.toString(positions);
+        return "positions="
+               + Arrays.toString(positions)
+               + ";color="
+               + Arrays.toString(color)
+               + ";end="
+               + Arrays.toString(end);
     }
 
     @Override
@@ -219,9 +257,21 @@ public class JellyImpl
     @Override
     public void updateBoard(final Board board) {
         final char[][] matrix = board.getMatrix();
-        for (final byte position : positions) {
-            matrix[getI(position)][getJ(position)] = color;
+        for (int i = 0; i < end.length; i++) {
+            final char c = color[i];
+            for (int j = getStart(i); j < getEnd(i); j++) {
+                final byte position = positions[j];
+                matrix[getI(position)][getJ(position)] = c;
+            }
         }
+    }
+
+    private int getStart(final int index) {
+        return index == 0 ? 0 : end[index - 1];
+    }
+
+    private int getEnd(final int index) {
+        return end[index];
     }
 
     byte getLeftMin() {

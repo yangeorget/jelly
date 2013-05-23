@@ -255,7 +255,7 @@ public class JellyImpl
     }
 
     @Override
-    public void updateBoard(final Board board) {
+    public void updateBoard(final Board board) { // TODO: fix this this is buggy
         final char[][] matrix = board.getMatrix();
         for (int i = 0; i < end.length; i++) {
             final char c = color[i];

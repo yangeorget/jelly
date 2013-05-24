@@ -8,6 +8,22 @@ public interface Board {
     char BLANK_CHAR = ' ';
     char WALL_CHAR = '#';
 
+    char[][] getMatrix();
+
+    int getHeight();
+
+    int getWidth();
+
+    Jelly[] extractJellies();
+
+    boolean[][] getWalls();
+
+    void apply(Jelly[] jellies);
+
+    String serialize();
+
+    int getJellyColorNb();
+
     Board[] LEVELS = { // board 1
             new BoardImpl("            ",
                           "            ",
@@ -104,25 +120,14 @@ public interface Board {
             null,
             null,
             null,
-    // board 17
-    /*
-     * new BoardImpl("###NNN###GB ", "###N     BG ", "###N    DD##", "###NNN######", " FFF  ######", "###     ##g#",
-     * "###   G    b", "###   #     ")
-     */};
+            // board 17
+            new BoardImpl("###NNN###GB ",
+                          "###N     BG ",
+                          "###N    DD##",
+                          "###NNN######",
+                          " FFF  ######",
+                          "###     ##g#",
+                          "###   G    b",
+                          "###   #     ") };
 
-    char[][] getMatrix();
-
-    int getHeight();
-
-    int getWidth();
-
-    Jelly[] extractJellies();
-
-    boolean[][] getWalls();
-
-    void apply(Jelly[] jellies);
-
-    String serialize();
-
-    int getJellyColorNb();
 }

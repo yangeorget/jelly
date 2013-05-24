@@ -255,10 +255,11 @@ public class JellyImpl
     }
 
     @Override
-    public void updateBoard(final Board board) { // TODO: fix this this is buggy
+    public void updateBoard(final Board board) {
         final char[][] matrix = board.getMatrix();
         for (int i = 0; i < end.length; i++) {
-            final char c = color[i];
+            char c = color[i];
+            c = isFixed ? BoardImpl.toFixed(c) : c;
             for (int j = getStart(i); j < getEnd(i); j++) {
                 final byte position = positions[j];
                 matrix[getI(position)][getJ(position)] = c;

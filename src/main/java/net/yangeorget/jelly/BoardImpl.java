@@ -154,6 +154,10 @@ public class BoardImpl
         return (char) (c & ~FIXED_FLAG);
     }
 
+    public static char toFixed(final char c) {
+        return (char) (c | FIXED_FLAG);
+    }
+
     @Override
     public char[][] getMatrix() {
         return matrix;

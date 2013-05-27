@@ -11,8 +11,7 @@ public class BoardImpl
     private final char[][] matrix;
     private final boolean[][] walls;
     private final int jellyColorNb;
-    private final byte[] linksLeft;
-    private final byte[] linksRight;
+    private final byte[][] links;
 
     public BoardImpl(final String[] strings, final byte[]... links) {
         height = strings.length;
@@ -32,15 +31,7 @@ public class BoardImpl
             }
         }
         jellyColorNb = colors.size();
-        final int size = links.length << 1;
-        this.linksLeft = new byte[size];
-        this.linksRight = new byte[size];
-        for (int i = 0; i < links.length; i++) {
-            final byte[] link = links[i];
-            final int j = i << 1;
-            linksLeft[j] = linksRight[j + 1] = link[0];
-            linksRight[j] = linksLeft[j + 1] = link[1];
-        }
+        this.links = links;
     }
 
     @Override
@@ -78,13 +69,14 @@ public class BoardImpl
     public String serialize() {
         final StringBuilder builder = new StringBuilder();
         serialize(builder);
-        String serialization = builder.toString();
+        final String serialization = builder.toString();
         int i = 0;
         while (serialization.charAt(i) == Board.BLANK_CHAR) {
-            i++;
+            if (++i == serialization.length()) {
+                return "";
+            }
         }
-        serialization = serialization.substring(i);
-        return serialization;
+        return serialization.substring(i);
     }
 
     private void serialize(final StringBuilder builder) {
@@ -96,13 +88,6 @@ public class BoardImpl
     @Override
     public boolean[][] getWalls() {
         return walls;
-    }
-
-    @Override
-    public void apply(final Jelly[] jellies) {
-        for (final Jelly jelly : jellies) {
-            jelly.updateBoard(this);
-        }
     }
 
     public static boolean isFixed(final char c) {
@@ -120,5 +105,10 @@ public class BoardImpl
     @Override
     public char[][] getMatrix() {
         return matrix;
+    }
+
+    @Override
+    public byte[][] getLinks() {
+        return links;
     }
 }

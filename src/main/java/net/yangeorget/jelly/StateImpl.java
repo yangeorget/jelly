@@ -15,11 +15,22 @@ public class StateImpl
     private Jelly[] jellies;
     private final Board board;
     private String serialization;
+    private final byte[] linksLeft;
+    private final byte[] linksRight;
 
     public StateImpl(final Board board) {
         this.board = board;
         updateFromBoard();
-        // TODO: init links for state
+        final byte[][] links = board.getLinks();
+        final int size = links.length << 1;
+        this.linksLeft = new byte[size];
+        this.linksRight = new byte[size];
+        for (int i = 0; i < links.length; i++) {
+            final byte[] link = links[i];
+            final int j = i << 1;
+            linksLeft[j] = linksRight[j + 1] = link[0];
+            linksRight[j] = linksLeft[j + 1] = link[1];
+        }
     }
 
     public StateImpl(final StateImpl state) {
@@ -29,10 +40,18 @@ public class StateImpl
         final int size = jellies.length;
         this.jellies = new Jelly[size];
         for (int i = 0; i < size; i++) {
-            this.jellies[i] = jellies[i].clone();
+            this.jellies[i] = jellies[i].clone(this);
         }
+        this.linksLeft = Arrays.copyOf(state.linksLeft, state.linksLeft.length);
+        this.linksRight = Arrays.copyOf(state.linksRight, state.linksRight.length);
     }
 
+    @Override
+    public void updateBoard() {
+        for (final Jelly jelly : jellies) {
+            jelly.updateBoard(board);
+        }
+    }
 
     @Override
     public void updateFromBoard() {
@@ -138,7 +157,7 @@ public class StateImpl
                 }
             }
         }
-        board.apply(jellies);
+        updateBoard();
         updateFromBoard();
     }
 

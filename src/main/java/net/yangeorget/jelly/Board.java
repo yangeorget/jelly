@@ -17,15 +17,15 @@ public interface Board {
     char BLANK_CHAR = ' ';
     char WALL_CHAR = '#';
 
-    char[][] getMatrix();
-
     int getHeight();
 
     int getWidth();
 
+    char[][] getMatrix();
+
     boolean[][] getWalls();
 
-    void apply(Jelly[] jellies);
+    byte[][] getLinks();
 
     String serialize();
 
@@ -142,4 +142,5 @@ public interface Board {
      */
 
     };
+
 }

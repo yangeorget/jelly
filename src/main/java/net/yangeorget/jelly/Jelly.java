@@ -20,7 +20,7 @@ public interface Jelly {
 
     boolean overlaps(boolean[][] walls);
 
-    Jelly clone();
+    Jelly clone(State state);
 
     void updateBoard(Board board);
 }

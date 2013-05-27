@@ -19,4 +19,6 @@ public interface State {
     boolean isSolved();
 
     void updateFromBoard();
+
+    void updateBoard();
 }

@@ -15,7 +15,7 @@ public class JellyImpl
     private final char[] color;
     private final int[] end;
 
-    private final byte heightWidth;
+    final State state;
     private boolean isFixed;
     // bounding box
     private byte leftMin;
@@ -23,7 +23,7 @@ public class JellyImpl
     private byte topMin;
     private byte bottomMax;
 
-    JellyImpl(final byte heightWidth,
+    JellyImpl(final State state,
               final boolean isFixed,
               final byte leftMin,
               final byte rightMax,
@@ -31,7 +31,7 @@ public class JellyImpl
               final byte bottomMax,
               final char color,
               final byte... positions) {
-        this(heightWidth,
+        this(state,
              isFixed,
              leftMin,
              rightMax,
@@ -42,7 +42,7 @@ public class JellyImpl
              positions);
     }
 
-    public JellyImpl(final byte heightWidth,
+    public JellyImpl(final State state,
                      final boolean isFixed,
                      final byte leftMin,
                      final byte rightMax,
@@ -51,7 +51,7 @@ public class JellyImpl
                      final int[] end,
                      final char[] color,
                      final byte[] positions) {
-        this.heightWidth = heightWidth;
+        this.state = state;
         this.isFixed = isFixed;
         this.leftMin = leftMin;
         this.rightMax = rightMax;
@@ -63,11 +63,11 @@ public class JellyImpl
     }
 
     public JellyImpl(final State state, final int i, final int j) {
-        final Board board = state.getBoard();
-        heightWidth = value(board.getHeight(), board.getWidth());
+        this.state = state;
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
-        final char[][] matrix = board.getMatrix();
+        final char[][] matrix = state.getBoard()
+                                     .getMatrix();
         COLOR_BUFFER[0] = BoardImpl.toFloating(matrix[i][j]);
         END_BUFFER[0] = 0;
         final int index = update(matrix, 0, i, j);
@@ -97,27 +97,26 @@ public class JellyImpl
             if (bottomMax < i) {
                 bottomMax = (byte) i;
             }
+            final Board board = state.getBoard();
             if (i > 0) {
                 free = update(matrix, free, i - 1, j);
             }
-            final int i1 = i + 1;
-            if (i1 < getHeight()) {
-                free = update(matrix, free, i1, j);
+            if (i + 1 < board.getHeight()) {
+                free = update(matrix, free, i + 1, j);
             }
             if (j > 0) {
                 free = update(matrix, free, i, j - 1);
             }
-            final int j1 = j + 1;
-            if (j1 < getWidth()) {
-                free = update(matrix, free, i, j1);
+            if (j + 1 < board.getWidth()) {
+                free = update(matrix, free, i, j + 1);
             }
         }
         return free;
     }
 
     @Override
-    public JellyImpl clone() {
-        return new JellyImpl(heightWidth, isFixed, leftMin, rightMax, topMin, bottomMax, end, color, positions);
+    public JellyImpl clone(final State state) {
+        return new JellyImpl(state, isFixed, leftMin, rightMax, topMin, bottomMax, end, color, positions);
     }
 
     @Override
@@ -151,7 +150,8 @@ public class JellyImpl
 
     @Override
     public boolean mayMoveRight() {
-        return !isFixed && rightMax != getWidth() - 1;
+        return !isFixed && rightMax != state.getBoard()
+                                            .getWidth() - 1;
     }
 
     @Override
@@ -163,7 +163,8 @@ public class JellyImpl
 
     @Override
     public boolean mayMoveDown() {
-        return !isFixed && bottomMax != getHeight() - 1;
+        return !isFixed && bottomMax != state.getBoard()
+                                             .getHeight() - 1;
     }
 
     @Override
@@ -180,19 +181,11 @@ public class JellyImpl
         bottomMax--;
     }
 
-    int getWidth() {
-        return getJ(heightWidth);
-    }
-
-    int getHeight() {
-        return getI(heightWidth);
-    }
-
-    final static int getI(final byte pos) {
+    final static int getI(final int pos) {
         return (pos >> Board.MAX_COORDINATE_LOG2) & Board.COORDINATE_MASK;
     }
 
-    final static int getJ(final byte pos) {
+    final static int getJ(final int pos) {
         return pos & Board.COORDINATE_MASK;
     }
 

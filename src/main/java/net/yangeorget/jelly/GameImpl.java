@@ -50,9 +50,9 @@ public class GameImpl
     private boolean process(final State clone) {
         clone.gravity();
         if (clone.isSolved()) {
-            final Board board = clone.getBoard();
-            board.apply(clone.getJellies());
-            LOG.debug(board.toString());
+            clone.updateBoard();
+            LOG.debug(clone.getBoard()
+                           .toString());
             return true;
         }
         if (explored.add(clone.getSerialization())) {

@@ -23,14 +23,14 @@ public class JellyImpl
     private byte topMin;
     private byte bottomMax;
 
-    public JellyImpl(final byte heightWidth,
-                     final boolean isFixed,
-                     final byte leftMin,
-                     final byte rightMax,
-                     final byte topMin,
-                     final byte bottomMax,
-                     final char color,
-                     final byte... positions) {
+    JellyImpl(final byte heightWidth,
+              final boolean isFixed,
+              final byte leftMin,
+              final byte rightMax,
+              final byte topMin,
+              final byte bottomMax,
+              final char color,
+              final byte... positions) {
         this(heightWidth,
              isFixed,
              leftMin,
@@ -55,14 +55,11 @@ public class JellyImpl
         this.isFixed = isFixed;
         this.leftMin = leftMin;
         this.rightMax = rightMax;
-        this.leftMin = leftMin;
+        this.topMin = topMin;
         this.bottomMax = bottomMax;
-        this.positions = new byte[positions.length];
-        System.arraycopy(positions, 0, this.positions, 0, positions.length);
-        this.color = new char[color.length];
-        System.arraycopy(color, 0, this.color, 0, color.length);
-        this.end = new int[end.length];
-        System.arraycopy(end, 0, this.end, 0, end.length);
+        this.positions = Arrays.copyOf(positions, positions.length);
+        this.color = Arrays.copyOf(color, color.length);
+        this.end = Arrays.copyOf(end, end.length);
     }
 
     public JellyImpl(final State state, final int i, final int j) {
@@ -74,15 +71,9 @@ public class JellyImpl
         COLOR_BUFFER[0] = BoardImpl.toFloating(matrix[i][j]);
         END_BUFFER[0] = 0;
         final int index = update(matrix, 0, i, j);
-        final int colorSize = index + 1;
-        color = new char[colorSize];
-        System.arraycopy(COLOR_BUFFER, 0, color, 0, colorSize);
-        final int endSize = index + 1;
-        end = new int[endSize];
-        System.arraycopy(END_BUFFER, 0, end, 0, endSize);
-        final int positionSize = getEnd(index);
-        positions = new byte[positionSize];
-        System.arraycopy(POSITIONS_BUFFER, 0, positions, 0, positionSize);
+        color = Arrays.copyOf(COLOR_BUFFER, index + 1);
+        end = Arrays.copyOf(END_BUFFER, index + 1);
+        positions = Arrays.copyOf(POSITIONS_BUFFER, getEnd(index));
         Arrays.sort(positions);
     }
 

@@ -18,5 +18,5 @@ public interface State {
 
     boolean isSolved();
 
-    void computeSerializationAndJellies();
+    void updateFromBoard();
 }

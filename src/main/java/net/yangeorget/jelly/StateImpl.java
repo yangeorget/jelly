@@ -18,7 +18,7 @@ public class StateImpl
 
     public StateImpl(final Board board) {
         this.board = board;
-        computeSerializationAndJellies();
+        updateFromBoard();
     }
 
     public StateImpl(final StateImpl state) {
@@ -34,20 +34,21 @@ public class StateImpl
 
 
     @Override
-    public void computeSerializationAndJellies() {
+    public void updateFromBoard() {
         serialization = board.serialize();
         int nb = 0;
         final char[][] matrix = board.getMatrix();
         final boolean[][] walls = board.getWalls();
-        for (byte i = 0; i < board.getHeight(); i++) {
-            for (byte j = 0; j < board.getWidth(); j++) {
+        final int height = board.getHeight();
+        final int width = board.getWidth();
+        for (byte i = 0; i < height; i++) {
+            for (byte j = 0; j < width; j++) {
                 if (matrix[i][j] != Board.BLANK_CHAR && !walls[i][j]) {
                     JELLIES_BUFFER[nb++] = new JellyImpl(this, i, j);
                 }
             }
         }
-        jellies = new Jelly[nb];
-        System.arraycopy(JELLIES_BUFFER, 0, jellies, 0, nb);
+        jellies = Arrays.copyOf(JELLIES_BUFFER, nb);
     }
 
     @Override
@@ -137,7 +138,7 @@ public class StateImpl
             }
         }
         board.apply(jellies);
-        computeSerializationAndJellies();
+        updateFromBoard();
     }
 
     @Override

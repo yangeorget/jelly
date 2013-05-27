@@ -131,6 +131,7 @@ public class JellyImpl
     }
 
     private void move(final byte vec) {
+        // TODO : update links on state
         for (int index = positions.length; --index >= 0;) {
             positions[index] += vec;
         }

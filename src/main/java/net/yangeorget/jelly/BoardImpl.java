@@ -11,8 +11,8 @@ public class BoardImpl
     private final char[][] matrix;
     private final boolean[][] walls;
     private final int jellyColorNb;
-    private byte[] linksLeft;
-    private byte[] linksRight;
+    private final byte[] linksLeft;
+    private final byte[] linksRight;
 
     public BoardImpl(final String[] strings, final byte[]... links) {
         height = strings.length;
@@ -32,10 +32,15 @@ public class BoardImpl
             }
         }
         jellyColorNb = colors.size();
-        // TODO: fix this
-        /*
-         * this.links = new HashMap<>(); for (final byte[] link : links) { this.links.put(link[0], link[1]); }
-         */
+        final int size = links.length << 1;
+        this.linksLeft = new byte[size];
+        this.linksRight = new byte[size];
+        for (int i = 0; i < links.length; i++) {
+            final byte[] link = links[i];
+            final int j = i << 1;
+            linksLeft[j] = linksRight[j + 1] = link[0];
+            linksRight[j] = linksLeft[j + 1] = link[1];
+        }
     }
 
     @Override

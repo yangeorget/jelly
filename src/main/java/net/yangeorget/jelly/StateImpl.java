@@ -19,6 +19,7 @@ public class StateImpl
     public StateImpl(final Board board) {
         this.board = board;
         updateFromBoard();
+        // TODO: init links for state
     }
 
     public StateImpl(final StateImpl state) {

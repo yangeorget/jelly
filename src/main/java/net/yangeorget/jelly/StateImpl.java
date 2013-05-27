@@ -12,9 +12,9 @@ public class StateImpl
     private static final Jelly[] JELLIES_BUFFER = new Jelly[Board.MAX_HEIGHT * Board.MAX_WIDTH];
     private static final List<Jelly> MOVED_JELLIES = new LinkedList<>();
 
-    private Jelly[] jellies;
     private final Board board;
     private String serialization;
+    private Jelly[] jellies;
     private final byte[] linksLeft;
     private final byte[] linksRight;
 

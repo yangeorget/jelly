@@ -8,9 +8,9 @@ public class BoardImpl
         implements Board {
     private final int height;
     private final int width;
+    private final int jellyColorNb;
     private final char[][] matrix;
     private final boolean[][] walls;
-    private final int jellyColorNb;
     private final byte[][] links;
 
     public BoardImpl(final String[] strings, final byte[]... links) {

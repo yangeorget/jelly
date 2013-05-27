@@ -14,7 +14,6 @@ public class JellyImpl
     private final byte[] positions;
     private final char[] color;
     private final int[] end;
-
     final State state;
     private boolean isFixed;
     // bounding box

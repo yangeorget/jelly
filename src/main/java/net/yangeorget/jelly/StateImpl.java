@@ -9,27 +9,45 @@ import org.slf4j.LoggerFactory;
 public class StateImpl
         implements State {
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
+    private static final Jelly[] JELLIES_BUFFER = new Jelly[Board.MAX_HEIGHT * Board.MAX_WIDTH];
+    private static final List<Jelly> MOVED_JELLIES = new LinkedList<>();
 
     private Jelly[] jellies;
     private final Board board;
-    private static final List<Jelly> MOVED_JELLIES = new LinkedList<>();
     private String serialization;
 
     public StateImpl(final Board board) {
         this.board = board;
-        serialization = board.serialize();
-        jellies = board.extractJellies();
+        computeSerializationAndJellies();
     }
 
-    public StateImpl(final State state) {
+    public StateImpl(final StateImpl state) {
         board = state.getBoard();
-        this.serialization = state.getSerialization();
-        final Jelly[] stateJellies = state.getJellies();
-        final int size = stateJellies.length;
-        jellies = new Jelly[size];
+        serialization = state.getSerialization();
+        final Jelly[] jellies = state.getJellies();
+        final int size = jellies.length;
+        this.jellies = new Jelly[size];
         for (int i = 0; i < size; i++) {
-            jellies[i] = stateJellies[i].clone();
+            this.jellies[i] = jellies[i].clone();
         }
+    }
+
+
+    @Override
+    public void computeSerializationAndJellies() {
+        serialization = board.serialize();
+        int nb = 0;
+        final char[][] matrix = board.getMatrix();
+        final boolean[][] walls = board.getWalls();
+        for (byte i = 0; i < board.getHeight(); i++) {
+            for (byte j = 0; j < board.getWidth(); j++) {
+                if (matrix[i][j] != Board.BLANK_CHAR && !walls[i][j]) {
+                    JELLIES_BUFFER[nb++] = new JellyImpl(this, i, j);
+                }
+            }
+        }
+        jellies = new Jelly[nb];
+        System.arraycopy(JELLIES_BUFFER, 0, jellies, 0, nb);
     }
 
     @Override
@@ -119,8 +137,7 @@ public class StateImpl
             }
         }
         board.apply(jellies);
-        serialization = board.serialize();
-        jellies = board.extractJellies();
+        computeSerializationAndJellies();
     }
 
     @Override

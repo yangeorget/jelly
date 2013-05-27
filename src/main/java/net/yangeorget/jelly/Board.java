@@ -2,8 +2,17 @@ package net.yangeorget.jelly;
 
 
 public interface Board {
-    int MAX_WIDTH = 16;
-    int MAX_HEIGHT = 16;
+    int COORDINATE_MASK = 0xF;
+    int MAX_COORDINATE = 16;
+    int MAX_COORDINATE_LOG2 = 4;
+    int MAX_WIDTH = MAX_COORDINATE;
+    int MAX_HEIGHT = MAX_COORDINATE;
+
+    byte LEFT = -1;
+    byte RIGHT = 1;
+    byte UP = -MAX_WIDTH;
+    byte DOWN = MAX_WIDTH;
+
     char FIXED_FLAG = (char) 32;
     char BLANK_CHAR = ' ';
     char WALL_CHAR = '#';
@@ -14,8 +23,6 @@ public interface Board {
 
     int getWidth();
 
-    Jelly[] extractJellies();
-
     boolean[][] getWalls();
 
     void apply(Jelly[] jellies);
@@ -25,109 +32,114 @@ public interface Board {
     int getJellyColorNb();
 
     Board[] LEVELS = { // board 1
-            new BoardImpl("            ",
-                          "            ",
-                          "            ",
-                          "            ",
-                          "       P    ",
-                          "      ##    ",
-                          "  G     P B ",
-                          "#B###G #####"),
+            new BoardImpl(new String[] { "            ",
+                                        "            ",
+                                        "            ",
+                                        "            ",
+                                        "       P    ",
+                                        "      ##    ",
+                                        "  G     P B ",
+                                        "#B###G #####" }),
             // board 2
-            new BoardImpl("            ",
-                          "            ",
-                          "            ",
-                          "            ",
-                          "            ",
-                          "     Y   Y  ",
-                          "   R R   R  ",
-                          "#### # # ###"),
+            new BoardImpl(new String[] { "            ",
+                                        "            ",
+                                        "            ",
+                                        "            ",
+                                        "            ",
+                                        "     Y   Y  ",
+                                        "   R R   R  ",
+                                        "#### # # ###" }),
             // board 3
-            new BoardImpl("            ",
-                          "            ",
-                          "            ",
-                          "            ",
-                          "   BY  # Y  ",
-                          "## ###R###  ",
-                          "      B     ",
-                          "## ###R#####"),
+            new BoardImpl(new String[] { "            ",
+                                        "            ",
+                                        "            ",
+                                        "            ",
+                                        "   BY  # Y  ",
+                                        "## ###R###  ",
+                                        "      B     ",
+                                        "## ###R#####" }),
             // board 4
-            new BoardImpl("            ",
-                          "       R    ",
-                          "       B    ",
-                          "       #    ",
-                          " B R        ",
-                          " B R      B ",
-                          "## #      ##",
-                          "#### #######"),
+            new BoardImpl(new String[] { "            ",
+                                        "       R    ",
+                                        "       B    ",
+                                        "       #    ",
+                                        " B R        ",
+                                        " B R      B ",
+                                        "## #      ##",
+                                        "#### #######" }),
             // board 5
-            new BoardImpl("            ",
-                          "            ",
-                          "            ",
-                          "RG  GG      ",
-                          "## #### ##  ",
-                          "RG          ",
-                          "####  ##   #",
-                          "##### ##  ##"),
+            new BoardImpl(new String[] { "            ",
+                                        "            ",
+                                        "            ",
+                                        "RG  GG      ",
+                                        "## #### ##  ",
+                                        "RG          ",
+                                        "####  ##   #",
+                                        "##### ##  ##" }),
             // board 6
-            new BoardImpl("######      ",
-                          "###### G    ",
-                          "       ##   ",
-                          " R   B      ",
-                          " # ### # G  ",
-                          "         # B",
-                          "       R ###",
-                          "   #########"),
+            new BoardImpl(new String[] { "######      ",
+                                        "###### G    ",
+                                        "       ##   ",
+                                        " R   B      ",
+                                        " # ### # G  ",
+                                        "         # B",
+                                        "       R ###",
+                                        "   #########" }),
             // board 7
-            new BoardImpl("            ",
-                          "          P ",
-                          "          # ",
-                          "     B   B  ",
-                          "     #  PP  ",
-                          "         #  ",
-                          " p  b# # #  ",
-                          " #  ## # #  "),
+            new BoardImpl(new String[] { "            ",
+                                        "          P ",
+                                        "          # ",
+                                        "     B   B  ",
+                                        "     #  PP  ",
+                                        "         #  ",
+                                        " p  b# # #  ",
+                                        " #  ## # #  " }),
             // board 8
-            new BoardImpl("### #  # ###",
-                          "##  G  B  ##",
-                          "#   #  #   #",
-                          "#   b  g   #",
-                          "#G        B#",
-                          "##G      B##",
-                          "###      ###",
-                          "############"),
+            new BoardImpl(new String[] { "### #  # ###",
+                                        "##  G  B  ##",
+                                        "#   #  #   #",
+                                        "#   b  g   #",
+                                        "#G        B#",
+                                        "##G      B##",
+                                        "###      ###",
+                                        "############" }),
             // board 9
-            new BoardImpl("            ",
-                          "            ",
-                          "            ",
-                          "            ",
-                          "          RB",
-                          "    #     ##",
-                          "B        DD#",
-                          "#  r#  # ###"),
+            new BoardImpl(new String[] { "            ",
+                                        "            ",
+                                        "            ",
+                                        "            ",
+                                        "          RB",
+                                        "    #     ##",
+                                        "B        DD#",
+                                        "#  r#  # ###" }),
             // board 10
-            new BoardImpl("   GR       ",
-                          "   DD B     ",
-                          "    # # ####",
-                          "            ",
-                          "  #  #      ",
-                          "        #  r",
-                          "#   #     g#",
-                          "          ##"),
+            new BoardImpl(new String[] { "   GR       ",
+                                        "   DD B     ",
+                                        "    # # ####",
+                                        "            ",
+                                        "  #  #      ",
+                                        "        #  r",
+                                        "#   #     g#",
+                                        "          ##" }),
+            // board 11
+            new BoardImpl(new String[] { "      YDDY Y",
+                                        "       ### #",
+                                        "           Y",
+                                        "BB         #",
+                                        "##          ",
+                                        "       Y    ",
+                                        "   # ###   y",
+                                        "   ###### ##" }, new byte[][] { { 6, 7 }, { 8, 9 } }),
             null,
             null,
             null,
             null,
             null,
             null,
-            // board 17
-            new BoardImpl("###NNN###GB ",
-                          "###N     BG ",
-                          "###N    DD##",
-                          "###NNN######",
-                          " FFF  ######",
-                          "###     ##g#",
-                          "###   G    b",
-                          "###   #     ") };
+    /*
+     * // board 17 new BoardImpl("###NNN###GB ", "###N     BG ", "###N    DD##", "###NNN######", " FFF  ######",
+     * "###     ##g#", "###   G    b", "###   #     ")
+     */
 
+    };
 }

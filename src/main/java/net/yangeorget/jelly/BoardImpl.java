@@ -9,62 +9,33 @@ public class BoardImpl
     private final int height;
     private final int width;
     private final char[][] matrix;
-    private boolean[][] walls;
-    private int jellyColorNb;
-    private final Jelly[] jelliesBuffer;
+    private final boolean[][] walls;
+    private final int jellyColorNb;
+    private byte[] linksLeft;
+    private byte[] linksRight;
 
-    private BoardImpl(final int height, final int width) {
-        this.height = height;
-        this.width = width;
-        jelliesBuffer = new Jelly[height * width];
-        matrix = new char[height][width];
-    }
-
-    private BoardImpl(final Board board) {
-        this(board.getHeight(), board.getWidth());
-        walls = board.getWalls();
-        for (byte i = 0; i < height; i++) {
-            for (byte j = 0; j < width; j++) {
-                matrix[i][j] = walls[i][j] ? Board.WALL_CHAR : Board.BLANK_CHAR;
-            }
-        }
-    }
-
-    public BoardImpl(final State state) {
-        this(state.getBoard());
-        apply(state.getJellies());
-        computeJellyColorNb();
-    }
-
-    public BoardImpl(final String... strings) {
-        this(strings.length, strings[0].length());
+    public BoardImpl(final String[] strings, final byte[]... links) {
+        height = strings.length;
+        width = strings[0].length();
+        matrix = new char[height][];
+        walls = new boolean[height][width];
+        final Set<Character> colors = new HashSet<>();
         for (int i = 0; i < height; i++) {
             matrix[i] = strings[i].toCharArray();
-        }
-        computeWalls();
-        computeJellyColorNb();
-    }
-
-    private void computeWalls() {
-        walls = new boolean[height][width];
-        for (byte i = 0; i < height; i++) {
-            for (byte j = 0; j < width; j++) {
-                walls[i][j] = matrix[i][j] == WALL_CHAR;
-            }
-        }
-    }
-
-    private void computeJellyColorNb() {
-        final Set<Character> colors = new HashSet<>();
-        for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
                 final char color = matrix[i][j];
-                if (color != Board.BLANK_CHAR && color != Board.WALL_CHAR) {
+                if (color == WALL_CHAR) {
+                    walls[i][j] = true;
+                } else if (color != Board.BLANK_CHAR) {
                     colors.add(BoardImpl.toFloating(color));
                 }
             }
         }
         jellyColorNb = colors.size();
+        // TODO: fix this
+        /*
+         * this.links = new HashMap<>(); for (final byte[] link : links) { this.links.put(link[0], link[1]); }
+         */
     }
 
     @Override
@@ -120,23 +91,6 @@ public class BoardImpl
     @Override
     public boolean[][] getWalls() {
         return walls;
-    }
-
-    @Override
-    public Jelly[] extractJellies() {
-        int nb = 0;
-        for (byte i = 0; i < height; i++) {
-            for (byte j = 0; j < width; j++) {
-                final char color = matrix[i][j];
-                if (color != BLANK_CHAR && color != WALL_CHAR) {
-                    final Jelly jelly = new JellyImpl(this, i, j);
-                    jelliesBuffer[nb++] = jelly;
-                }
-            }
-        }
-        final Jelly[] jellies = new Jelly[nb];
-        System.arraycopy(jelliesBuffer, 0, jellies, 0, nb);
-        return jellies;
     }
 
     @Override

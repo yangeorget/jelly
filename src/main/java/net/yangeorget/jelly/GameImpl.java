@@ -12,15 +12,13 @@ import org.slf4j.LoggerFactory;
 public class GameImpl
         implements Game {
     private static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
-    private final Board board;
     private final LinkedList<State> states;
     private final Set<String> explored;
 
     public GameImpl(final Board board) {
-        this.board = board;
         final State state = new StateImpl(board);
-        explored = new HashSet<>();
-        explored.add(board.toString());
+        explored = new HashSet<>(1 << 16, 0.75F);
+        explored.add(state.getSerialization());
         states = new LinkedList<>();
         states.add(state);
     }
@@ -52,7 +50,9 @@ public class GameImpl
     private boolean process(final State clone) {
         clone.gravity();
         if (clone.isSolved()) {
-            LOG.debug(new BoardImpl(clone).toString());
+            final Board board = clone.getBoard();
+            board.apply(clone.getJellies());
+            LOG.debug(board.toString());
             return true;
         }
         if (explored.add(clone.getSerialization())) {
@@ -63,6 +63,6 @@ public class GameImpl
 
     @Override
     public String toString() {
-        return "#colors=" + board.getJellyColorNb() + "#states=" + states.size() + ";#explored=" + explored.size();
+        return "#states=" + states.size() + ";#explored=" + explored.size();
     }
 }

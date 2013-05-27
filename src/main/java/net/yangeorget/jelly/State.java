@@ -17,4 +17,6 @@ public interface State {
     String getSerialization();
 
     boolean isSolved();
+
+    void computeSerializationAndJellies();
 }

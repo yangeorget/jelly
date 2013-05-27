@@ -10,44 +10,44 @@ public class GameTest {
 
     @Test
     public void testSolve1() {
-        testSolveOK(new BoardImpl("     R"));
+        testSolveOK(new BoardImpl(new String[] { "     R" }));
     }
 
     @Test
     public void testSolve2() {
-        testSolveOK(new BoardImpl("R R"));
+        testSolveOK(new BoardImpl(new String[] { "R R" }));
     }
 
     @Test
     public void testSolve3() {
-        testSolveOK(new BoardImpl("R R R"));
+        testSolveOK(new BoardImpl(new String[] { "R R R" }));
     }
 
     @Test
     public void testSolve4() {
-        testSolveOK(new BoardImpl("R R B B"));
+        testSolveOK(new BoardImpl(new String[] { "R R B B" }));
     }
 
     @Test
     public void testSolve5() {
-        testSolveKO(new BoardImpl("R R B R"));
+        testSolveKO(new BoardImpl(new String[] { "R R B R" }));
     }
 
     @Test
     public void testSolve6() {
-        testSolveOK(new BoardImpl(" R B R ", " ##### ", "       "));
+        testSolveOK(new BoardImpl(new String[] { " R B R ", " ##### ", "       " }));
     }
 
 
     @Test
     public void testSolve7() {
-        testSolveOK(new BoardImpl("  G       B ", "#B###G #####"));
+        testSolveOK(new BoardImpl(new String[] { "  G       B ", "#B###G #####" }));
     }
 
 
     @Test
     public void testSolve8() {
-        testSolveOK(new BoardImpl("       P    ", "      ##    ", "        P B ", "#B###GG#####"));
+        testSolveOK(new BoardImpl(new String[] { "       P    ", "      ##    ", "        P B ", "#B###GG#####" }));
     }
 
     private void testSolveOK(final Board board) {

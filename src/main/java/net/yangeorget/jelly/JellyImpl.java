@@ -7,7 +7,6 @@ import java.util.Arrays;
  */
 public class JellyImpl
         implements Jelly {
-    // TODO : use accents to fix jellies to each other
     private static final byte[] POSITIONS_BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
     private static final char[] COLOR_BUFFER = new char[Board.MAX_WIDTH * Board.MAX_HEIGHT];
     private static final int[] END_BUFFER = new int[Board.MAX_WIDTH * Board.MAX_HEIGHT];
@@ -66,12 +65,11 @@ public class JellyImpl
         System.arraycopy(end, 0, this.end, 0, end.length);
     }
 
-    public JellyImpl(final Board board, final int i, final int j) {
+    public JellyImpl(final State state, final int i, final int j) {
+        final Board board = state.getBoard();
         heightWidth = value(board.getHeight(), board.getWidth());
-        leftMin = (byte) getWidth();
-        rightMax = -1;
-        leftMin = (byte) getHeight();
-        bottomMax = -1;
+        topMin = bottomMax = (byte) i;
+        leftMin = rightMax = (byte) j;
         final char[][] matrix = board.getMatrix();
         COLOR_BUFFER[0] = BoardImpl.toFloating(matrix[i][j]);
         END_BUFFER[0] = 0;
@@ -89,6 +87,7 @@ public class JellyImpl
     }
 
     private int update(final char[][] matrix, int free, final int i, final int j) {
+        // TODO: update links
         final char c = matrix[i][j];
         if (BoardImpl.toFloating(c) == COLOR_BUFFER[free]) {
             isFixed |= BoardImpl.isFixed(c);
@@ -132,12 +131,18 @@ public class JellyImpl
 
     @Override
     public String toString() {
-        return "positions="
+        return ";positions="
                + Arrays.toString(positions)
                + ";color="
                + Arrays.toString(color)
                + ";end="
                + Arrays.toString(end);
+    }
+
+    private void move(final byte vec) {
+        for (int index = positions.length; --index >= 0;) {
+            positions[index] += vec;
+        }
     }
 
     @Override
@@ -147,9 +152,7 @@ public class JellyImpl
 
     @Override
     public void moveLeft() {
-        for (int index = positions.length; --index >= 0;) {
-            positions[index]--;
-        }
+        move(Board.LEFT);
         leftMin--;
         rightMax--;
     }
@@ -161,9 +164,7 @@ public class JellyImpl
 
     @Override
     public void moveRight() {
-        for (int index = positions.length; --index >= 0;) {
-            positions[index]++;
-        }
+        move(Board.RIGHT);
         leftMin++;
         rightMax++;
     }
@@ -175,18 +176,14 @@ public class JellyImpl
 
     @Override
     public void moveDown() {
-        for (int index = positions.length; --index >= 0;) {
-            positions[index] += 16;
-        }
+        move(Board.DOWN);
         topMin++;
         bottomMax++;
     }
 
     @Override
     public void moveUp() {
-        for (int index = positions.length; --index >= 0;) {
-            positions[index] -= 16;
-        }
+        move(Board.UP);
         topMin--;
         bottomMax--;
     }
@@ -200,15 +197,15 @@ public class JellyImpl
     }
 
     final static int getI(final byte pos) {
-        return (pos >> 4) & 0xF;
+        return (pos >> Board.MAX_COORDINATE_LOG2) & Board.COORDINATE_MASK;
     }
 
     final static int getJ(final byte pos) {
-        return pos & 0xF;
+        return pos & Board.COORDINATE_MASK;
     }
 
     final static byte value(final int i, final int j) {
-        return (byte) ((i << 4) | j);
+        return (byte) ((i << Board.MAX_COORDINATE_LOG2) | j);
     }
 
     @Override

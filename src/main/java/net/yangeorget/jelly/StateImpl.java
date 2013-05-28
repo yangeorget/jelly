@@ -15,22 +15,10 @@ public class StateImpl
     private final Board board;
     private String serialization;
     private Jelly[] jellies;
-    private final byte[] linksLeft;
-    private final byte[] linksRight;
 
     public StateImpl(final Board board) {
         this.board = board;
         updateFromBoard();
-        final byte[][] links = board.getLinks();
-        final int size = links.length << 1;
-        this.linksLeft = new byte[size];
-        this.linksRight = new byte[size];
-        for (int i = 0; i < links.length; i++) {
-            final byte[] link = links[i];
-            final int j = i << 1;
-            linksLeft[j] = linksRight[j + 1] = link[0];
-            linksRight[j] = linksLeft[j + 1] = link[1];
-        }
     }
 
     public StateImpl(final StateImpl state) {
@@ -42,14 +30,12 @@ public class StateImpl
         for (int i = 0; i < size; i++) {
             this.jellies[i] = jellies[i].clone(this);
         }
-        this.linksLeft = Arrays.copyOf(state.linksLeft, state.linksLeft.length);
-        this.linksRight = Arrays.copyOf(state.linksRight, state.linksRight.length);
     }
 
     @Override
     public void updateBoard() {
         for (final Jelly jelly : jellies) {
-            jelly.updateBoard(board);
+            jelly.updateBoard();
         }
     }
 
@@ -91,7 +77,7 @@ public class StateImpl
             return false;
         }
         jelly.moveLeft();
-        if (jelly.overlaps(board.getWalls())) {
+        if (jelly.overlapsWalls()) {
             return false;
         }
         for (final Jelly j : jellies) {
@@ -112,7 +98,7 @@ public class StateImpl
             return false;
         }
         jelly.moveRight();
-        if (jelly.overlaps(board.getWalls())) {
+        if (jelly.overlapsWalls()) {
             return false;
         }
         for (final Jelly j : jellies) {
@@ -129,7 +115,7 @@ public class StateImpl
         }
         jelly.moveDown();
         movedJellies.add(jelly);
-        if (jelly.overlaps(board.getWalls())) {
+        if (jelly.overlapsWalls()) {
             return false;
         }
         for (final Jelly j : jellies) {
@@ -165,7 +151,6 @@ public class StateImpl
     public String toString() {
         return "board=" + board + ";walls=" + board.getWalls() + ";jellies=" + Arrays.asList(jellies);
     }
-
 
     @Override
     public Board getBoard() {

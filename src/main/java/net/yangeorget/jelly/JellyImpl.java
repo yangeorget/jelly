@@ -77,7 +77,7 @@ public class JellyImpl
     }
 
     private int update(final char[][] matrix, int free, final int i, final int j) {
-        // TODO: update links
+        // TODO: use links
         final char c = matrix[i][j];
         if (BoardImpl.toFloating(c) == COLOR_BUFFER[free]) {
             isFixed |= BoardImpl.isFixed(c);
@@ -129,7 +129,6 @@ public class JellyImpl
     }
 
     private void move(final byte vec) {
-        // TODO : update links on state
         for (int index = positions.length; --index >= 0;) {
             positions[index] += vec;
         }
@@ -226,7 +225,9 @@ public class JellyImpl
     }
 
     @Override
-    public boolean overlaps(final boolean[][] walls) {
+    public boolean overlapsWalls() {
+        final boolean[][] walls = state.getBoard()
+                                       .getWalls();
         for (final byte position : positions) {
             if (walls[getI(position)][getJ(position)]) {
                 return true;
@@ -236,8 +237,9 @@ public class JellyImpl
     }
 
     @Override
-    public void updateBoard(final Board board) {
-        final char[][] matrix = board.getMatrix();
+    public void updateBoard() {
+        final char[][] matrix = state.getBoard()
+                                     .getMatrix();
         for (int i = 0; i < end.length; i++) {
             char c = color[i];
             c = isFixed ? BoardImpl.toFixed(c) : c;

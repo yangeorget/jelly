@@ -18,9 +18,9 @@ public interface Jelly {
 
     boolean overlaps(Jelly j);
 
-    boolean overlaps(boolean[][] walls);
+    boolean overlapsWalls();
 
     Jelly clone(State state);
 
-    void updateBoard(Board board);
+    void updateBoard();
 }

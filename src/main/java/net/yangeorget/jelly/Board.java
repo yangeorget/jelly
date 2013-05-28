@@ -129,17 +129,22 @@ public interface Board {
                                         "##          ",
                                         "       Y    ",
                                         "   # ###   y",
-                                        "   ###### ##" }, new byte[][] { { 6, 7 }, { 8, 9 } }),
+                                        "   ###### ##" }, new byte[][] { { 6, 8 }, { 7, 9 } }),
             null,
             null,
             null,
             null,
             null,
-            null,
-    /*
-     * // board 17 new BoardImpl("###NNN###GB ", "###N     BG ", "###N    DD##", "###NNN######", " FFF  ######",
-     * "###     ##g#", "###   G    b", "###   #     ")
-     */
+            // board 17
+            new BoardImpl(new String[] { "###NNN###GB ",
+                                        "###N     BG ",
+                                        "###N    DD##",
+                                        "###NNN######",
+                                        " FFF  ######",
+                                        "###     ##g#",
+                                        "###   G    b",
+                                        "###   #     " })
+
 
     };
 

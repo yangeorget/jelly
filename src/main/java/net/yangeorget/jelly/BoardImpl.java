@@ -13,7 +13,11 @@ public class BoardImpl
     private final boolean[][] walls;
     private final byte[][] links;
 
-    public BoardImpl(final String[] strings, final byte[]... links) {
+    public BoardImpl(final String[] strings) {
+        this(strings, new byte[][] { {}, {} });
+    }
+
+    public BoardImpl(final String[] strings, final byte[][] links) {
         height = strings.length;
         width = strings[0].length();
         matrix = new char[height][];

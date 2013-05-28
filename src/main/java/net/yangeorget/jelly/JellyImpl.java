@@ -65,24 +65,31 @@ public class JellyImpl
         this.state = state;
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
-        final char[][] matrix = state.getBoard()
-                                     .getMatrix();
-        COLOR_BUFFER[0] = BoardImpl.toFloating(matrix[i][j]);
+        COLOR_BUFFER[0] = BoardImpl.toFloating(state.getBoard()
+                                                    .getMatrix()[i][j]);
         END_BUFFER[0] = 0;
-        final int index = update(matrix, 0, i, j);
+        final int index = update(0, i, j);
         color = Arrays.copyOf(COLOR_BUFFER, index + 1);
         end = Arrays.copyOf(END_BUFFER, index + 1);
         positions = Arrays.copyOf(POSITIONS_BUFFER, getEnd(index));
         Arrays.sort(positions);
     }
 
-    private int update(final char[][] matrix, int free, final int i, final int j) {
+    private int update(int free, final int i, final int j) {
         // TODO: use links
+        final Board board = state.getBoard();
+        final char[][] matrix = board.getMatrix();
+        final byte[][] links = board.getLinks();
         final char c = matrix[i][j];
+        final byte pos = value(i, j);
+        final int idx = Arrays.binarySearch(links[0], pos);
+        if (idx != -1) {
+            // final byte linkedPos = links[1][idx];
+        }
         if (BoardImpl.toFloating(c) == COLOR_BUFFER[free]) {
             isFixed |= BoardImpl.isFixed(c);
             matrix[i][j] = Board.BLANK_CHAR;
-            POSITIONS_BUFFER[END_BUFFER[free]] = value(i, j);
+            POSITIONS_BUFFER[END_BUFFER[free]] = pos;
             END_BUFFER[free]++;
             if (j < leftMin) {
                 leftMin = (byte) j;
@@ -96,18 +103,17 @@ public class JellyImpl
             if (bottomMax < i) {
                 bottomMax = (byte) i;
             }
-            final Board board = state.getBoard();
             if (i > 0) {
-                free = update(matrix, free, i - 1, j);
+                free = update(free, i - 1, j);
             }
             if (i + 1 < board.getHeight()) {
-                free = update(matrix, free, i + 1, j);
+                free = update(free, i + 1, j);
             }
             if (j > 0) {
-                free = update(matrix, free, i, j - 1);
+                free = update(free, i, j - 1);
             }
             if (j + 1 < board.getWidth()) {
-                free = update(matrix, free, i, j + 1);
+                free = update(free, i, j + 1);
             }
         }
         return free;

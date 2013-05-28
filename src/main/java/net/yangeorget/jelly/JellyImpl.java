@@ -7,13 +7,14 @@ import java.util.Arrays;
  */
 public class JellyImpl
         implements Jelly {
+    private static final byte[] CANDIDATE_BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
     private static final byte[] POSITIONS_BUFFER = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
     private static final char[] COLOR_BUFFER = new char[Board.MAX_WIDTH * Board.MAX_HEIGHT];
     private static final int[] END_BUFFER = new int[Board.MAX_WIDTH * Board.MAX_HEIGHT];
 
-    private final byte[] positions;
-    private final char[] color;
-    private final int[] end;
+    final byte[] positions;
+    final char[] color;
+    final int[] end;
     final State state;
     private boolean isFixed;
     // bounding box
@@ -68,55 +69,59 @@ public class JellyImpl
         COLOR_BUFFER[0] = BoardImpl.toFloating(state.getBoard()
                                                     .getMatrix()[i][j]);
         END_BUFFER[0] = 0;
-        final int index = update(0, i, j);
-        color = Arrays.copyOf(COLOR_BUFFER, index + 1);
-        end = Arrays.copyOf(END_BUFFER, index + 1);
-        positions = Arrays.copyOf(POSITIONS_BUFFER, getEnd(index));
+        CANDIDATE_BUFFER[0] = value(i, j);
+        final int colorIndex = update(0, 1);
+        color = Arrays.copyOf(COLOR_BUFFER, colorIndex + 1);
+        end = Arrays.copyOf(END_BUFFER, colorIndex + 1);
+        positions = Arrays.copyOf(POSITIONS_BUFFER, getEnd(colorIndex));
         Arrays.sort(positions);
     }
 
-    private int update(int free, final int i, final int j) {
-        // TODO: use links
-        final Board board = state.getBoard();
-        final char[][] matrix = board.getMatrix();
-        final byte[][] links = board.getLinks();
-        final char c = matrix[i][j];
-        final byte pos = value(i, j);
-        final int idx = Arrays.binarySearch(links[0], pos);
-        if (idx != -1) {
-            // final byte linkedPos = links[1][idx];
+    private int update(int index, int maxIndex) {
+        final int colorIndex = 0;
+        while (index < maxIndex) {
+            final int pos = CANDIDATE_BUFFER[index++];
+            final byte i = (byte) getI(pos);
+            final byte j = (byte) getJ(pos);
+            final Board board = state.getBoard();
+            final char[][] matrix = board.getMatrix();
+            final char c = matrix[i][j];
+            final byte[][] links = board.getLinks();
+            final int idx = Arrays.binarySearch(links[0], (byte) pos);
+            if (idx != -1) {
+                // final byte linkedPos = links[1][idx];
+            }
+            if (BoardImpl.toFloating(c) == COLOR_BUFFER[colorIndex]) {
+                isFixed |= BoardImpl.isFixed(c);
+                matrix[i][j] = Board.BLANK_CHAR;
+                POSITIONS_BUFFER[END_BUFFER[colorIndex]++] = (byte) pos;
+                if (j < leftMin) {
+                    leftMin = j;
+                }
+                if (rightMax < j) {
+                    rightMax = j;
+                }
+                if (i < topMin) {
+                    topMin = i;
+                }
+                if (bottomMax < i) {
+                    bottomMax = i;
+                }
+                if (i > 0) {
+                    CANDIDATE_BUFFER[maxIndex++] = value(i - 1, j);
+                }
+                if (i + 1 < board.getHeight()) {
+                    CANDIDATE_BUFFER[maxIndex++] = value(i + 1, j);
+                }
+                if (j > 0) {
+                    CANDIDATE_BUFFER[maxIndex++] = value(i, j - 1);
+                }
+                if (j + 1 < board.getWidth()) {
+                    CANDIDATE_BUFFER[maxIndex++] = value(i, j + 1);
+                }
+            }
         }
-        if (BoardImpl.toFloating(c) == COLOR_BUFFER[free]) {
-            isFixed |= BoardImpl.isFixed(c);
-            matrix[i][j] = Board.BLANK_CHAR;
-            POSITIONS_BUFFER[END_BUFFER[free]] = pos;
-            END_BUFFER[free]++;
-            if (j < leftMin) {
-                leftMin = (byte) j;
-            }
-            if (rightMax < j) {
-                rightMax = (byte) j;
-            }
-            if (i < topMin) {
-                topMin = (byte) i;
-            }
-            if (bottomMax < i) {
-                bottomMax = (byte) i;
-            }
-            if (i > 0) {
-                free = update(free, i - 1, j);
-            }
-            if (i + 1 < board.getHeight()) {
-                free = update(free, i + 1, j);
-            }
-            if (j > 0) {
-                free = update(free, i, j - 1);
-            }
-            if (j + 1 < board.getWidth()) {
-                free = update(free, i, j + 1);
-            }
-        }
-        return free;
+        return colorIndex;
     }
 
     @Override
@@ -134,7 +139,7 @@ public class JellyImpl
                + Arrays.toString(end);
     }
 
-    private void move(final byte vec) {
+    private void move(final int vec) {
         for (int index = positions.length; --index >= 0;) {
             positions[index] += vec;
         }

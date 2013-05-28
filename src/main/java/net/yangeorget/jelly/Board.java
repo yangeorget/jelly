@@ -8,10 +8,10 @@ public interface Board {
     int MAX_WIDTH = MAX_COORDINATE;
     int MAX_HEIGHT = MAX_COORDINATE;
 
-    byte LEFT = -1;
-    byte RIGHT = 1;
-    byte UP = -MAX_WIDTH;
-    byte DOWN = MAX_WIDTH;
+    int LEFT = -1;
+    int RIGHT = 1;
+    int UP = -MAX_WIDTH;
+    int DOWN = MAX_WIDTH;
 
     char FIXED_FLAG = (char) 32;
     char BLANK_CHAR = ' ';

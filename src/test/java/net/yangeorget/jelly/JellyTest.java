@@ -5,6 +5,25 @@ import org.testng.annotations.Test;
 
 public class JellyTest {
     @Test
+    public void testJelly() {
+        final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
+        final State state = new StateImpl(board);
+        final JellyImpl jelly = new JellyImpl(state,
+                                              false,
+                                              (byte) 2,
+                                              (byte) 3,
+                                              (byte) 1,
+                                              (byte) 2,
+                                              'B',
+                                              (byte) 0x12,
+                                              (byte) 0x13,
+                                              (byte) 0x22);
+        Assert.assertEquals(jelly.positions.length, 3);
+        Assert.assertEquals(jelly.color.length, 1);
+        Assert.assertEquals(jelly.end.length, 1);
+    }
+
+    @Test
     public void testClone() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final State state = new StateImpl(board);

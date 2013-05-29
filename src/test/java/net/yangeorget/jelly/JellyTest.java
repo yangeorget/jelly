@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 public class JellyTest {
     @Test
-    public void testJelly() {
+    public void testJelly1() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final State state = new StateImpl(board);
         final JellyImpl jelly = new JellyImpl(state,
@@ -21,6 +21,16 @@ public class JellyTest {
         Assert.assertEquals(jelly.positions.length, 3);
         Assert.assertEquals(jelly.color.length, 1);
         Assert.assertEquals(jelly.end.length, 1);
+    }
+
+    @Test
+    public void testJelly2() {
+        final Board board = new BoardImpl(new String[] { "AB" }, new byte[][] { { 0, 1 }, { 1, 0 } });
+        final State state = new StateImpl(board);
+        final JellyImpl jelly = (JellyImpl) state.getJellies()[0];
+        Assert.assertEquals(jelly.color.length, 2);
+        Assert.assertEquals(jelly.end.length, 2);
+        Assert.assertEquals(jelly.positions.length, 2);
     }
 
     @Test

@@ -9,6 +9,13 @@ public class StateTest {
     private static final Logger LOG = LoggerFactory.getLogger(StateTest.class);
 
     @Test
+    public void testState() {
+        final Board board = new BoardImpl(new String[] { "AB" }, new byte[][] { { 0, 1 }, { 1, 0 } });
+        final State state = new StateImpl(board);
+        Assert.assertEquals(state.getJellies().length, 1);
+    }
+
+    @Test
     public void testGravity1() {
         testGravity(new BoardImpl(new String[] { " BB ", "    ", "    " }), new BoardImpl(new String[] { "    ",
                                                                                                         "    ",

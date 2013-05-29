@@ -67,68 +67,81 @@ public class JellyImpl
         this.state = state;
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
-        CANDIDATE_SEGMENT_BUFFER[0] = value(i, j);
-        final int freeSegmentIndex = update();
+        final Board board = state.getBoard();
+        final int freeSegmentIndex = update(board.getMatrix(),
+                                            board.getLinks(),
+                                            board.getHeight() - 1,
+                                            board.getWidth() - 1,
+                                            i,
+                                            j);
         color = Arrays.copyOf(COLOR_BUFFER, freeSegmentIndex);
         end = Arrays.copyOf(END_BUFFER, freeSegmentIndex);
         positions = Arrays.copyOf(POSITIONS_BUFFER, getEnd(freeSegmentIndex - 1));
         Arrays.sort(positions);
     }
 
-    private int update() {
+    private int update(final char[][] matrix,
+                       final byte[][] links,
+                       final int height1,
+                       final int width1,
+                       final int si,
+                       final int sj) {
+        CANDIDATE_SEGMENT_BUFFER[0] = value(si, sj);
         int segmentIndex = 0;
-        for (final int freeSegmentIndex = 1; segmentIndex < freeSegmentIndex; segmentIndex++) {
-            END_BUFFER[segmentIndex] = 0;
+        for (int freeSegmentIndex = 1; segmentIndex < freeSegmentIndex; segmentIndex++) {
+            END_BUFFER[segmentIndex] = segmentIndex == 0 ? 0 : END_BUFFER[segmentIndex - 1];
             CANDIDATE_POSITIONS_BUFFER[0] = CANDIDATE_SEGMENT_BUFFER[segmentIndex];
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
                 final int pos = CANDIDATE_POSITIONS_BUFFER[index];
                 final byte i = (byte) getI(pos);
                 final byte j = (byte) getJ(pos);
-                final Board board = state.getBoard(); // TODO : pass these as params
-                final char[][] matrix = board.getMatrix();
                 final char c = matrix[i][j];
-                if (segmentEmpty(segmentIndex)) {
-                    COLOR_BUFFER[segmentIndex] = BoardImpl.toFloating(c);
-                }
-                final byte[][] links = board.getLinks();
-                final int idx = Arrays.binarySearch(links[0], (byte) pos);
-                if (idx != -1) {
-                    // final byte linkedPos = links[1][idx];
-                }
-                if (BoardImpl.toFloating(c) == COLOR_BUFFER[segmentIndex]) {
-                    isFixed |= BoardImpl.isFixed(c);
-                    matrix[i][j] = Board.BLANK_CHAR;
-                    POSITIONS_BUFFER[END_BUFFER[segmentIndex]++] = (byte) pos;
-                    if (j < leftMin) {
-                        leftMin = j;
+                if (c != Board.BLANK_CHAR) {
+                    if (segmentEmpty(segmentIndex)) {
+                        COLOR_BUFFER[segmentIndex] = BoardImpl.toFloating(c);
                     }
-                    if (rightMax < j) {
-                        rightMax = j;
-                    }
-                    if (i < topMin) {
-                        topMin = i;
-                    }
-                    if (bottomMax < i) {
-                        bottomMax = i;
-                    }
-                    if (i > 0) {
-                        CANDIDATE_POSITIONS_BUFFER[freeIndex++] = (byte) (pos + Board.UP);
-                    }
-                    if (i < board.getHeight() - 1) {
-                        CANDIDATE_POSITIONS_BUFFER[freeIndex++] = (byte) (pos + Board.DOWN);
-                    }
-                    if (j > 0) {
-                        CANDIDATE_POSITIONS_BUFFER[freeIndex++] = (byte) (pos + Board.LEFT);
-                    }
-                    if (j < board.getWidth() - 1) {
-                        CANDIDATE_POSITIONS_BUFFER[freeIndex++] = (byte) (pos + Board.RIGHT);
+                    if (BoardImpl.toFloating(c) == COLOR_BUFFER[segmentIndex]) {
+                        matrix[i][j] = Board.BLANK_CHAR;
+                        isFixed |= BoardImpl.isFixed(c);
+                        POSITIONS_BUFFER[END_BUFFER[segmentIndex]++] = (byte) pos;
+                        final int idx = Arrays.binarySearch(links[0], (byte) pos);
+                        if (idx >= 0) {
+                            final byte linkedPos = links[1][idx];
+                            if (Arrays.binarySearch(CANDIDATE_SEGMENT_BUFFER, linkedPos) < 0) {
+                                CANDIDATE_SEGMENT_BUFFER[freeSegmentIndex++] = linkedPos;
+                                Arrays.sort(CANDIDATE_SEGMENT_BUFFER, 0, freeSegmentIndex);
+                            }
+                        }
+                        if (j < leftMin) {
+                            leftMin = j;
+                        }
+                        if (rightMax < j) {
+                            rightMax = j;
+                        }
+                        if (i < topMin) {
+                            topMin = i;
+                        }
+                        if (bottomMax < i) {
+                            bottomMax = i;
+                        }
+                        if (i > 0) {
+                            CANDIDATE_POSITIONS_BUFFER[freeIndex++] = (byte) (pos + Board.UP);
+                        }
+                        if (i < height1) {
+                            CANDIDATE_POSITIONS_BUFFER[freeIndex++] = (byte) (pos + Board.DOWN);
+                        }
+                        if (j > 0) {
+                            CANDIDATE_POSITIONS_BUFFER[freeIndex++] = (byte) (pos + Board.LEFT);
+                        }
+                        if (j < width1) {
+                            CANDIDATE_POSITIONS_BUFFER[freeIndex++] = (byte) (pos + Board.RIGHT);
+                        }
                     }
                 }
             }
         }
         return segmentIndex;
     }
-
 
     @Override
     public JellyImpl clone(final State state) {

@@ -67,8 +67,6 @@ public class JellyImpl
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
         final int colorIndex = 0;
-        COLOR_BUFFER[colorIndex] = BoardImpl.toFloating(state.getBoard()
-                                                             .getMatrix()[i][j]);
         END_BUFFER[colorIndex] = 0;
         CANDIDATE_BUFFER[0] = value(i, j);
         update(colorIndex, 0, 1);
@@ -86,6 +84,10 @@ public class JellyImpl
             final Board board = state.getBoard();
             final char[][] matrix = board.getMatrix();
             final char c = matrix[i][j];
+            if ((colorIndex == 0 && END_BUFFER[0] == 0)
+                || (colorIndex != 0 && END_BUFFER[colorIndex - 1] == END_BUFFER[colorIndex])) { // TODO: optimize
+                COLOR_BUFFER[colorIndex] = BoardImpl.toFloating(c);
+            }
             final byte[][] links = board.getLinks();
             final int idx = Arrays.binarySearch(links[0], (byte) pos);
             if (idx != -1) {

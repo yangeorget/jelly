@@ -66,19 +66,19 @@ public class JellyImpl
         this.state = state;
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
-        COLOR_BUFFER[0] = BoardImpl.toFloating(state.getBoard()
-                                                    .getMatrix()[i][j]);
-        END_BUFFER[0] = 0;
+        final int colorIndex = 0;
+        COLOR_BUFFER[colorIndex] = BoardImpl.toFloating(state.getBoard()
+                                                             .getMatrix()[i][j]);
+        END_BUFFER[colorIndex] = 0;
         CANDIDATE_BUFFER[0] = value(i, j);
-        final int colorIndex = update(0, 1);
+        update(colorIndex, 0, 1);
         color = Arrays.copyOf(COLOR_BUFFER, colorIndex + 1);
         end = Arrays.copyOf(END_BUFFER, colorIndex + 1);
         positions = Arrays.copyOf(POSITIONS_BUFFER, getEnd(colorIndex));
         Arrays.sort(positions);
     }
 
-    private int update(int index, int maxIndex) {
-        final int colorIndex = 0;
+    private void update(final int colorIndex, int index, int maxIndex) {
         while (index < maxIndex) {
             final int pos = CANDIDATE_BUFFER[index++];
             final byte i = (byte) getI(pos);
@@ -108,20 +108,19 @@ public class JellyImpl
                     bottomMax = i;
                 }
                 if (i > 0) {
-                    CANDIDATE_BUFFER[maxIndex++] = value(i - 1, j);
+                    CANDIDATE_BUFFER[maxIndex++] = (byte) (pos + Board.UP);
                 }
                 if (i + 1 < board.getHeight()) {
-                    CANDIDATE_BUFFER[maxIndex++] = value(i + 1, j);
+                    CANDIDATE_BUFFER[maxIndex++] = (byte) (pos + Board.DOWN);
                 }
                 if (j > 0) {
-                    CANDIDATE_BUFFER[maxIndex++] = value(i, j - 1);
+                    CANDIDATE_BUFFER[maxIndex++] = (byte) (pos + Board.LEFT);
                 }
                 if (j + 1 < board.getWidth()) {
-                    CANDIDATE_BUFFER[maxIndex++] = value(i, j + 1);
+                    CANDIDATE_BUFFER[maxIndex++] = (byte) (pos + Board.RIGHT);
                 }
             }
         }
-        return colorIndex;
     }
 
     @Override

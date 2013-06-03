@@ -67,26 +67,29 @@ public class BoardImpl
             builder.append('\n');
         }
         builder.append(matrix[height1]);
+        builder.append('\n');
+        for (int i = 0; i < links[0].length; i++) {
+            builder.append(links[0][i]);
+            builder.append("-");
+            builder.append(links[1][i]);
+            builder.append('\n');
+        }
     }
 
     @Override
     public String serialize() {
         final StringBuilder builder = new StringBuilder();
-        serialize(builder);
-        final String serialization = builder.toString();
-        int i = 0;
-        while (serialization.charAt(i) == Board.BLANK_CHAR) {
-            if (++i == serialization.length()) {
-                return "";
-            }
-        }
-        return serialization.substring(i);
-    }
-
-    private void serialize(final StringBuilder builder) {
         for (int i = 0; i < height; i++) {
             builder.append(matrix[i]);
         }
+        final String serialization = builder.toString();
+        for (int i = 0; i < serialization.length(); i++) {
+            final char c = serialization.charAt(i);
+            if (c != Board.BLANK_CHAR && c != Board.WALL_CHAR) {
+                return serialization.substring(i);
+            }
+        }
+        return "";
     }
 
     @Override

@@ -34,9 +34,13 @@ public class StateImpl
 
     @Override
     public void updateBoard() {
+        int index = 0;
         for (final Jelly jelly : jellies) {
-            jelly.updateBoard();
+            index = jelly.updateBoard(index);
         }
+        final byte[][] links = board.getLinks();
+        links[0] = Arrays.copyOf(links[0], index);
+        links[1] = Arrays.copyOf(links[1], index);
     }
 
     @Override
@@ -149,7 +153,12 @@ public class StateImpl
 
     @Override
     public String toString() {
-        return "board=" + board + ";walls=" + board.getWalls() + ";jellies=" + Arrays.asList(jellies);
+        return "board="
+               + board
+               + ";walls="
+               + board.getWalls()
+               + ";jellies="
+               + (jellies == null ? "null" : Arrays.asList(jellies));
     }
 
     @Override
@@ -164,6 +173,6 @@ public class StateImpl
 
     @Override
     public boolean isSolved() {
-        return getJellies().length == board.getJellyColorNb();
+        return getJellies().length == board.getJellyColorNb(); // TODO: fix this
     }
 }

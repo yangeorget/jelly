@@ -111,6 +111,11 @@ public class GameTest {
     }
 
     // @Test
+    public void testSolveLEVEL_11() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[10]).solve());
+    }
+
+    // @Test
     public void testSolveLEVEL_17() {
         Assert.assertTrue(new GameImpl(Board.LEVELS[16]).solve());
     }

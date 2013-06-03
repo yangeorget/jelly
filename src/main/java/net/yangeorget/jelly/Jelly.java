@@ -22,5 +22,5 @@ public interface Jelly {
 
     Jelly clone(State state);
 
-    void updateBoard();
+    int updateBoard(int index);
 }

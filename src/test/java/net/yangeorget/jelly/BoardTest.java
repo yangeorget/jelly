@@ -17,7 +17,7 @@ public class BoardTest {
 
     @Test
     public void testSerialize() {
-        Assert.assertEquals(new BoardImpl(new String[] { "  1", " 2 ", "3  " }).serialize(), "1 2 3  ");
+        Assert.assertEquals(new BoardImpl(new String[] { " #1", " 2 ", "3  " }).serialize(), "1 2 3  ");
     }
 
     @Test

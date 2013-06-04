@@ -25,11 +25,15 @@ public interface Board {
 
     boolean[][] getWalls();
 
-    byte[][] getLinks();
+    byte[] getLinks(int index);
 
     String serialize();
 
     int getJellyColorNb();
+
+    void updateLinks(int index);
+
+    void storeLink(int index, byte start, byte end);
 
     Board[] LEVELS = { // board 1
             new BoardImpl(new String[] { "            ",
@@ -147,5 +151,6 @@ public interface Board {
 
 
     };
+
 
 }

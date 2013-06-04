@@ -38,9 +38,7 @@ public class StateImpl
         for (final Jelly jelly : jellies) {
             index = jelly.updateBoard(index);
         }
-        final byte[][] links = board.getLinks();
-        links[0] = Arrays.copyOf(links[0], index);
-        links[1] = Arrays.copyOf(links[1], index);
+        board.updateLinks(index); // TODO: fix this
     }
 
     @Override
@@ -132,6 +130,7 @@ public class StateImpl
 
     @Override
     public void gravity() { // TODO: use a cache to check if moves are possible
+        // LOG.debug("before gravity " + board.toString());
         for (boolean gravityAgain = true; gravityAgain;) {
             gravityAgain = false;
             for (final Jelly jelly : jellies) {
@@ -173,6 +172,10 @@ public class StateImpl
 
     @Override
     public boolean isSolved() {
-        return getJellies().length == board.getJellyColorNb(); // TODO: fix this
+        int jellyNb = 0;
+        for (final Jelly jelly : jellies) {
+            jellyNb += jelly.getSegmentNb();
+        }
+        return jellyNb == board.getJellyColorNb();
     }
 }

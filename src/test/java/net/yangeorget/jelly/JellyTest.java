@@ -27,10 +27,25 @@ public class JellyTest {
     public void testJelly2() {
         final Board board = new BoardImpl(new String[] { "AB" }, new byte[][] { { 0, 1 }, { 1, 0 } });
         final State state = new StateImpl(board);
-        final JellyImpl jelly = (JellyImpl) state.getJellies()[0];
+        final Jelly[] jellies = state.getJellies();
+        Assert.assertEquals(jellies.length, 1);
+        final JellyImpl jelly = (JellyImpl) jellies[0];
         Assert.assertEquals(jelly.color.length, 2);
         Assert.assertEquals(jelly.end.length, 2);
         Assert.assertEquals(jelly.positions.length, 2);
+    }
+
+    @Test
+    public void testJelly3() {
+        final Board board = new BoardImpl(new String[] { "AB", "AB" }, new byte[][] { { 0, 1, 16, 17 },
+                                                                                     { 1, 0, 17, 16 } });
+        final State state = new StateImpl(board);
+        final Jelly[] jellies = state.getJellies();
+        Assert.assertEquals(jellies.length, 1);
+        final JellyImpl jelly = (JellyImpl) jellies[0];
+        Assert.assertEquals(jelly.color.length, 2);
+        Assert.assertEquals(jelly.end.length, 2);
+        Assert.assertEquals(jelly.positions.length, 4);
     }
 
     @Test
@@ -80,6 +95,34 @@ public class JellyTest {
     }
 
     @Test
+    public void testMoveLeft() {
+        final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
+        final State state = new StateImpl(board);
+        final Jelly jelly1 = new JellyImpl(state,
+                                           false,
+                                           (byte) 2,
+                                           (byte) 3,
+                                           (byte) 1,
+                                           (byte) 2,
+                                           'B',
+                                           (byte) 0x12,
+                                           (byte) 0x13,
+                                           (byte) 0x22);
+        final Jelly jelly2 = new JellyImpl(state,
+                                           false,
+                                           (byte) 3,
+                                           (byte) 4,
+                                           (byte) 1,
+                                           (byte) 2,
+                                           'B',
+                                           (byte) 0x13,
+                                           (byte) 0x14,
+                                           (byte) 0x23);
+        jelly2.moveLeft();
+        Assert.assertEquals(jelly1.toString(), jelly2.toString());
+    }
+
+    @Test
     public void testMoveDown() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final State state = new StateImpl(board);
@@ -107,6 +150,33 @@ public class JellyTest {
         Assert.assertEquals(jelly1.toString(), jelly2.toString());
     }
 
+    @Test
+    public void testMoveUp() {
+        final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
+        final State state = new StateImpl(board);
+        final Jelly jelly1 = new JellyImpl(state,
+                                           false,
+                                           (byte) 2,
+                                           (byte) 3,
+                                           (byte) 1,
+                                           (byte) 2,
+                                           'B',
+                                           (byte) 0x12,
+                                           (byte) 0x13,
+                                           (byte) 0x22);
+        final Jelly jelly2 = new JellyImpl(state,
+                                           false,
+                                           (byte) 2,
+                                           (byte) 3,
+                                           (byte) 2,
+                                           (byte) 3,
+                                           'B',
+                                           (byte) 0x22,
+                                           (byte) 0x23,
+                                           (byte) 0x32);
+        jelly2.moveUp();
+        Assert.assertEquals(jelly1.toString(), jelly2.toString());
+    }
 
     @Test
     public void testOverlaps1() {

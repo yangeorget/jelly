@@ -110,9 +110,9 @@ public class GameTest {
         Assert.assertTrue(new GameImpl(Board.LEVELS[9]).solve());
     }
 
-    // @Test
+    @Test
     public void testSolveLEVEL_11() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[10]).solve());
+        Assert.assertTrue(new GameImpl(Board.LEVELS[10]).solve()); // TODO: debug this
     }
 
     // @Test

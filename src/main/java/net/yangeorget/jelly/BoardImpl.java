@@ -1,5 +1,6 @@
 package net.yangeorget.jelly;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +13,9 @@ public class BoardImpl
     private final char[][] matrix;
     private final boolean[][] walls;
     private final byte[][] links;
+
+    private static final byte[][] LINKS_BUF = { new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT],
+                                               new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT] };
 
     public BoardImpl(final String[] strings) {
         this(strings, new byte[][] { {}, {} });
@@ -62,6 +66,7 @@ public class BoardImpl
 
     private void toString(final StringBuilder builder) {
         final int height1 = height - 1;
+        builder.append('\n');
         for (int i = 0; i < height1; i++) {
             builder.append(matrix[i]);
             builder.append('\n');
@@ -77,7 +82,7 @@ public class BoardImpl
     }
 
     @Override
-    public String serialize() {
+    public String serialize() { // TODO: fix
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < height; i++) {
             builder.append(matrix[i]);
@@ -115,7 +120,19 @@ public class BoardImpl
     }
 
     @Override
-    public byte[][] getLinks() {
-        return links;
+    public byte[] getLinks(final int index) {
+        return links[index];
+    }
+
+    @Override
+    public void updateLinks(final int index) {
+        links[0] = Arrays.copyOf(LINKS_BUF[0], index);
+        links[1] = Arrays.copyOf(LINKS_BUF[1], index);
+    }
+
+    @Override
+    public void storeLink(final int index, final byte start, final byte end) {
+        LINKS_BUF[0][index] = LINKS_BUF[1][index + 1] = start;
+        LINKS_BUF[0][index + 1] = LINKS_BUF[1][index] = end;
     }
 }

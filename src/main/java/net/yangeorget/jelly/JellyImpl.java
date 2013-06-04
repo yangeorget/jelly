@@ -73,8 +73,8 @@ public class JellyImpl
         leftMin = rightMax = (byte) j;
         final Board board = state.getBoard();
         final int freeSegmentIndex = update(board.getMatrix(),
-                                            board.getLinks()[0],
-                                            board.getLinks()[1],
+                                            board.getLinks(0),
+                                            board.getLinks(1),
                                             board.getHeight() - 1,
                                             board.getWidth() - 1,
                                             i,
@@ -91,11 +91,9 @@ public class JellyImpl
                        final int width1,
                        final int si,
                        final int sj) {
-        // TODO: avoid empty segments and test
-        // TODO: test complex links (loops)
         CANDIDATE_SEGMENT_BUF[0] = value(si, sj);
         int segmentIndex = 0;
-        for (int freeSegmentIndex = 1; segmentIndex < freeSegmentIndex; segmentIndex++) {
+        for (int freeSegmentIndex = 1, emptySegmentNb = 0; segmentIndex + emptySegmentNb < freeSegmentIndex;) {
             END_BUF[segmentIndex] = getStart(END_BUF, segmentIndex);
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
@@ -145,6 +143,11 @@ public class JellyImpl
                         }
                     }
                 }
+            }
+            if (isEmpty(END_BUF, segmentIndex)) {
+                emptySegmentNb++;
+            } else {
+                segmentIndex++;
             }
         }
         return segmentIndex;
@@ -277,23 +280,17 @@ public class JellyImpl
     public int updateBoard(int index) {
         final Board board = state.getBoard();
         final char[][] matrix = board.getMatrix();
-        final byte[][] links = board.getLinks();
         for (int i = 0; i < end.length; i++) {
             if (i == 0) {
                 updateBoard(matrix, 0, end[0], color[0]);
             } else {
                 final int start = getStart(end, i);
-                storeLink(links, index, positions[start - 1], positions[start]);
+                board.storeLink(index, positions[start - 1], positions[start]);
                 index += 2;
                 updateBoard(matrix, start, end[i], color[i]);
             }
         }
         return index;
-    }
-
-    private void storeLink(final byte[][] links, final int index, final byte start, final byte end) {
-        links[0][index] = links[1][index + 1] = start;
-        links[0][index + 1] = links[1][index] = end;
     }
 
     private void updateBoard(final char[][] matrix, final int start, final int end, char c) {
@@ -346,5 +343,10 @@ public class JellyImpl
 
     byte getBottomMax() {
         return bottomMax;
+    }
+
+    @Override
+    public int getSegmentNb() {
+        return color.length;
     }
 }

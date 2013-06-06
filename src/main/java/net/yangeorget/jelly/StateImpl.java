@@ -15,14 +15,20 @@ public class StateImpl
     private final Board board;
     private String serialization;
     private Jelly[] jellies;
+    private State parent;
 
     public StateImpl(final Board board) {
         this.board = board;
         updateFromBoard();
     }
 
+    /**
+     * Use for cloning.
+     * @param state the parent state
+     */
     public StateImpl(final StateImpl state) {
         board = state.getBoard();
+        parent = state;
         serialization = state.getSerialization();
         final Jelly[] jellies = state.getJellies();
         final int size = jellies.length;
@@ -38,7 +44,7 @@ public class StateImpl
         for (final Jelly jelly : jellies) {
             index = jelly.updateBoard(index);
         }
-        board.updateLinks(index); // TODO: fix this
+        board.updateLinks(index);
     }
 
     @Override
@@ -130,7 +136,7 @@ public class StateImpl
 
     @Override
     public void gravity() { // TODO: use a cache to check if moves are possible
-        // LOG.debug("before gravity " + board.toString());
+        // LOG.debug("before gravity " + toString());
         for (boolean gravityAgain = true; gravityAgain;) {
             gravityAgain = false;
             for (final Jelly jelly : jellies) {
@@ -146,8 +152,11 @@ public class StateImpl
                 }
             }
         }
+        // LOG.debug("after gravity " + toString());
         updateBoard();
+        // LOG.debug("after update " + toString());
         updateFromBoard();
+        // LOG.debug("after updateFromBoard " + toString());
     }
 
     @Override
@@ -177,5 +186,15 @@ public class StateImpl
             jellyNb += jelly.getSegmentNb();
         }
         return jellyNb == board.getJellyColorNb();
+    }
+
+    @Override
+    public void explain(final int step) {
+        updateBoard();
+        LOG.debug("=== STEP " + step + " ===\n" + board.toString());
+        updateFromBoard();
+        if (parent != null) {
+            parent.explain(step + 1);
+        }
     }
 }

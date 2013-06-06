@@ -21,4 +21,6 @@ public interface State {
     void updateFromBoard();
 
     void updateBoard();
+
+    void explain(int step);
 }

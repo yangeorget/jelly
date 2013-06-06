@@ -18,7 +18,7 @@ public class StateTest {
     }
 
     @Test
-    public void testUpdateFromBoard() {
+    public void testUpdateFromBoard1() {
         final Board board = new BoardImpl(new String[] { " BB ", "    " });
         final State state = new StateImpl(board);
         final String ser = state.getSerialization();
@@ -27,26 +27,35 @@ public class StateTest {
         Assert.assertEquals(state.getSerialization(), ser);
     }
 
-
     @Test
     public void testState1() {
-        testState(new BoardImpl(new String[] { "AB" }, new byte[][] { { 0, 1 }, { 1, 0 } }), 1);
+        testState(new BoardImpl(new String[] { "AB" }, new byte[][] { { 0, 1 }, { 1, 0 } }), 2);
     }
 
     @Test
     public void testState2() {
-        testState(new BoardImpl(new String[] { "ABA" }, new byte[][] { { 0, 1 }, { 1, 0 } }), 2);
+        testState(new BoardImpl(new String[] { "ABA" }, new byte[][] { { 0, 1 }, { 1, 0 } }), 2, 1);
     }
 
     @Test
     public void testState3() {
         testState(new BoardImpl(new String[] { "A  ", "ACC", "BB " }, new byte[][] { { 0x10, 0x20 }, { 0x20, 0x10 } }),
+                  4,
                   2);
     }
 
-    private void testState(final Board board, final int jellyNb) {
+    @Test
+    public void testState4() {
+        testState(new BoardImpl(new String[] { " YDDY Y ", "  ### # " },
+                                new byte[][] { { 1, 2, 3, 4 }, { 2, 1, 4, 3 } }), 4, 1);
+    }
+
+    private void testState(final Board board, final int... jellyLengths) {
         final Jelly[] jellies = new StateImpl(board).getJellies();
-        Assert.assertEquals(jellies.length, jellyNb);
+        Assert.assertEquals(jellies.length, jellyLengths.length);
+        for (int i = 0; i < jellies.length; i++) {
+            Assert.assertEquals(((JellyImpl) jellies[i]).positions.length, jellyLengths[i]);
+        }
     }
 
     @Test
@@ -140,6 +149,33 @@ public class StateTest {
         state.moveRight(index);
         state.gravity();
         Assert.assertEquals(state.getSerialization(), output.serialize());
+        // TODO: integrate checks on jellies
+    }
+
+    @Test
+    public void testMoveOK7() {
+        final Board input = new BoardImpl(new String[] { "     A", "     #", " ABBA " }, new byte[][] { { 0x21,
+                                                                                                         0x22,
+                                                                                                         0x23,
+                                                                                                         0x24 },
+                                                                                                       { 0x22,
+                                                                                                        0x21,
+                                                                                                        0x24,
+                                                                                                        0x23 } });
+        final State state = new StateImpl(input);
+        state.moveLeft(0);
+        state.gravity();
+        Assert.assertEquals(state.getSerialization(),
+                            new BoardImpl(new String[] { "      ", "    A#", " ABBA " }).serialize());
+        Assert.assertEquals(input.getLinks(0).length, 4);
+        Assert.assertEquals(input.getLinks(1).length, 4);
+        state.moveLeft(0);
+        state.gravity();
+        Assert.assertEquals(state.getSerialization(),
+                            new BoardImpl(new String[] { "      ", "   A #", "ABBA  " }).serialize());
+        Assert.assertEquals(input.getLinks(0).length, 4);
+        Assert.assertEquals(input.getLinks(1).length, 4);
+
     }
 
     @Test

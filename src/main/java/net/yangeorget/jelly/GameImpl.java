@@ -24,7 +24,7 @@ public class GameImpl
     }
 
     @Override
-    public boolean solve() { // TODO: store parent state
+    public boolean solve() {
         while (!states.isEmpty()) {
             final State state = states.removeFirst();
             final Jelly[] jellies = state.getJellies();
@@ -56,9 +56,7 @@ public class GameImpl
     private boolean process(final State clone) {
         clone.gravity();
         if (clone.isSolved()) {
-            clone.updateBoard();
-            LOG.debug(clone.getBoard()
-                           .toString());
+            clone.explain(0);
             return true;
         }
         if (explored.add(clone.getSerialization())) {

@@ -11,11 +11,34 @@ public class JellyImpl
         implements Jelly {
     private static final Logger LOG = LoggerFactory.getLogger(JellyImpl.class);
 
+    /**
+     * Contains starting points of candidate segments (which may be empty).
+     */
     private static final byte[] CANDIDATE_SEGMENT_BUF = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+    /**
+     * Candidate positions for current segment (thus of the same color).
+     */
     private static final byte[] CANDIDATE_POS_BUF = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+    /**
+     * All the positions of a jelly.
+     */
     private static final byte[] POS_BUF = new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+    /**
+     * All the colors of a jelly.
+     */
     private static final char[] COL_BUF = new char[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+    /**
+     * Ends (in the sense of next free indices) of jelly segments.
+     */
     private static final int[] END_BUF = new int[Board.MAX_WIDTH * Board.MAX_HEIGHT];
+
+    private static void logBuffers() {
+        LOG.debug("CANDIDATE_SEGMENT_BUF: " + Arrays.toString(CANDIDATE_SEGMENT_BUF));
+        LOG.debug("CANDIDATE_POS_BUF: " + Arrays.toString(CANDIDATE_POS_BUF));
+        LOG.debug("POS_BUF: " + Arrays.toString(POS_BUF));
+        LOG.debug("COL_BUF: " + Arrays.toString(COL_BUF));
+        LOG.debug("END_BUF: " + Arrays.toString(END_BUF));
+    }
 
     final byte[] positions;
     final char[] color;
@@ -91,10 +114,14 @@ public class JellyImpl
                        final int width1,
                        final int si,
                        final int sj) {
+        // we have one single candidate segment for now
         CANDIDATE_SEGMENT_BUF[0] = value(si, sj);
         int segmentIndex = 0;
+        // we don't have any empty segment yet
         for (int freeSegmentIndex = 1, emptySegmentNb = 0; segmentIndex + emptySegmentNb < freeSegmentIndex;) {
+            // the current segment ends where it starts (it is empty)
             END_BUF[segmentIndex] = getStart(END_BUF, segmentIndex);
+            // let's init the candidate positions with the current candidate segment
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
                 final byte pos = CANDIDATE_POS_BUF[index];
@@ -102,21 +129,21 @@ public class JellyImpl
                 final byte j = (byte) getJ(pos);
                 final char c = matrix[i][j];
                 if (c != Board.BLANK_CHAR) {
+                    // let's store the color of the current segment if not yet done
                     if (isEmpty(END_BUF, segmentIndex)) {
                         COL_BUF[segmentIndex] = BoardImpl.toFloating(c);
                     }
+                    // has to be true because we want to treat the current segment only here
                     if (BoardImpl.toFloating(c) == COL_BUF[segmentIndex]) {
                         matrix[i][j] = Board.BLANK_CHAR;
                         isFixed |= BoardImpl.isFixed(c);
-                        insertInSortedSegment(segmentIndex, pos);
-                        final int idx = Arrays.binarySearch(links0, pos);
-                        if (idx >= 0) {
-                            final byte linkedPos = links1[idx];
-                            if (Arrays.binarySearch(POS_BUF, 0, freeIndex, linkedPos) < 0
-                                && !contains(CANDIDATE_SEGMENT_BUF, 0, freeSegmentIndex, linkedPos)) {
-                                CANDIDATE_SEGMENT_BUF[freeSegmentIndex++] = linkedPos;
-                            }
-                        }
+                        insertPositionInSortedSegment(segmentIndex, pos);
+                        freeSegmentIndex = handleLinkedPosition(links0,
+                                                                links1,
+                                                                pos,
+                                                                segmentIndex,
+                                                                freeIndex,
+                                                                freeSegmentIndex);
                         if (j < leftMin) {
                             leftMin = j;
                         }
@@ -151,6 +178,37 @@ public class JellyImpl
             }
         }
         return segmentIndex;
+    }
+
+    /**
+     * Let's insert pos in POS_BUF while keeping the segment sorted.
+     */
+    // TODO : shift properly
+    private void insertPositionInSortedSegment(final int segmentIndex, final byte pos) {
+        final int end = END_BUF[segmentIndex];
+        final int insertionPoint = -1 - Arrays.binarySearch(POS_BUF, getStart(END_BUF, segmentIndex), end, pos);
+        POS_BUF[end] = POS_BUF[insertionPoint];
+        POS_BUF[insertionPoint] = pos;
+        END_BUF[segmentIndex]++;
+    }
+
+    private int handleLinkedPosition(final byte[] links0,
+                                     final byte[] links1,
+                                     final byte pos,
+                                     final int segmentIndex,
+                                     final int freeIndex,
+                                     final int freeSegmentIndex) {
+        final int idx = contains(links0, 0, links0.length, pos);
+        if (idx >= 0) {
+            final byte linkedPos = links1[idx];
+            if (contains(POS_BUF, 0, END_BUF[segmentIndex], linkedPos) < 0
+                && contains(CANDIDATE_POS_BUF, 0, freeIndex, linkedPos) < 0
+                && contains(CANDIDATE_SEGMENT_BUF, 0, freeSegmentIndex, linkedPos) < 0) {
+                CANDIDATE_SEGMENT_BUF[freeSegmentIndex] = linkedPos;
+                return freeSegmentIndex + 1;
+            }
+        }
+        return freeSegmentIndex;
     }
 
     @Override
@@ -231,6 +289,7 @@ public class JellyImpl
         return (byte) ((i << Board.MAX_COORDINATE_LOG2) | j);
     }
 
+    // TODO: overlap by segments
     @Override
     public boolean overlaps(final Jelly jelly) {
         final JellyImpl j = (JellyImpl) jelly;
@@ -278,6 +337,7 @@ public class JellyImpl
 
     @Override
     public int updateBoard(int index) {
+        // LOG.debug("index: " + index);
         final Board board = state.getBoard();
         final char[][] matrix = board.getMatrix();
         for (int i = 0; i < end.length; i++) {
@@ -309,25 +369,15 @@ public class JellyImpl
         return index == 0 ? 0 : end[index - 1];
     }
 
-    /**
-     * Let's insert pos in POS_BUF while keeping the segment sorted.
-     */
-    private void insertInSortedSegment(final int segmentIndex, final byte pos) {
-        final int end = END_BUF[segmentIndex];
-        final int insertionPoint = -1 - Arrays.binarySearch(POS_BUF, getStart(END_BUF, segmentIndex), end, pos);
-        POS_BUF[end] = POS_BUF[insertionPoint];
-        POS_BUF[insertionPoint] = pos;
-        END_BUF[segmentIndex]++;
-    }
-
-    private boolean contains(final byte[] positions, final int from, final int to, final byte pos) {
+    private int contains(final byte[] tab, final int from, final int to, final byte val) {
         for (int i = from; i < to; i++) {
-            if (positions[i] == pos) {
-                return true;
+            if (tab[i] == val) {
+                return i;
             }
         }
-        return false;
+        return -1;
     }
+
 
     byte getLeftMin() {
         return leftMin;

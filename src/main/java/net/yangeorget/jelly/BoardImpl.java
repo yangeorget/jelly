@@ -66,7 +66,6 @@ public class BoardImpl
 
     private void toString(final StringBuilder builder) {
         final int height1 = height - 1;
-        builder.append('\n');
         for (int i = 0; i < height1; i++) {
             builder.append(matrix[i]);
             builder.append('\n');
@@ -82,7 +81,7 @@ public class BoardImpl
     }
 
     @Override
-    public String serialize() { // TODO: fix
+    public String serialize() { // TODO: fix to take into account links
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < height; i++) {
             builder.append(matrix[i]);
@@ -132,7 +131,8 @@ public class BoardImpl
 
     @Override
     public void storeLink(final int index, final byte start, final byte end) {
-        LINKS_BUF[0][index] = LINKS_BUF[1][index + 1] = start;
-        LINKS_BUF[0][index + 1] = LINKS_BUF[1][index] = end;
+        final int index1 = index + 1;
+        LINKS_BUF[0][index] = LINKS_BUF[1][index1] = start;
+        LINKS_BUF[0][index1] = LINKS_BUF[1][index] = end;
     }
 }

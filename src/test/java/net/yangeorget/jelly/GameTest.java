@@ -112,12 +112,52 @@ public class GameTest {
 
     @Test
     public void testSolveLEVEL_11() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[10]).solve()); // TODO: debug this
+        Assert.assertTrue(new GameImpl(Board.LEVELS[10]).solve());
     }
 
-    // @Test
+    @Test
+    public void testSolveLEVEL_12() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[11]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_13() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[12]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_14() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[13]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_15() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[14]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_16() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[15]).solve());
+    }
+
+    @Test
     public void testSolveLEVEL_17() {
         Assert.assertTrue(new GameImpl(Board.LEVELS[16]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_18() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[17]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_19() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[18]).solve());
+    }
+
+    @Test
+    public void testSolveLEVEL_20() {
+        Assert.assertTrue(new GameImpl(Board.LEVELS[19]).solve());
     }
 
     public static void main(final String[] args) {

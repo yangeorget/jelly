@@ -140,20 +140,16 @@ public class StateTest {
 
     @Test
     public void testMoveRightOK6() {
-        final Board input = new BoardImpl(new String[] { "AB ", "#  " }, new byte[][] { { 0, 1 }, { 1, 0 } });
-        final Board output = new BoardImpl(new String[] { "   ", "#AB" });
-        testMoveRightOK(input, 0, output);
-        Assert.assertEquals(input.getLinks(0).length, 2);
-        Assert.assertEquals(input.getLinks(1).length, 2);
+        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  " }, new byte[][] { { 0, 1 }, { 1, 0 } }),
+                        0,
+                        new BoardImpl(new String[] { "   ", "#AB" }));
     }
 
     @Test
     public void testMoveRightOK61() {
-        final Board input = new BoardImpl(new String[] { "AB ", "#  ", "## " }, new byte[][] { { 0, 1 }, { 1, 0 } });
-        final Board output = new BoardImpl(new String[] { "   ", "#AB", "## " });
-        testMoveRightOK(input, 0, output);
-        Assert.assertEquals(input.getLinks(0).length, 2);
-        Assert.assertEquals(input.getLinks(1).length, 2);
+        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  ", "## " }, new byte[][] { { 0, 1 }, { 1, 0 } }),
+                        0,
+                        new BoardImpl(new String[] { "   ", "#AB", "## " }));
     }
 
     private void testMoveRightOK(final Board input, final int index, final Board output) {
@@ -161,11 +157,45 @@ public class StateTest {
         state.moveRight(index);
         state.gravity();
         Assert.assertEquals(state.getSerialization(), output.serialize());
-        // TODO: integrate checks on jellies
+    }
+
+
+    @Test
+    public void testGravity1() {
+        testGravity(new BoardImpl(new String[] { " BB ", "    ", "    " }), new BoardImpl(new String[] { "    ",
+                                                                                                        "    ",
+                                                                                                        " BB " }));
     }
 
     @Test
-    public void testMoveOK7() {
+    public void testGravity2() {
+        testGravity(new BoardImpl(new String[] { "  GG ", " BB  ", "     " }), new BoardImpl(new String[] { "     ",
+                                                                                                           "  GG ",
+                                                                                                           " BB  " }));
+    }
+
+    @Test
+    public void testGravity3() {
+        testGravity(new BoardImpl(new String[] { "  GG ", " BBG ", "  GG ", "     " }),
+                    new BoardImpl(new String[] { "     ", "  GG ", " BBG ", "  GG " }));
+    }
+
+    @Test
+    public void testGravity4() {
+        testGravity(new BoardImpl(new String[] { "   ", "   ", "FFF", "G G", "## " },
+                                  new byte[][] { { 34, 48, 48, 50 }, { 48, 34, 50, 48 } }),
+                    new BoardImpl(new String[] { "   ", "   ", "FFF", "G G", "## " }));
+    }
+
+    private void testGravity(final Board input, final Board output) {
+        final State state = new StateImpl(input);
+        state.gravity();
+        Assert.assertEquals(state.getSerialization(), output.serialize());
+    }
+
+
+    @Test
+    public void testNonRegression1() {
         final Board input = new BoardImpl(new String[] { "     A", "     #", " ABBA " }, new byte[][] { { 0x21,
                                                                                                          0x22,
                                                                                                          0x23,
@@ -191,7 +221,7 @@ public class StateTest {
     }
 
     @Test
-    public void testMoveOK8() {
+    public void testNonRegression2() {
         final Board input = new BoardImpl(new String[] { "           Y",
                                                         "       ### #",
                                                         "           Y",
@@ -200,42 +230,12 @@ public class StateTest {
                                                         "      YDDYY " }, new byte[][] { { 0x56, 0x57, 0x58, 0x59 },
                                                                                         { 0x57, 0x56, 0x59, 0x58 } });
         State state = new StateImpl(input);
-        System.out.println(state);
         state = state.clone();
         state.moveLeft(0);
         state.gravity();
-        System.out.println(state);
         state = state.clone();
         state.moveLeft(0);
         state.gravity();
-        System.out.println(state);
         Assert.assertEquals(state.getJellies().length, 1);
     }
-
-    @Test
-    public void testGravity1() {
-        testGravity(new BoardImpl(new String[] { " BB ", "    ", "    " }), new BoardImpl(new String[] { "    ",
-                                                                                                        "    ",
-                                                                                                        " BB " }));
-    }
-
-    @Test
-    public void testGravity2() {
-        testGravity(new BoardImpl(new String[] { "  GG ", " BB  ", "     " }), new BoardImpl(new String[] { "     ",
-                                                                                                           "  GG ",
-                                                                                                           " BB  " }));
-    }
-
-    @Test
-    public void testGravity3() {
-        testGravity(new BoardImpl(new String[] { "  GG ", " BBG ", "  GG ", "     " }),
-                    new BoardImpl(new String[] { "     ", "  GG ", " BBG ", "  GG " }));
-    }
-
-    private void testGravity(final Board input, final Board output) {
-        final State state = new StateImpl(input);
-        state.gravity();
-        Assert.assertEquals(state.getSerialization(), output.serialize());
-    }
-
 }

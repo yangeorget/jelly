@@ -28,25 +28,19 @@ public class GameImpl
         while (!states.isEmpty()) {
             final State state = states.removeFirst();
             final Jelly[] jellies = state.getJellies();
-            // LOG.debug("state: " + state.toString());
             for (int j = 0; j < jellies.length; j++) {
                 final Jelly jelly = jellies[j];
-                // LOG.debug("jelly: " + jelly);
                 if (jelly.mayMoveLeft()) {
-                    // LOG.debug("moveLeft");
                     final State clone = state.clone();
                     if (clone.moveLeft(j) && process(clone)) {
                         return true;
                     }
-                    // LOG.debug("moveLeft failed");
                 }
                 if (jelly.mayMoveRight()) {
-                    // LOG.debug("moveRight");
                     final State clone = state.clone();
                     if (clone.moveRight(j) && process(clone)) {
                         return true;
                     }
-                    // LOG.debug("moveRight failed");
                 }
             }
         }

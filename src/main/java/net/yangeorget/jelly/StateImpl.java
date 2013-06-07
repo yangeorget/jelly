@@ -136,7 +136,6 @@ public class StateImpl
 
     @Override
     public void gravity() { // TODO: use a cache to check if moves are possible
-        // LOG.debug("before gravity " + toString());
         for (boolean gravityAgain = true; gravityAgain;) {
             gravityAgain = false;
             for (final Jelly jelly : jellies) {
@@ -152,11 +151,8 @@ public class StateImpl
                 }
             }
         }
-        // LOG.debug("after gravity " + toString());
         updateBoard();
-        // LOG.debug("after update " + toString());
         updateFromBoard();
-        // LOG.debug("after updateFromBoard " + toString());
     }
 
     @Override

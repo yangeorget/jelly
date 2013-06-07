@@ -199,17 +199,10 @@ public class JellyImpl
                                      final int segmentIndex,
                                      final int freeIndex,
                                      final int freeSegmentIndex) {
-        // System.out.println("pos: " + pos);
         final int idx = contains(links0, 0, links0.length, pos);
         if (idx >= 0) {
             final byte linkedPos = links1[idx];
-            // System.out.println("linkedPos:" + linkedPos);
-            //
-            // System.out.println("" + contains(POS_BUF, 0, END_BUF[segmentIndex], linkedPos));
-            // System.out.println("" + contains(CANDIDATE_POS_BUF, 0, freeIndex, linkedPos));
-            // System.out.println("" + contains(CANDIDATE_SEGMENT_BUF, 0, freeSegmentIndex, linkedPos));
             if (contains(POS_BUF, 0, END_BUF[segmentIndex], linkedPos) < 0
-            // && contains(CANDIDATE_POS_BUF, 0, freeIndex, linkedPos) < 0
                 && contains(CANDIDATE_SEGMENT_BUF, 0, freeSegmentIndex, linkedPos) < 0) {
                 CANDIDATE_SEGMENT_BUF[freeSegmentIndex] = linkedPos;
                 return freeSegmentIndex + 1;
@@ -366,7 +359,7 @@ public class JellyImpl
                 updateBoard(matrix, 0, end[0], color[0]);
             } else {
                 final int start = getStart(end, i);
-                board.storeLink(index, positions[start - 1], positions[start]);
+                board.storeLink(index, positions[start - 1], positions[start]); // TODO: use circular links instead
                 index += 2;
                 updateBoard(matrix, start, end[i], color[i]);
             }

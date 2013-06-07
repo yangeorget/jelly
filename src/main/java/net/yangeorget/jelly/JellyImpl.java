@@ -183,11 +183,12 @@ public class JellyImpl
     /**
      * Let's insert pos in POS_BUF while keeping the segment sorted.
      */
-    // TODO : shift properly
     private void insertPositionInSortedSegment(final int segmentIndex, final byte pos) {
         final int end = END_BUF[segmentIndex];
         final int insertionPoint = -1 - Arrays.binarySearch(POS_BUF, getStart(END_BUF, segmentIndex), end, pos);
-        POS_BUF[end] = POS_BUF[insertionPoint];
+        for (int i = end; i > insertionPoint; i--) {
+            POS_BUF[i] = POS_BUF[i - 1];
+        }
         POS_BUF[insertionPoint] = pos;
         END_BUF[segmentIndex]++;
     }
@@ -198,11 +199,17 @@ public class JellyImpl
                                      final int segmentIndex,
                                      final int freeIndex,
                                      final int freeSegmentIndex) {
+        // System.out.println("pos: " + pos);
         final int idx = contains(links0, 0, links0.length, pos);
         if (idx >= 0) {
             final byte linkedPos = links1[idx];
+            // System.out.println("linkedPos:" + linkedPos);
+            //
+            // System.out.println("" + contains(POS_BUF, 0, END_BUF[segmentIndex], linkedPos));
+            // System.out.println("" + contains(CANDIDATE_POS_BUF, 0, freeIndex, linkedPos));
+            // System.out.println("" + contains(CANDIDATE_SEGMENT_BUF, 0, freeSegmentIndex, linkedPos));
             if (contains(POS_BUF, 0, END_BUF[segmentIndex], linkedPos) < 0
-                && contains(CANDIDATE_POS_BUF, 0, freeIndex, linkedPos) < 0
+            // && contains(CANDIDATE_POS_BUF, 0, freeIndex, linkedPos) < 0
                 && contains(CANDIDATE_SEGMENT_BUF, 0, freeSegmentIndex, linkedPos) < 0) {
                 CANDIDATE_SEGMENT_BUF[freeSegmentIndex] = linkedPos;
                 return freeSegmentIndex + 1;
@@ -289,7 +296,6 @@ public class JellyImpl
         return (byte) ((i << Board.MAX_COORDINATE_LOG2) | j);
     }
 
-    // TODO: overlap by segments
     @Override
     public boolean overlaps(final Jelly jelly) {
         final JellyImpl j = (JellyImpl) jelly;
@@ -299,24 +305,40 @@ public class JellyImpl
             || bottomMax < j.getTopMin()) {
             return false;
         }
-        final byte[] jPositions = j.positions;
-        final int size = positions.length;
-        final int jSize = jPositions.length;
-        int index = 0;
-        int jIndex = 0;
-        while (true) {
-            final byte jPosition = jPositions[jIndex];
-            while (positions[index] < jPosition) {
-                if (++index == size) {
+        for (int segment = 0; segment < end.length; segment++) {
+            if (j.overlaps(positions, end, segment)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean overlaps(final byte[] aPositions, final int[] aEnd, final int aSegment) {
+        for (int segment = 0; segment < end.length; segment++) {
+            if (overlaps(positions, end, segment, aPositions, aEnd, aSegment)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean overlaps(final byte[] aPositions,
+                            final int[] aEnd,
+                            final int aSegment,
+                            final byte[] bPositions,
+                            final int[] bEnd,
+                            final int bSegment) {
+        for (int aIndex = getStart(aEnd, aSegment), bIndex = getStart(bEnd, bSegment);;) {
+            while (aPositions[aIndex] < bPositions[bIndex]) {
+                if (++aIndex == aEnd[aSegment]) {
                     return false;
                 }
             }
-            final byte position = positions[index];
-            if (position == jPosition) {
+            if (aPositions[aIndex] == bPositions[bIndex]) {
                 return true;
             }
-            while (position > jPositions[jIndex]) {
-                if (++jIndex == jSize) {
+            while (aPositions[aIndex] > bPositions[bIndex]) {
+                if (++bIndex == bEnd[bSegment]) {
                     return false;
                 }
             }
@@ -337,7 +359,6 @@ public class JellyImpl
 
     @Override
     public int updateBoard(int index) {
-        // LOG.debug("index: " + index);
         final Board board = state.getBoard();
         final char[][] matrix = board.getMatrix();
         for (int i = 0; i < end.length; i++) {
@@ -361,15 +382,15 @@ public class JellyImpl
         }
     }
 
-    private boolean isEmpty(final int[] end, final int segmentIndex) {
+    private static boolean isEmpty(final int[] end, final int segmentIndex) {
         return getStart(end, segmentIndex) == end[segmentIndex];
     }
 
-    private int getStart(final int[] end, final int index) {
+    private static int getStart(final int[] end, final int index) {
         return index == 0 ? 0 : end[index - 1];
     }
 
-    private int contains(final byte[] tab, final int from, final int to, final byte val) {
+    private static int contains(final byte[] tab, final int from, final int to, final byte val) {
         for (int i = from; i < to; i++) {
             if (tab[i] == val) {
                 return i;

@@ -50,6 +50,18 @@ public class StateTest {
                                 new byte[][] { { 1, 2, 3, 4 }, { 2, 1, 4, 3 } }), 4, 1);
     }
 
+    @Test
+    public void testState5() {
+        testState(new BoardImpl(new String[] { "           Y",
+                                              "       ### #",
+                                              "           Y",
+                                              "           #",
+                                              "            ",
+                                              "      YDDYY " }, new byte[][] { { 0x56, 0x57, 0x58, 0x59 },
+                                                                              { 0x57, 0x56, 0x59, 0x58 } }), 1, 1, 5);
+
+    }
+
     private void testState(final Board board, final int... jellyLengths) {
         final Jelly[] jellies = new StateImpl(board).getJellies();
         Assert.assertEquals(jellies.length, jellyLengths.length);
@@ -176,6 +188,28 @@ public class StateTest {
         Assert.assertEquals(input.getLinks(0).length, 4);
         Assert.assertEquals(input.getLinks(1).length, 4);
 
+    }
+
+    @Test
+    public void testMoveOK8() {
+        final Board input = new BoardImpl(new String[] { "           Y",
+                                                        "       ### #",
+                                                        "           Y",
+                                                        "           #",
+                                                        "            ",
+                                                        "      YDDYY " }, new byte[][] { { 0x56, 0x57, 0x58, 0x59 },
+                                                                                        { 0x57, 0x56, 0x59, 0x58 } });
+        State state = new StateImpl(input);
+        System.out.println(state);
+        state = state.clone();
+        state.moveLeft(0);
+        state.gravity();
+        System.out.println(state);
+        state = state.clone();
+        state.moveLeft(0);
+        state.gravity();
+        System.out.println(state);
+        Assert.assertEquals(state.getJellies().length, 1);
     }
 
     @Test

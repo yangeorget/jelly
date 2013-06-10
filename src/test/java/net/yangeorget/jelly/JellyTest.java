@@ -25,7 +25,7 @@ public class JellyTest {
 
     @Test
     public void testJelly2() {
-        final Board board = new BoardImpl(new String[] { "AB" }, new byte[][] { { 0, 1 }, { 1, 0 } });
+        final Board board = new BoardImpl(new String[] { "AB" }, new byte[] { 0, 1 });
         final State state = new StateImpl(board);
         final Jelly[] jellies = state.getJellies();
         Assert.assertEquals(jellies.length, 1);
@@ -37,8 +37,7 @@ public class JellyTest {
 
     @Test
     public void testJelly3() {
-        final Board board = new BoardImpl(new String[] { "AB", "AB" }, new byte[][] { { 0, 1, 16, 17 },
-                                                                                     { 1, 0, 17, 16 } });
+        final Board board = new BoardImpl(new String[] { "AB", "AB" }, new byte[] { 0, 1, 16 });
         final State state = new StateImpl(board);
         final Jelly[] jellies = state.getJellies();
         Assert.assertEquals(jellies.length, 1);

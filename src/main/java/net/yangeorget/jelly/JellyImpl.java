@@ -354,15 +354,15 @@ public class JellyImpl
     public int updateBoard(int index) {
         final Board board = state.getBoard();
         final char[][] matrix = board.getMatrix();
-        for (int i = 0; i < end.length; i++) {
-            if (i == 0) {
-                updateBoard(matrix, 0, end[0], color[0]);
-            } else {
-                final int start = getStart(end, i);
-                board.storeLink(index, positions[start - 1], positions[start]); // TODO: use circular links instead
-                index += 2;
-                updateBoard(matrix, start, end[i], color[i]);
+        final int size = end.length;
+        for (int i = 0; i < size; i++) {
+            updateBoard(matrix, getStart(end, i), end[i], color[i]);
+            if (i > 0) {
+                index = board.storeLink(index, positions[getStart(end, i - 1)], positions[getStart(end, i)]);
             }
+        }
+        if (size > 1) {
+            index = board.storeLink(index, positions[getStart(end, size - 1)], positions[0]);
         }
         return index;
     }

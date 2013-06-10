@@ -33,7 +33,7 @@ public interface Board {
 
     void updateLinks(int index);
 
-    void storeLink(int index, byte start, byte end);
+    int storeLink(int index, byte start, byte end);
 
     Board[] LEVELS = { // board 1
             new BoardImpl(new String[] { "            ",
@@ -133,7 +133,7 @@ public interface Board {
                                         "##          ",
                                         "       Y    ",
                                         "   # ###   y",
-                                        "   ###### ##" }, new byte[][] { { 6, 7, 8, 9 }, { 7, 6, 9, 8 } }),
+                                        "   ###### ##" }, new byte[] { 6, 8, 9 }),
             // board 12
             new BoardImpl(new String[] { "#R RR  RR R#",
                                         "##  #  #  ##",
@@ -197,7 +197,7 @@ public interface Board {
                                         "#### YY  ###",
                                         "#### YYY ###",
                                         "#### YYYY###" }),
-            // board 18
+            // board 19
             new BoardImpl(new String[] { "GB    GDG#  ",
                                         " NG    D #  ",
                                         "FFF    S #  ",
@@ -205,34 +205,12 @@ public interface Board {
                                         "##     ###  ",
                                         "##     ###  ",
                                         "##     ###  ",
-                                        "##          " }, new byte[][] { { 0x00,
-                                                                          0x01,
-                                                                          0x06,
-                                                                          0x07,
-                                                                          0x17,
-                                                                          0x08,
-                                                                          0x11,
-                                                                          0x12,
-                                                                          0x20,
-                                                                          0x30,
-                                                                          0x22,
-                                                                          0x32,
-                                                                          0x27,
-                                                                          0x37 },
-                                                                        { 0x01,
-                                                                         0x00,
-                                                                         0x07,
-                                                                         0x06,
-                                                                         0x08,
-                                                                         0x17,
-                                                                         0x12,
-                                                                         0x11,
-                                                                         0x30,
-                                                                         0x20,
-                                                                         0x32,
-                                                                         0x22,
-                                                                         0x37,
-                                                                         0x27 } }),
+                                        "##          " },
+                          new byte[] { 0x00, 0x01 },
+                          new byte[] { 0x06, 0x07, 0x08 },
+                          new byte[] { 0x11, 0x12 },
+                          new byte[] { 0x20, 0x30, 0x32 },
+                          new byte[] { 0x27, 0x37 }),
             // board 20
             new BoardImpl(new String[] { "RRRR   RGG##",
                                         "##B    #####",

@@ -17,11 +17,7 @@ public class BoardImpl
     private static final byte[][] LINKS_BUF = { new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT],
                                                new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT] };
 
-    public BoardImpl(final String[] strings) {
-        this(strings, new byte[][] { {}, {} });
-    }
-
-    public BoardImpl(final String[] strings, final byte[][] links) {
+    public BoardImpl(final String[] strings, final byte[]... groups) {
         height = strings.length;
         width = strings[0].length();
         matrix = new char[height][];
@@ -39,7 +35,33 @@ public class BoardImpl
             }
         }
         jellyColorNb = colors.size();
-        this.links = links;
+        links = new byte[2][0];
+        int index = 0;
+        for (final byte[] group : groups) {
+            index = createLinks(group, index);
+        }
+        updateLinks(index);
+    }
+
+    private int createLinks(final byte[] group, int index) {
+        final int size = group.length;
+        for (int i = 0; i < size - 1; i++) {
+            index = storeLink(index, group[i], group[i + 1]);
+        }
+        return storeLink(index, group[size - 1], group[0]);
+    }
+
+    @Override
+    public int storeLink(final int index, final byte start, final byte end) {
+        LINKS_BUF[0][index] = start;
+        LINKS_BUF[1][index] = end;
+        return index + 1;
+    }
+
+    @Override
+    public void updateLinks(final int index) {
+        links[0] = Arrays.copyOf(LINKS_BUF[0], index);
+        links[1] = Arrays.copyOf(LINKS_BUF[1], index);
     }
 
     @Override
@@ -121,18 +143,5 @@ public class BoardImpl
     @Override
     public byte[] getLinks(final int index) {
         return links[index];
-    }
-
-    @Override
-    public void updateLinks(final int index) {
-        links[0] = Arrays.copyOf(LINKS_BUF[0], index);
-        links[1] = Arrays.copyOf(LINKS_BUF[1], index);
-    }
-
-    @Override
-    public void storeLink(final int index, final byte start, final byte end) {
-        final int index1 = index + 1;
-        LINKS_BUF[0][index] = LINKS_BUF[1][index1] = start;
-        LINKS_BUF[0][index1] = LINKS_BUF[1][index] = end;
     }
 }

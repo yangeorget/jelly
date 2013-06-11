@@ -40,10 +40,12 @@ public class JellyImpl
         LOG.debug("END_BUF: " + Arrays.toString(END_BUF));
     }
 
-    final byte[] positions;
-    final char[] color;
-    final int[] end;
-    final State state;
+    byte[] positions;
+    char[] color;
+    int[] end;
+    private final Board board;
+    private final byte height1;
+    private final byte width1;
     private boolean isFixed;
     // bounding box
     private byte leftMin;
@@ -70,16 +72,22 @@ public class JellyImpl
              positions);
     }
 
-    public JellyImpl(final State state,
-                     final boolean isFixed,
-                     final byte leftMin,
-                     final byte rightMax,
-                     final byte topMin,
-                     final byte bottomMax,
-                     final int[] end,
-                     final char[] color,
-                     final byte[] positions) {
-        this.state = state;
+    private JellyImpl(final State state) {
+        this.board = state.getBoard();
+        this.height1 = (byte) (board.getHeight() - 1);
+        this.width1 = (byte) (board.getWidth() - 1);
+    }
+
+    private JellyImpl(final State state,
+                      final boolean isFixed,
+                      final byte leftMin,
+                      final byte rightMax,
+                      final byte topMin,
+                      final byte bottomMax,
+                      final int[] end,
+                      final char[] color,
+                      final byte[] positions) {
+        this(state);
         this.isFixed = isFixed;
         this.leftMin = leftMin;
         this.rightMax = rightMax;
@@ -91,29 +99,18 @@ public class JellyImpl
     }
 
     public JellyImpl(final State state, final int i, final int j) {
-        this.state = state;
+        this(state);
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
         final Board board = state.getBoard();
-        final int freeSegmentIndex = update(board.getMatrix(),
-                                            board.getLinks(0),
-                                            board.getLinks(1),
-                                            board.getHeight() - 1,
-                                            board.getWidth() - 1,
-                                            i,
-                                            j);
+        final int freeSegmentIndex = update(board.getMatrix(), board.getLinks(0), board.getLinks(1), i, j);
         color = Arrays.copyOf(COL_BUF, freeSegmentIndex);
         end = Arrays.copyOf(END_BUF, freeSegmentIndex);
         positions = Arrays.copyOf(POS_BUF, getStart(end, freeSegmentIndex));
     }
 
-    private int update(final char[][] matrix,
-                       final byte[] links0,
-                       final byte[] links1,
-                       final int height1,
-                       final int width1,
-                       final int si,
-                       final int sj) {
+    private final int
+            update(final char[][] matrix, final byte[] links0, final byte[] links1, final int si, final int sj) {
         // we have one single candidate segment for now
         CANDIDATE_SEGMENT_BUF[0] = value(si, sj);
         int segmentIndex = 0;
@@ -183,7 +180,7 @@ public class JellyImpl
     /**
      * Let's insert pos in POS_BUF while keeping the segment sorted.
      */
-    private void insertPositionInSortedSegment(final int segmentIndex, final byte pos) {
+    private final void insertPositionInSortedSegment(final int segmentIndex, final byte pos) {
         final int end = END_BUF[segmentIndex];
         final int insertionPoint = -1 - Arrays.binarySearch(POS_BUF, getStart(END_BUF, segmentIndex), end, pos);
         for (int i = end; i > insertionPoint; i--) {
@@ -193,12 +190,12 @@ public class JellyImpl
         END_BUF[segmentIndex]++;
     }
 
-    private int handleLinkedPosition(final byte[] links0,
-                                     final byte[] links1,
-                                     final byte pos,
-                                     final int segmentIndex,
-                                     final int freeIndex,
-                                     final int freeSegmentIndex) {
+    private final int handleLinkedPosition(final byte[] links0,
+                                           final byte[] links1,
+                                           final byte pos,
+                                           final int segmentIndex,
+                                           final int freeIndex,
+                                           final int freeSegmentIndex) {
         final int idx = contains(links0, 0, links0.length, pos);
         if (idx >= 0) {
             final byte linkedPos = links1[idx];
@@ -212,12 +209,12 @@ public class JellyImpl
     }
 
     @Override
-    public JellyImpl clone(final State state) {
+    public final JellyImpl clone(final State state) {
         return new JellyImpl(state, isFixed, leftMin, rightMax, topMin, bottomMax, end, color, positions);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "positions="
                + Arrays.toString(positions)
                + ";color="
@@ -226,52 +223,50 @@ public class JellyImpl
                + Arrays.toString(end);
     }
 
-    private void move(final int vec) {
+    private final void move(final int vec) {
         for (int index = positions.length; --index >= 0;) {
             positions[index] += vec;
         }
     }
 
     @Override
-    public boolean mayMoveLeft() {
+    public final boolean mayMoveLeft() {
         return !isFixed && leftMin != 0;
     }
 
     @Override
-    public void moveLeft() {
+    public final void moveLeft() {
         move(Board.LEFT);
         leftMin--;
         rightMax--;
     }
 
     @Override
-    public boolean mayMoveRight() {
-        return !isFixed && rightMax != state.getBoard()
-                                            .getWidth() - 1;
+    public final boolean mayMoveRight() {
+        return !isFixed && rightMax != width1;
     }
 
     @Override
-    public void moveRight() {
+    public final void moveRight() {
         move(Board.RIGHT);
         leftMin++;
         rightMax++;
     }
 
     @Override
-    public boolean mayMoveDown() {
-        return !isFixed && bottomMax != state.getBoard()
-                                             .getHeight() - 1;
+    public final boolean mayMoveDown() {
+        return !isFixed && bottomMax != height1;
     }
 
     @Override
-    public void moveDown() {
+    public final void moveDown() {
         move(Board.DOWN);
         topMin++;
         bottomMax++;
     }
 
     @Override
-    public void moveUp() {
+    public final void moveUp() {
         move(Board.UP);
         topMin--;
         bottomMax--;
@@ -290,7 +285,7 @@ public class JellyImpl
     }
 
     @Override
-    public boolean overlaps(final Jelly jelly) {
+    public final boolean overlaps(final Jelly jelly) {
         final JellyImpl j = (JellyImpl) jelly;
         if (j.getRightMax() < leftMin
             || rightMax < j.getLeftMin()
@@ -306,7 +301,7 @@ public class JellyImpl
         return false;
     }
 
-    boolean overlaps(final byte[] aPositions, final int[] aEnd, final int aSegment) {
+    final boolean overlaps(final byte[] aPositions, final int[] aEnd, final int aSegment) {
         for (int segment = 0; segment < end.length; segment++) {
             if (overlaps(positions, end, segment, aPositions, aEnd, aSegment)) {
                 return true;
@@ -315,12 +310,12 @@ public class JellyImpl
         return false;
     }
 
-    static boolean overlaps(final byte[] aPositions,
-                            final int[] aEnd,
-                            final int aSegment,
-                            final byte[] bPositions,
-                            final int[] bEnd,
-                            final int bSegment) {
+    static final boolean overlaps(final byte[] aPositions,
+                                  final int[] aEnd,
+                                  final int aSegment,
+                                  final byte[] bPositions,
+                                  final int[] bEnd,
+                                  final int bSegment) {
         for (int aIndex = getStart(aEnd, aSegment), bIndex = getStart(bEnd, bSegment);;) {
             while (aPositions[aIndex] < bPositions[bIndex]) {
                 if (++aIndex == aEnd[aSegment]) {
@@ -339,9 +334,8 @@ public class JellyImpl
     }
 
     @Override
-    public boolean overlapsWalls() {
-        final boolean[][] walls = state.getBoard()
-                                       .getWalls();
+    public final boolean overlapsWalls() {
+        final boolean[][] walls = board.getWalls();
         for (final byte position : positions) {
             if (walls[getI(position)][getJ(position)]) {
                 return true;
@@ -351,8 +345,7 @@ public class JellyImpl
     }
 
     @Override
-    public int updateBoard(int index) {
-        final Board board = state.getBoard();
+    public final int updateBoard(int index) {
         final char[][] matrix = board.getMatrix();
         final int size = end.length;
         for (int i = 0; i < size; i++) {

@@ -14,8 +14,9 @@ public class BoardImpl
     private final boolean[][] walls;
     private final byte[][] links;
 
-    private static final byte[][] LINKS_BUF = { new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT],
-                                               new byte[Board.MAX_WIDTH * Board.MAX_HEIGHT] };
+    private static final int MAX_LINKS_SIZE = Board.MAX_WIDTH * Board.MAX_HEIGHT;
+    private static final byte[] LINKS0_BUF = new byte[MAX_LINKS_SIZE];
+    private static final byte[] LINKS1_BUF = new byte[MAX_LINKS_SIZE];
 
     public BoardImpl(final String[] strings, final byte[]... groups) {
         height = strings.length;
@@ -43,7 +44,7 @@ public class BoardImpl
         updateLinks(index);
     }
 
-    private int createLinks(final byte[] group, int index) {
+    private final int createLinks(final byte[] group, int index) {
         final int size = group.length;
         for (int i = 0; i < size - 1; i++) {
             index = storeLink(index, group[i], group[i + 1]);
@@ -52,30 +53,30 @@ public class BoardImpl
     }
 
     @Override
-    public int storeLink(final int index, final byte start, final byte end) {
-        LINKS_BUF[0][index] = start;
-        LINKS_BUF[1][index] = end;
+    public final int storeLink(final int index, final byte start, final byte end) {
+        LINKS0_BUF[index] = start;
+        LINKS1_BUF[index] = end;
         return index + 1;
     }
 
     @Override
-    public void updateLinks(final int index) {
-        links[0] = Arrays.copyOf(LINKS_BUF[0], index);
-        links[1] = Arrays.copyOf(LINKS_BUF[1], index);
+    public final void updateLinks(final int index) {
+        links[0] = Arrays.copyOf(LINKS0_BUF, index);
+        links[1] = Arrays.copyOf(LINKS1_BUF, index);
     }
 
     @Override
-    public int getJellyColorNb() {
+    public final int getJellyColorNb() {
         return jellyColorNb;
     }
 
     @Override
-    public int getHeight() {
+    public final int getHeight() {
         return height;
     }
 
     @Override
-    public int getWidth() {
+    public final int getWidth() {
         return width;
     }
 
@@ -86,7 +87,7 @@ public class BoardImpl
         return builder.toString();
     }
 
-    private void toString(final StringBuilder builder) {
+    private final void toString(final StringBuilder builder) {
         final int height1 = height - 1;
         for (int i = 0; i < height1; i++) {
             builder.append(matrix[i]);
@@ -103,45 +104,48 @@ public class BoardImpl
     }
 
     @Override
-    public String serialize() { // TODO: fix to take into account links
+    public final String serialize() { // TODO: fix to take into account links
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < height; i++) {
             builder.append(matrix[i]);
         }
-        final String serialization = builder.toString();
-        for (int i = 0; i < serialization.length(); i++) {
-            final char c = serialization.charAt(i);
+        builder.append(Arrays.toString(links[0]));
+        builder.append(Arrays.toString(links[1]));
+        final int size = builder.length();
+        for (int i = 0; i < size; i++) {
+            final char c = builder.charAt(i);
             if (c != Board.BLANK_CHAR && c != Board.WALL_CHAR) {
-                return serialization.substring(i);
+                return builder.substring(i);
             }
         }
-        return "";
+        // cannot happen
+        throw new RuntimeException();
     }
 
     @Override
-    public boolean[][] getWalls() {
+    public final boolean[][] getWalls() {
         return walls;
     }
 
-    public static boolean isFixed(final char c) {
+    public static final boolean isFixed(final char c) {
         return (c & FIXED_FLAG) != 0;
     }
 
-    public static char toFloating(final char c) {
+    public static final char toFloating(final char c) {
         return (char) (c & ~FIXED_FLAG);
     }
 
-    public static char toFixed(final char c) {
+    public static final char toFixed(final char c) {
         return (char) (c | FIXED_FLAG);
     }
 
     @Override
-    public char[][] getMatrix() {
+    public final char[][] getMatrix() {
         return matrix;
     }
 
     @Override
-    public byte[] getLinks(final int index) {
+    public final byte[] getLinks(final int index) {
         return links[index];
     }
 }

@@ -24,7 +24,7 @@ public class GameImpl
     }
 
     @Override
-    public boolean solve() {
+    public final boolean solve() {
         while (!states.isEmpty()) {
             final State state = states.removeFirst();
             final Jelly[] jellies = state.getJellies();
@@ -47,7 +47,7 @@ public class GameImpl
         return false;
     }
 
-    private boolean process(final State clone) {
+    private final boolean process(final State clone) {
         clone.gravity();
         if (clone.isSolved()) {
             clone.explain(0);
@@ -60,7 +60,7 @@ public class GameImpl
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "#states=" + states.size() + ";#explored=" + explored.size();
     }
 }

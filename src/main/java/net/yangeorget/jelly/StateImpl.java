@@ -62,7 +62,9 @@ public class StateImpl
                 }
             }
         }
-        jellies = Arrays.copyOf(JELLIES_BUFFER, nb);
+        // faster than jellies = Arrays.copyOf(JELLIES_BUFFER, nb);
+        jellies = new Jelly[nb];
+        System.arraycopy(JELLIES_BUFFER, 0, jellies, 0, nb);
     }
 
     @Override

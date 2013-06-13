@@ -7,6 +7,7 @@ public interface Board {
     int MAX_COORDINATE_LOG2 = 4;
     int MAX_WIDTH = MAX_COORDINATE;
     int MAX_HEIGHT = MAX_COORDINATE;
+    int MAX_SIZE = MAX_WIDTH * MAX_HEIGHT;
 
     int LEFT = -1;
     int RIGHT = 1;
@@ -31,9 +32,11 @@ public interface Board {
 
     int getJellyColorNb();
 
-    void updateLinks(int index);
+    void clearLinks();
 
-    int storeLink(int index, byte start, byte end);
+    void updateLinks();
+
+    void storeLink(byte start, byte end);
 
     Board[] LEVELS = { // board 1
             new BoardImpl(new String[] { "            ",

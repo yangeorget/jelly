@@ -24,7 +24,7 @@ public class GameImpl
     }
 
     @Override
-    public final boolean solve() {
+    public final State solve() {
         while (!states.isEmpty()) {
             final State state = states.removeFirst();
             final Jelly[] jellies = state.getJellies();
@@ -33,30 +33,35 @@ public class GameImpl
                 if (jelly.mayMoveLeft()) {
                     final State clone = state.clone();
                     if (clone.moveLeft(j) && process(clone)) {
-                        return true;
+                        return clone;
                     }
                 }
                 if (jelly.mayMoveRight()) {
                     final State clone = state.clone();
                     if (clone.moveRight(j) && process(clone)) {
-                        return true;
+                        return clone;
                     }
                 }
             }
         }
-        return false;
+        return null;
     }
 
     private final boolean process(final State clone) {
         clone.gravity();
         if (clone.isSolved()) {
-            clone.explain(0);
             return true;
         }
         if (explored.add(clone.getSerialization())) {
             states.addLast(clone);
         }
         return false;
+    }
+
+    @Override
+    public final void explain(final State state) {
+        LOG.debug("states explored: " + explored.size());
+        state.explain(0);
     }
 
     @Override

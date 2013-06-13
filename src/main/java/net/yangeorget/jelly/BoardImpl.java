@@ -14,9 +14,9 @@ public class BoardImpl
     private final boolean[][] walls;
     private final byte[][] links;
 
-    private static final int MAX_LINKS_SIZE = Board.MAX_WIDTH * Board.MAX_HEIGHT;
-    private static final byte[] LINKS0_BUF = new byte[MAX_LINKS_SIZE];
-    private static final byte[] LINKS1_BUF = new byte[MAX_LINKS_SIZE];
+    private static final byte[] LINKS0_BUF = new byte[MAX_SIZE];
+    private static final byte[] LINKS1_BUF = new byte[MAX_SIZE];
+    private static int linksIndex;
 
     public BoardImpl(final String[] strings, final byte[]... groups) {
         height = strings.length;
@@ -37,32 +37,38 @@ public class BoardImpl
         }
         jellyColorNb = colors.size();
         links = new byte[2][0];
-        int index = 0;
+        clearLinks();
         for (final byte[] group : groups) {
-            index = createLinks(group, index);
+            createLinks(group);
         }
-        updateLinks(index);
+        updateLinks();
     }
 
-    private final int createLinks(final byte[] group, int index) {
+    private final void createLinks(final byte[] group) {
         final int size = group.length;
         for (int i = 0; i < size - 1; i++) {
-            index = storeLink(index, group[i], group[i + 1]);
+            storeLink(group[i], group[i + 1]);
         }
-        return storeLink(index, group[size - 1], group[0]);
+        storeLink(group[size - 1], group[0]);
+    }
+
+
+    @Override
+    public void clearLinks() {
+        linksIndex = 0;
     }
 
     @Override
-    public final int storeLink(final int index, final byte start, final byte end) {
-        LINKS0_BUF[index] = start;
-        LINKS1_BUF[index] = end;
-        return index + 1;
+    public final void storeLink(final byte start, final byte end) {
+        LINKS0_BUF[linksIndex] = start;
+        LINKS1_BUF[linksIndex] = end;
+        linksIndex++;
     }
 
     @Override
-    public final void updateLinks(final int index) {
-        links[0] = Arrays.copyOf(LINKS0_BUF, index);
-        links[1] = Arrays.copyOf(LINKS1_BUF, index);
+    public final void updateLinks() {
+        links[0] = Arrays.copyOf(LINKS0_BUF, linksIndex);
+        links[1] = Arrays.copyOf(LINKS1_BUF, linksIndex);
     }
 
     @Override
@@ -104,7 +110,7 @@ public class BoardImpl
     }
 
     @Override
-    public final String serialize() { // TODO: fix to take into account links
+    public final String serialize() {
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < height; i++) {
             builder.append(matrix[i]);

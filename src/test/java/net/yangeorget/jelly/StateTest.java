@@ -132,14 +132,14 @@ public class StateTest {
 
     @Test
     public void testMoveRightOK6() {
-        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  " }, new byte[] { 0, 1 }), 0, "AB[17, 18][18, 17]");
+        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  " }, new byte[] { 0, 1 }), 0, "AB[18, 17][17, 18]");
     }
 
     @Test
     public void testMoveRightOK61() {
         testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  ", "## " }, new byte[] { 0, 1 }),
                         0,
-                        "AB## [17, 18][18, 17]");
+                        "AB## [18, 17][17, 18]");
     }
 
     private void testMoveRightOK(final Board input, final int index, final String output) {
@@ -172,9 +172,7 @@ public class StateTest {
 
     private void testGravity(final Board input, final Board output) {
         final State state = new StateImpl(input);
-        LOG.debug(state.toString());
         state.gravity();
-        LOG.debug(state.toString());
         Assert.assertEquals(state.getSerialization(), output.serialize());
     }
 

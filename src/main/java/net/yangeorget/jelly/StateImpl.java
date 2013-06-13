@@ -1,16 +1,14 @@
 package net.yangeorget.jelly;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StateImpl
         implements State {
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
-    private static final Jelly[] JELLIES_BUFFER = new Jelly[Board.MAX_HEIGHT * Board.MAX_WIDTH];
-    private static final List<Jelly> MOVED_JELLIES = new LinkedList<>();
+    private static final Jelly[] JELLIES_BUFFER = new Jelly[Board.MAX_SIZE];
+    private static int jelliesIndex;
 
     private final Board board;
     private String serialization;
@@ -39,18 +37,18 @@ public class StateImpl
     }
 
     @Override
-    public void updateBoard() {
-        int index = 0;
+    public final void updateBoard() {
+        board.clearLinks();
         for (final Jelly jelly : jellies) {
-            index = jelly.updateBoard(index);
+            jelly.updateBoard();
         }
-        board.updateLinks(index);
+        board.updateLinks();
     }
 
     @Override
-    public void updateFromBoard() {
+    public final void updateFromBoard() {
         serialization = board.serialize();
-        int nb = 0;
+        jelliesIndex = 0;
         final char[][] matrix = board.getMatrix();
         final boolean[][] walls = board.getWalls();
         final int height = board.getHeight();
@@ -58,96 +56,99 @@ public class StateImpl
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
                 if (matrix[i][j] != Board.BLANK_CHAR && !walls[i][j]) {
-                    JELLIES_BUFFER[nb++] = new JellyImpl(this, i, j);
+                    JELLIES_BUFFER[jelliesIndex++] = new JellyImpl(this, i, j);
                 }
             }
         }
         // faster than jellies = Arrays.copyOf(JELLIES_BUFFER, nb);
-        jellies = new Jelly[nb];
-        System.arraycopy(JELLIES_BUFFER, 0, jellies, 0, nb);
+        jellies = new Jelly[jelliesIndex];
+        System.arraycopy(JELLIES_BUFFER, 0, jellies, 0, jelliesIndex);
     }
 
     @Override
-    public StateImpl clone() {
+    public final StateImpl clone() {
         return new StateImpl(this);
     }
 
     @Override
-    public Jelly[] getJellies() {
+    public final Jelly[] getJellies() {
         return jellies;
     }
 
     @Override
-    public boolean moveLeft(final int j) {
+    public final boolean moveLeft(final int j) {
         return moveLeft(jellies[j]);
     }
 
-    boolean moveLeft(final Jelly jelly) {
-        if (!jelly.mayMoveLeft()) {
-            return false;
-        }
-        jelly.moveLeft();
-        if (jelly.overlapsWalls()) {
-            return false;
-        }
-        for (final Jelly j : jellies) {
-            if (!jelly.equals(j) && jelly.overlaps(j) && !moveLeft(j)) {
+    final boolean moveLeft(final Jelly jelly) {
+        if (jelly.mayMoveLeft()) {
+            jelly.moveLeft();
+            if (jelly.overlapsWalls()) {
                 return false;
             }
+            for (final Jelly j : jellies) {
+                if (!jelly.equals(j) && jelly.overlaps(j) && !moveLeft(j)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     @Override
-    public boolean moveRight(final int j) {
+    public final boolean moveRight(final int j) {
         return moveRight(jellies[j]);
     }
 
-    boolean moveRight(final Jelly jelly) {
-        if (!jelly.mayMoveRight()) {
-            return false;
-        }
-        jelly.moveRight();
-        if (jelly.overlapsWalls()) {
-            return false;
-        }
-        for (final Jelly j : jellies) {
-            if (!jelly.equals(j) && jelly.overlaps(j) && !moveRight(j)) {
+    final boolean moveRight(final Jelly jelly) {
+        if (jelly.mayMoveRight()) {
+            jelly.moveRight();
+            if (jelly.overlapsWalls()) {
                 return false;
             }
+            for (final Jelly j : jellies) {
+                if (!jelly.equals(j) && jelly.overlaps(j) && !moveRight(j)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
-    boolean moveDown(final Jelly jelly, final List<Jelly> movedJellies) {
-        if (!jelly.mayMoveDown()) {
-            return false;
-        }
-        jelly.moveDown();
-        movedJellies.add(jelly);
-        if (jelly.overlapsWalls()) {
-            return false;
-        }
-        for (final Jelly j : jellies) {
-            if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j, movedJellies)) {
+    final boolean moveDown(final Jelly jelly) {
+        if (jelly.mayMoveDown()) {
+            jelly.moveDown();
+            JELLIES_BUFFER[jelliesIndex++] = jelly;
+            if (jelly.overlapsWalls()) {
                 return false;
             }
+            for (final Jelly j : jellies) {
+                if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
-        return true;
     }
 
     @Override
-    public void gravity() { // TODO: use a cache to check if moves are possible
+    public final void gravity() { // TODO: use a cache to check if moves are possible
         for (boolean gravityAgain = true; gravityAgain;) {
             gravityAgain = false;
             for (final Jelly jelly : jellies) {
                 if (jelly.mayMoveDown()) {
-                    MOVED_JELLIES.clear();
-                    if (moveDown(jelly, MOVED_JELLIES)) {
+                    jelliesIndex = 0;
+                    if (moveDown(jelly)) {
                         gravityAgain = true;
                     } else {
-                        for (final Jelly je : MOVED_JELLIES) {
-                            je.moveUp();
+                        while (--jelliesIndex >= 0) {
+                            JELLIES_BUFFER[jelliesIndex].moveUp();
                         }
                     }
                 }
@@ -158,7 +159,7 @@ public class StateImpl
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "board="
                + board
                + ";walls="
@@ -168,17 +169,17 @@ public class StateImpl
     }
 
     @Override
-    public Board getBoard() {
+    public final Board getBoard() {
         return board;
     }
 
     @Override
-    public String getSerialization() {
+    public final String getSerialization() {
         return serialization;
     }
 
     @Override
-    public boolean isSolved() {
+    public final boolean isSolved() {
         int jellyNb = 0;
         for (final Jelly jelly : jellies) {
             jellyNb += jelly.getSegmentNb();
@@ -187,7 +188,7 @@ public class StateImpl
     }
 
     @Override
-    public void explain(final int step) {
+    public final void explain(final int step) {
         updateBoard();
         LOG.debug("=== STEP " + step + " ===\n" + board.toString());
         updateFromBoard();

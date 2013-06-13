@@ -52,72 +52,124 @@ public class GameTest {
 
     private void testSolveOK(final Board board) {
         final Game game = new GameImpl(board);
-        Assert.assertTrue(game.solve());
+        Assert.assertNotNull(game.solve());
     }
 
     private void testSolveKO(final Board board) {
         final Game game = new GameImpl(board);
-        Assert.assertFalse(game.solve());
+        Assert.assertNull(game.solve());
     }
 
     @Test
     public void testSolveLEVEL_1() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[0]).solve());
+        solve(1);
     }
 
     @Test
     public void testSolveLEVEL_2() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[1]).solve());
+        solve(2);
     }
 
     @Test
     public void testSolveLEVEL_3() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[2]).solve());
+        solve(3);
     }
 
     @Test
     public void testSolveLEVEL_4() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[3]).solve());
+        solve(4);
     }
 
     @Test
     public void testSolveLEVEL_5() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[4]).solve());
+        solve(5);
     }
 
     @Test
     public void testSolveLEVEL_6() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[5]).solve());
+        solve(6);
     }
 
     @Test
     public void testSolveLEVEL_7() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[6]).solve());
+        solve(7);
     }
 
     @Test
     public void testSolveLEVEL_8() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[7]).solve());
+        solve(8);
     }
 
     @Test
     public void testSolveLEVEL_9() {
-        Assert.assertTrue(new GameImpl(Board.LEVELS[8]).solve());
+        solve(9);
     }
 
-    /*
-     * @Test public void testSolveLEVEL_10() { Assert.assertTrue(new GameImpl(Board.LEVELS[9]).solve()); }
-     * @Test public void testSolveLEVEL_11() { Assert.assertTrue(new GameImpl(Board.LEVELS[10]).solve()); }
-     * @Test public void testSolveLEVEL_12() { Assert.assertTrue(new GameImpl(Board.LEVELS[11]).solve()); }
-     * @Test public void testSolveLEVEL_13() { Assert.assertTrue(new GameImpl(Board.LEVELS[12]).solve()); }
-     * @Test public void testSolveLEVEL_14() { Assert.assertTrue(new GameImpl(Board.LEVELS[13]).solve()); }
-     * @Test public void testSolveLEVEL_15() { Assert.assertTrue(new GameImpl(Board.LEVELS[14]).solve()); }
-     * @Test public void testSolveLEVEL_16() { Assert.assertTrue(new GameImpl(Board.LEVELS[15]).solve()); }
-     * @Test public void testSolveLEVEL_17() { Assert.assertTrue(new GameImpl(Board.LEVELS[16]).solve()); }
-     * @Test public void testSolveLEVEL_18() { Assert.assertTrue(new GameImpl(Board.LEVELS[17]).solve()); }
-     * @Test public void testSolveLEVEL_19() { Assert.assertTrue(new GameImpl(Board.LEVELS[18]).solve()); }
-     * @Test public void testSolveLEVEL_20() { Assert.assertTrue(new GameImpl(Board.LEVELS[19]).solve()); }
-     */
+    @Test
+    public void testSolveLEVEL_10() {
+        solve(10);
+    }
+
+    @Test
+    public void testSolveLEVEL_11() {
+        solve(11);
+    }
+
+    @Test
+    public void testSolveLEVEL_12() {
+        solve(12);
+    }
+
+    @Test
+    public void testSolveLEVEL_13() {
+        solve(13);
+    }
+
+    @Test
+    public void testSolveLEVEL_14() {
+        solve(14);
+    }
+
+    @Test
+    public void testSolveLEVEL_15() {
+        solve(15);
+    }
+
+    @Test
+    public void testSolveLEVEL_16() {
+        solve(16);
+    }
+
+    @Test
+    public void testSolveLEVEL_17() {
+        solve(17);
+    }
+
+    @Test
+    public void testSolveLEVEL_18() {
+        solve(18);
+    }
+
+    @Test
+    public void testSolveLEVEL_19() {
+        solve(19);
+    }
+
+    @Test
+    public void testSolveLEVEL_20() {
+        solve(20);
+    }
+
+    private void solve(final int level) {
+        final Game game = new GameImpl(Board.LEVELS[level - 1]);
+        LOG.debug("solving: " + level);
+        final long time = System.currentTimeMillis();
+        final State state = game.solve();
+        LOG.debug("solved in: " + (System.currentTimeMillis() - time));
+        Assert.assertNotNull(state);
+        game.explain(state);
+    }
+
     public static void main(final String[] args) {
         for (int i = 0; i < Board.LEVELS.length; i++) {
             new GameImpl(Board.LEVELS[i]).solve();

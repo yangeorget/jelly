@@ -22,7 +22,7 @@ public interface Jelly {
 
     Jelly clone(State state);
 
-    int updateBoard(int index);
+    void updateBoard();
 
     int getSegmentNb();
 }

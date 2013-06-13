@@ -2,5 +2,7 @@ package net.yangeorget.jelly;
 
 
 public interface Game {
-    boolean solve();
+    State solve();
+
+    void explain(State state);
 }

@@ -186,16 +186,16 @@ public class StateTest {
         Assert.assertTrue(state.getSerialization()
                                .startsWith("A# ABBA "));
         Assert.assertEquals(state.getJellies().length, 1);
-        Assert.assertEquals(input.getLinks(0).length, 3);
-        Assert.assertEquals(input.getLinks(1).length, 3);
+        Assert.assertEquals(input.getLinks0().length, 3);
+        Assert.assertEquals(input.getLinks1().length, 3);
 
         state.moveLeft(0);
         state.gravity();
         Assert.assertTrue(state.getSerialization()
                                .startsWith("A #ABBA  "));
         Assert.assertEquals(state.getJellies().length, 1);
-        Assert.assertEquals(input.getLinks(0).length, 3);
-        Assert.assertEquals(input.getLinks(1).length, 3);
+        Assert.assertEquals(input.getLinks0().length, 3);
+        Assert.assertEquals(input.getLinks1().length, 3);
 
     }
 

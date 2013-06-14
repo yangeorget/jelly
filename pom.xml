@@ -101,6 +101,7 @@
             <version>${maven.surefire.version}</version>
 	    <configuration>
 	     <argLine>-server</argLine>
+	     <argLine>-Xms1024m</argLine>
 	     <argLine>-Xmx1024m</argLine>
 	    </configuration>
          </plugin>

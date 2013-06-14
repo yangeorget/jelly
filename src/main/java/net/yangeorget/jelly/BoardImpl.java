@@ -9,10 +9,13 @@ public class BoardImpl
         implements Board {
     private final int height;
     private final int width;
+    private final int height1;
+    private final int width1;
     private final int jellyColorNb;
     private final char[][] matrix;
     private final boolean[][] walls;
-    private final byte[][] links;
+    private byte[] links0;
+    private byte[] links1;
 
     private static final byte[] LINKS0_BUF = new byte[MAX_SIZE];
     private static final byte[] LINKS1_BUF = new byte[MAX_SIZE];
@@ -21,6 +24,8 @@ public class BoardImpl
     public BoardImpl(final String[] strings, final byte[]... groups) {
         height = strings.length;
         width = strings[0].length();
+        height1 = height - 1;
+        width1 = width - 1;
         matrix = new char[height][];
         walls = new boolean[height][width];
         final Set<Character> colors = new HashSet<>();
@@ -36,7 +41,6 @@ public class BoardImpl
             }
         }
         jellyColorNb = colors.size();
-        links = new byte[2][0];
         clearLinks();
         for (final byte[] group : groups) {
             createLinks(group);
@@ -67,8 +71,8 @@ public class BoardImpl
 
     @Override
     public final void updateLinks() {
-        links[0] = Arrays.copyOf(LINKS0_BUF, linksIndex);
-        links[1] = Arrays.copyOf(LINKS1_BUF, linksIndex);
+        links0 = Arrays.copyOf(LINKS0_BUF, linksIndex);
+        links1 = Arrays.copyOf(LINKS1_BUF, linksIndex);
     }
 
     @Override
@@ -87,6 +91,16 @@ public class BoardImpl
     }
 
     @Override
+    public final int getHeight1() {
+        return height1;
+    }
+
+    @Override
+    public final int getWidth1() {
+        return width1;
+    }
+
+    @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         toString(builder);
@@ -101,10 +115,10 @@ public class BoardImpl
         }
         builder.append(matrix[height1]);
         builder.append('\n');
-        for (int i = 0; i < links[0].length; i++) {
-            builder.append(links[0][i]);
+        for (int i = 0; i < links0.length; i++) {
+            builder.append(links0[i]);
             builder.append("-");
-            builder.append(links[1][i]);
+            builder.append(links1[i]);
             builder.append('\n');
         }
     }
@@ -115,8 +129,8 @@ public class BoardImpl
         for (int i = 0; i < height; i++) {
             builder.append(matrix[i]);
         }
-        builder.append(Arrays.toString(links[0]));
-        builder.append(Arrays.toString(links[1]));
+        builder.append(Arrays.toString(links0));
+        builder.append(Arrays.toString(links1));
         final int size = builder.length();
         for (int i = 0; i < size; i++) {
             final char c = builder.charAt(i);
@@ -151,7 +165,12 @@ public class BoardImpl
     }
 
     @Override
-    public final byte[] getLinks(final int index) {
-        return links[index];
+    public final byte[] getLinks0() {
+        return links0;
+    }
+
+    @Override
+    public final byte[] getLinks1() {
+        return links1;
     }
 }

@@ -17,7 +17,7 @@ public class GameImpl
 
     public GameImpl(final Board board) {
         final State state = new StateImpl(board);
-        explored = new HashSet<>(1 << 16, 0.75F);
+        explored = new HashSet<>(1 << 20, 0.75F);
         explored.add(state.getSerialization());
         states = new LinkedList<>();
         states.add(state);

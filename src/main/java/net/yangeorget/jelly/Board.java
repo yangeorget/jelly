@@ -22,11 +22,17 @@ public interface Board {
 
     int getWidth();
 
+    int getHeight1();
+
+    int getWidth1();
+
     char[][] getMatrix();
 
     boolean[][] getWalls();
 
-    byte[] getLinks(int index);
+    byte[] getLinks0();
+
+    byte[] getLinks1();
 
     String serialize();
 

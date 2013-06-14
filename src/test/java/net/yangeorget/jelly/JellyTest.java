@@ -7,8 +7,7 @@ public class JellyTest {
     @Test
     public void testJelly1() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final State state = new StateImpl(board);
-        final JellyImpl jelly = new JellyImpl(state,
+        final JellyImpl jelly = new JellyImpl(board,
                                               false,
                                               (byte) 2,
                                               (byte) 3,
@@ -50,8 +49,7 @@ public class JellyTest {
     @Test
     public void testClone() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final State state = new StateImpl(board);
-        final Jelly jelly = new JellyImpl(state,
+        final Jelly jelly = new JellyImpl(board,
                                           false,
                                           (byte) 2,
                                           (byte) 3,
@@ -61,15 +59,14 @@ public class JellyTest {
                                           (byte) 0x12,
                                           (byte) 0x13,
                                           (byte) 0x22);
-        Assert.assertEquals(jelly.toString(), jelly.clone(state)
+        Assert.assertEquals(jelly.toString(), jelly.clone()
                                                    .toString());
     }
 
     @Test
     public void testMoveRight() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final State state = new StateImpl(board);
-        final Jelly jelly1 = new JellyImpl(state,
+        final Jelly jelly1 = new JellyImpl(board,
                                            false,
                                            (byte) 2,
                                            (byte) 3,
@@ -79,7 +76,7 @@ public class JellyTest {
                                            (byte) 0x12,
                                            (byte) 0x13,
                                            (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(state,
+        final Jelly jelly2 = new JellyImpl(board,
                                            false,
                                            (byte) 3,
                                            (byte) 4,
@@ -96,8 +93,7 @@ public class JellyTest {
     @Test
     public void testMoveLeft() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final State state = new StateImpl(board);
-        final Jelly jelly1 = new JellyImpl(state,
+        final Jelly jelly1 = new JellyImpl(board,
                                            false,
                                            (byte) 2,
                                            (byte) 3,
@@ -107,7 +103,7 @@ public class JellyTest {
                                            (byte) 0x12,
                                            (byte) 0x13,
                                            (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(state,
+        final Jelly jelly2 = new JellyImpl(board,
                                            false,
                                            (byte) 3,
                                            (byte) 4,
@@ -124,8 +120,7 @@ public class JellyTest {
     @Test
     public void testMoveDown() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final State state = new StateImpl(board);
-        final Jelly jelly1 = new JellyImpl(state,
+        final Jelly jelly1 = new JellyImpl(board,
                                            false,
                                            (byte) 2,
                                            (byte) 3,
@@ -135,7 +130,7 @@ public class JellyTest {
                                            (byte) 0x12,
                                            (byte) 0x13,
                                            (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(state,
+        final Jelly jelly2 = new JellyImpl(board,
                                            false,
                                            (byte) 2,
                                            (byte) 3,
@@ -152,8 +147,7 @@ public class JellyTest {
     @Test
     public void testMoveUp() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final State state = new StateImpl(board);
-        final Jelly jelly1 = new JellyImpl(state,
+        final Jelly jelly1 = new JellyImpl(board,
                                            false,
                                            (byte) 2,
                                            (byte) 3,
@@ -163,7 +157,7 @@ public class JellyTest {
                                            (byte) 0x12,
                                            (byte) 0x13,
                                            (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(state,
+        final Jelly jelly2 = new JellyImpl(board,
                                            false,
                                            (byte) 2,
                                            (byte) 3,
@@ -180,8 +174,7 @@ public class JellyTest {
     @Test
     public void testOverlaps1() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final State state = new StateImpl(board);
-        final Jelly jelly1 = new JellyImpl(state,
+        final Jelly jelly1 = new JellyImpl(board,
                                            false,
                                            (byte) 2,
                                            (byte) 3,
@@ -191,7 +184,7 @@ public class JellyTest {
                                            (byte) 0x12,
                                            (byte) 0x13,
                                            (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(state,
+        final Jelly jelly2 = new JellyImpl(board,
                                            false,
                                            (byte) 1,
                                            (byte) 2,
@@ -207,8 +200,7 @@ public class JellyTest {
     @Test
     public void testOverlaps2() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final State state = new StateImpl(board);
-        final Jelly jelly1 = new JellyImpl(state,
+        final Jelly jelly1 = new JellyImpl(board,
                                            false,
                                            (byte) 2,
                                            (byte) 3,
@@ -218,7 +210,7 @@ public class JellyTest {
                                            (byte) 0x12,
                                            (byte) 0x13,
                                            (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(state,
+        final Jelly jelly2 = new JellyImpl(board,
                                            false,
                                            (byte) 1,
                                            (byte) 3,

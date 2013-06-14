@@ -32,7 +32,7 @@ public class StateImpl
         final int size = jellies.length;
         this.jellies = new Jelly[size];
         for (int i = 0; i < size; i++) {
-            this.jellies[i] = jellies[i].clone(this);
+            this.jellies[i] = jellies[i].clone();
         }
     }
 
@@ -56,7 +56,7 @@ public class StateImpl
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
                 if (matrix[i][j] != Board.BLANK_CHAR && !walls[i][j]) {
-                    JELLIES_BUFFER[jelliesIndex++] = new JellyImpl(this, i, j);
+                    JELLIES_BUFFER[jelliesIndex++] = new JellyImpl(board, i, j);
                 }
             }
         }
@@ -142,16 +142,16 @@ public class StateImpl
         for (boolean gravityAgain = true; gravityAgain;) {
             gravityAgain = false;
             for (final Jelly jelly : jellies) {
-                if (jelly.mayMoveDown()) {
-                    jelliesIndex = 0;
-                    if (moveDown(jelly)) {
-                        gravityAgain = true;
-                    } else {
-                        while (--jelliesIndex >= 0) {
-                            JELLIES_BUFFER[jelliesIndex].moveUp();
-                        }
+                jelliesIndex = 0;
+                // if (jelly.mayMoveDown()) {
+                if (moveDown(jelly)) {
+                    gravityAgain = true;
+                } else {
+                    while (--jelliesIndex >= 0) {
+                        JELLIES_BUFFER[jelliesIndex].moveUp();
                     }
                 }
+                // }
             }
         }
         updateBoard();

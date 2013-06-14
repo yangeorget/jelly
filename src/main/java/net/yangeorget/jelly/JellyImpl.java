@@ -40,8 +40,6 @@ public class JellyImpl
     char[] color;
     int[] end;
     private final Board board;
-    private final byte height1;
-    private final byte width1;
     private boolean isFixed;
     // bounding box
     private byte leftMin;
@@ -49,7 +47,7 @@ public class JellyImpl
     private byte topMin;
     private byte bottomMax;
 
-    JellyImpl(final State state,
+    JellyImpl(final Board board,
               final boolean isFixed,
               final byte leftMin,
               final byte rightMax,
@@ -57,7 +55,7 @@ public class JellyImpl
               final byte bottomMax,
               final char color,
               final byte... positions) {
-        this(state,
+        this(board,
              isFixed,
              leftMin,
              rightMax,
@@ -68,13 +66,7 @@ public class JellyImpl
              positions);
     }
 
-    private JellyImpl(final State state) {
-        this.board = state.getBoard();
-        this.height1 = (byte) (board.getHeight() - 1);
-        this.width1 = (byte) (board.getWidth() - 1);
-    }
-
-    private JellyImpl(final State state,
+    private JellyImpl(final Board board,
                       final boolean isFixed,
                       final byte leftMin,
                       final byte rightMax,
@@ -83,7 +75,7 @@ public class JellyImpl
                       final int[] end,
                       final char[] color,
                       final byte[] positions) {
-        this(state);
+        this.board = board;
         this.isFixed = isFixed;
         this.leftMin = leftMin;
         this.rightMax = rightMax;
@@ -94,12 +86,11 @@ public class JellyImpl
         this.end = Arrays.copyOf(end, end.length);
     }
 
-    public JellyImpl(final State state, final int i, final int j) {
-        this(state);
+    public JellyImpl(final Board board, final int i, final int j) {
+        this.board = board;
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
-        final Board board = state.getBoard();
-        update(board.getMatrix(), board.getLinks(0), board.getLinks(1), i, j);
+        update(board.getMatrix(), board.getLinks0(), board.getLinks1(), i, j);
         color = Arrays.copyOf(COL_BUF, segmentIndex);
         end = Arrays.copyOf(END_BUF, segmentIndex);
         positions = Arrays.copyOf(POS_BUF, getStart(end, segmentIndex));
@@ -112,11 +103,10 @@ public class JellyImpl
                               final int sj) {
         // we have one single candidate segment for now
         CANDIDATE_SEGMENT_BUF[0] = value(si, sj);
-        segmentIndex = 0;
         // we don't have any empty segment yet
         freeSegmentIndex = 1;
-        emptySegmentNb = 0;
-        for (; segmentIndex + emptySegmentNb < freeSegmentIndex;) {
+        segmentIndex = emptySegmentNb = 0;
+        while (segmentIndex + emptySegmentNb < freeSegmentIndex) {
             // the current segment ends where it starts (it is empty)
             END_BUF[segmentIndex] = getStart(END_BUF, segmentIndex);
             // let's init the candidate positions with the current candidate segment
@@ -152,13 +142,13 @@ public class JellyImpl
                         if (i > 0) {
                             CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.UP);
                         }
-                        if (i < height1) {
+                        if (i < board.getHeight1()) {
                             CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.DOWN);
                         }
                         if (j > 0) {
                             CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.LEFT);
                         }
-                        if (j < width1) {
+                        if (j < board.getWidth1()) {
                             CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.RIGHT);
                         }
                     }
@@ -197,8 +187,8 @@ public class JellyImpl
     }
 
     @Override
-    public final JellyImpl clone(final State state) {
-        return new JellyImpl(state, isFixed, leftMin, rightMax, topMin, bottomMax, end, color, positions);
+    public final JellyImpl clone() {
+        return new JellyImpl(board, isFixed, leftMin, rightMax, topMin, bottomMax, end, color, positions);
     }
 
     @Override
@@ -231,7 +221,7 @@ public class JellyImpl
 
     @Override
     public final boolean mayMoveRight() {
-        return !isFixed && rightMax != width1;
+        return !isFixed && rightMax != board.getWidth1();
     }
 
     @Override
@@ -243,7 +233,7 @@ public class JellyImpl
 
     @Override
     public final boolean mayMoveDown() {
-        return !isFixed && bottomMax != height1;
+        return !isFixed && bottomMax != board.getHeight1();
     }
 
     @Override

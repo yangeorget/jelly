@@ -18,28 +18,44 @@ public class GameImpl
     public GameImpl(final Board board) {
         final State state = new StateImpl(board);
         explored = new HashSet<>(1 << 20, 0.75F);
-        explored.add(state.getSerialization());
         states = new LinkedList<>();
-        states.add(state);
+        push(state);
     }
 
     @Override
     public final State solve() {
         while (!states.isEmpty()) {
-            final State state = states.removeFirst();
+            final State state = pop();
+            State clone = null;
             final Jelly[] jellies = state.getJellies();
             for (int j = 0; j < jellies.length; j++) {
                 final Jelly jelly = jellies[j];
                 if (jelly.mayMoveLeft()) {
-                    final State clone = state.clone();
-                    if (clone.moveLeft(j) && process(clone)) {
-                        return clone;
+                    if (clone == null) {
+                        clone = state.clone();
+                    }
+                    if (clone.moveLeft(j)) {
+                        if (process(clone)) {
+                            return clone;
+                        } else {
+                            clone = null;
+                        }
+                    } else {
+                        clone.undoMoveLeft();
                     }
                 }
                 if (jelly.mayMoveRight()) {
-                    final State clone = state.clone();
-                    if (clone.moveRight(j) && process(clone)) {
-                        return clone;
+                    if (clone == null) {
+                        clone = state.clone();
+                    }
+                    if (clone.moveRight(j)) {
+                        if (process(clone)) {
+                            return clone;
+                        } else {
+                            clone = null;
+                        }
+                    } else {
+                        clone.undoMoveRight();
                     }
                 }
             }
@@ -52,20 +68,31 @@ public class GameImpl
         if (clone.isSolved()) {
             return true;
         }
-        if (explored.add(clone.getSerialization())) {
-            states.addLast(clone);
-        }
+        push(clone);
         return false;
+    }
+
+    private final void push(final State state) {
+        if (explored.add(state.getSerialization())) {
+            states.addLast(state);
+        }
+    }
+
+    private final State pop() {
+        return states.removeFirst();
     }
 
     @Override
     public final void explain(final State state) {
-        LOG.debug("states explored: " + explored.size());
+        LOG.debug(toString());
         state.explain(0);
     }
 
     @Override
     public final String toString() {
-        return "#states=" + states.size() + ";#explored=" + explored.size();
+        final int statesSize = states.size();
+        final int pushes = explored.size();
+        final int pops = pushes - statesSize;
+        return "#states=" + statesSize + "#pops=" + pops + ";#pushes=" + pushes + ";#ratio=" + (pops / pushes);
     }
 }

@@ -103,8 +103,8 @@ public class JellyImpl
                               final int sj) {
         // we have one single candidate segment for now
         CANDIDATE_SEGMENT_BUF[0] = value(si, sj);
-        // we don't have any empty segment yet
         freeSegmentIndex = 1;
+        // we don't have any empty segment yet
         segmentIndex = emptySegmentNb = 0;
         while (segmentIndex + emptySegmentNb < freeSegmentIndex) {
             // the current segment ends where it starts (it is empty)
@@ -118,7 +118,7 @@ public class JellyImpl
                 final char c = matrix[i][j];
                 if (c != Board.BLANK_CHAR) {
                     // let's store the color of the current segment if not yet done
-                    if (isEmpty(END_BUF, segmentIndex)) {
+                    if (isEmpty(END_BUF, segmentIndex)) { // TODO: avoid testing each time
                         COL_BUF[segmentIndex] = BoardImpl.toFloating(c);
                     }
                     // has to be true because we want to treat the current segment only here

@@ -12,6 +12,10 @@ public interface State {
 
     boolean moveRight(final int j);
 
+    void undoMoveRight();
+
+    void undoMoveLeft();
+
     void gravity();
 
     String getSerialization();

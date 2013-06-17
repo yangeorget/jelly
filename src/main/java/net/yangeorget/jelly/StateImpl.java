@@ -77,12 +77,14 @@ public class StateImpl
 
     @Override
     public final boolean moveLeft(final int j) {
+        jelliesIndex = 0;
         return moveLeft(jellies[j]);
     }
 
     final boolean moveLeft(final Jelly jelly) {
         if (jelly.mayMoveLeft()) {
             jelly.moveLeft();
+            JELLIES_BUFFER[jelliesIndex++] = jelly;
             if (jelly.overlapsWalls()) {
                 return false;
             }
@@ -99,12 +101,14 @@ public class StateImpl
 
     @Override
     public final boolean moveRight(final int j) {
+        jelliesIndex = 0;
         return moveRight(jellies[j]);
     }
 
     final boolean moveRight(final Jelly jelly) {
         if (jelly.mayMoveRight()) {
             jelly.moveRight();
+            JELLIES_BUFFER[jelliesIndex++] = jelly;
             if (jelly.overlapsWalls()) {
                 return false;
             }
@@ -143,19 +147,35 @@ public class StateImpl
             gravityAgain = false;
             for (final Jelly jelly : jellies) {
                 jelliesIndex = 0;
-                // if (jelly.mayMoveDown()) {
                 if (moveDown(jelly)) {
                     gravityAgain = true;
                 } else {
-                    while (--jelliesIndex >= 0) {
-                        JELLIES_BUFFER[jelliesIndex].moveUp();
-                    }
+                    undoMoveDown();
                 }
-                // }
             }
         }
         updateBoard();
         updateFromBoard();
+    }
+
+    @Override
+    public final void undoMoveLeft() {
+        while (--jelliesIndex >= 0) {
+            JELLIES_BUFFER[jelliesIndex].moveRight();
+        }
+    }
+
+    @Override
+    public final void undoMoveRight() {
+        while (--jelliesIndex >= 0) {
+            JELLIES_BUFFER[jelliesIndex].moveLeft();
+        }
+    }
+
+    private final void undoMoveDown() {
+        while (--jelliesIndex >= 0) {
+            JELLIES_BUFFER[jelliesIndex].moveUp();
+        }
     }
 
     @Override

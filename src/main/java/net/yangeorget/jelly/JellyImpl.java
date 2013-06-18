@@ -120,7 +120,7 @@ public class JellyImpl
                 if (c != Board.BLANK_CHAR) {
                     final char color = BoardImpl.toFloating(c);
                     // let's store the color of the current segment if not yet done
-                    if (start == END_BUF[segmentIndex]) { // TODO: avoid testing each time
+                    if (start == END_BUF[segmentIndex]) {
                         COL_BUF[segmentIndex] = color;
                     }
                     // has to be true because we want to treat the current segment only here

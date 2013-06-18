@@ -123,6 +123,11 @@ public class StateImpl
         }
     }
 
+    final boolean moveDown(final int j) {
+        jelliesIndex = 0;
+        return moveDown(jellies[j]);
+    }
+
     final boolean moveDown(final Jelly jelly) {
         if (jelly.mayMoveDown()) {
             jelly.moveDown();
@@ -142,15 +147,19 @@ public class StateImpl
     }
 
     @Override
-    public final void gravity() { // TODO: use a cache to check if moves are possible
+    public final void gravity() {
+        final int size = jellies.length;
+        final boolean[] blocked = new boolean[size];
         for (boolean gravityAgain = true; gravityAgain;) {
             gravityAgain = false;
-            for (final Jelly jelly : jellies) {
-                jelliesIndex = 0;
-                if (moveDown(jelly)) {
-                    gravityAgain = true;
-                } else {
-                    undoMoveDown();
+            for (int i = size; --i >= 0;) {
+                if (!blocked[i]) {
+                    if (moveDown(i)) {
+                        gravityAgain = true;
+                    } else {
+                        undoMoveDown();
+                        blocked[i] = true;
+                    }
                 }
             }
         }

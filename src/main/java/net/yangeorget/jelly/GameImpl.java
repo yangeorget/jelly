@@ -15,8 +15,12 @@ public class GameImpl
     private final LinkedList<State> states;
     private final Set<String> explored;
 
+    // private final Trie<String, Boolean> explored;
+
+
     public GameImpl(final Board board) {
         final State state = new StateImpl(board);
+        // explored = new PatriciaTrie<>(new StringKeyAnalyzer());
         explored = new HashSet<>(1 << 20, 0.75F);
         states = new LinkedList<>();
         push(state);
@@ -65,6 +69,7 @@ public class GameImpl
 
     private final boolean process(final State clone) {
         clone.gravity();
+        // TODO: promotions
         if (clone.isSolved()) {
             return true;
         }
@@ -73,7 +78,9 @@ public class GameImpl
     }
 
     private final void push(final State state) {
-        if (explored.add(state.getSerialization())) {
+        final String ser = state.getSerialization();
+        if (!explored.contains(ser)) {
+            explored.add(ser);
             states.addLast(state);
         }
     }
@@ -93,6 +100,6 @@ public class GameImpl
         final int statesSize = states.size();
         final int pushes = explored.size();
         final int pops = pushes - statesSize;
-        return "#states=" + statesSize + "#pops=" + pops + ";#pushes=" + pushes + ";#ratio=" + (pops / pushes);
+        return "#states=" + statesSize + "#pops=" + pops + ";#pushes=" + pushes + ";#ratio=" + ((float) pops / pushes);
     }
 }

@@ -30,11 +30,15 @@ public interface Board {
 
     boolean[][] getWalls();
 
-    byte[] getLinks0();
+    byte[] getLinkStarts();
 
-    byte[] getLinks1();
+    byte[] getLinkEnds();
 
-    String serialize();
+    char[] getEmergingColors();
+
+    byte[] getEmergingPositions();
+
+    String serialize(boolean... emerged);
 
     int getJellyColorNb();
 
@@ -228,10 +232,15 @@ public interface Board {
                                         "#           ",
                                         "#     #     ",
                                         "# #         ",
-                                        "#        #  " })
+                                        "#        #  " }),
 
-
-    };
-
-
+            // board 21
+            new BoardImpl(new String[] { "      #     ",
+                                        "      #     ",
+                                        "      #     ",
+                                        "      g     ",
+                                        "        GB  ",
+                                        "###     ##  ",
+                                        "##R B     R ",
+                                        "### ########" }, new byte[] { 0x66 }, new char[] { 'R' }) };
 }

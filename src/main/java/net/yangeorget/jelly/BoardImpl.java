@@ -11,23 +11,48 @@ public class BoardImpl
     private final int width;
     private final int height1;
     private final int width1;
-    private final int jellyColorNb;
+    private int jellyColorNb;
     private final char[][] matrix;
     private final boolean[][] walls;
-    private byte[] links0;
-    private byte[] links1;
+    private byte[] linkStarts;
+    private byte[] linkEnds;
+    private final byte[] emergingPositions;
+    private final char[] emergingColors;
 
-    private static final byte[] LINKS0_BUF = new byte[MAX_SIZE];
-    private static final byte[] LINKS1_BUF = new byte[MAX_SIZE];
+    private static final byte[] LINK_START_BUF = new byte[MAX_SIZE];
+    private static final byte[] LINK_END_BUF = new byte[MAX_SIZE];
     private static int linksIndex;
 
-    public BoardImpl(final String[] strings, final byte[]... groups) {
+    public BoardImpl(final String[] strings, final byte[]... linkCycles) {
+        this(strings, new byte[0], new char[0], linkCycles);
+    }
+
+    /**
+     * Main constructor.
+     * @param strings the lines of the board as strings
+     * @param linkCycles an array of link cycle (each link cycle is a cycle of links between single color jellies)
+     */
+    public BoardImpl(final String[] strings,
+                     final byte[] emergingPositions,
+                     final char[] emergingColors,
+                     final byte[]... linkCycles) {
         height = strings.length;
         width = strings[0].length();
         height1 = height - 1;
         width1 = width - 1;
         matrix = new char[height][];
         walls = new boolean[height][width];
+        this.emergingPositions = emergingPositions;
+        this.emergingColors = emergingColors;
+        processBoardData(strings);
+        clearLinks();
+        for (final byte[] linkCycle : linkCycles) {
+            createLinks(linkCycle);
+        }
+        updateLinks();
+    }
+
+    void processBoardData(final String[] strings) {
         final Set<Character> colors = new HashSet<>();
         for (int i = 0; i < height; i++) {
             matrix[i] = strings[i].toCharArray();
@@ -40,20 +65,18 @@ public class BoardImpl
                 }
             }
         }
-        jellyColorNb = colors.size();
-        clearLinks();
-        for (final byte[] group : groups) {
-            createLinks(group);
+        for (final char color : emergingColors) {
+            colors.add(BoardImpl.toFloating(color));
         }
-        updateLinks();
+        jellyColorNb = colors.size();
     }
 
-    private final void createLinks(final byte[] group) {
-        final int size = group.length;
+    private final void createLinks(final byte[] linkCycle) {
+        final int size = linkCycle.length;
         for (int i = 0; i < size - 1; i++) {
-            storeLink(group[i], group[i + 1]);
+            storeLink(linkCycle[i], linkCycle[i + 1]);
         }
-        storeLink(group[size - 1], group[0]);
+        storeLink(linkCycle[size - 1], linkCycle[0]);
     }
 
 
@@ -64,15 +87,15 @@ public class BoardImpl
 
     @Override
     public final void storeLink(final byte start, final byte end) {
-        LINKS0_BUF[linksIndex] = start;
-        LINKS1_BUF[linksIndex] = end;
+        LINK_START_BUF[linksIndex] = start;
+        LINK_END_BUF[linksIndex] = end;
         linksIndex++;
     }
 
     @Override
     public final void updateLinks() {
-        links0 = Arrays.copyOf(LINKS0_BUF, linksIndex);
-        links1 = Arrays.copyOf(LINKS1_BUF, linksIndex);
+        linkStarts = Arrays.copyOf(LINK_START_BUF, linksIndex);
+        linkEnds = Arrays.copyOf(LINK_END_BUF, linksIndex);
     }
 
     @Override
@@ -115,22 +138,28 @@ public class BoardImpl
         }
         builder.append(matrix[height1]);
         builder.append('\n');
-        for (int i = 0; i < links0.length; i++) {
-            builder.append(links0[i]);
+        for (int i = 0; i < linkStarts.length; i++) {
+            builder.append(linkStarts[i]);
             builder.append("-");
-            builder.append(links1[i]);
+            builder.append(linkEnds[i]);
             builder.append('\n');
         }
+        builder.append(";emergingPositions=");
+        builder.append(Arrays.toString(emergingPositions));
+        builder.append(";emergingColors=");
+        builder.append(Arrays.toString(emergingColors));
+        builder.append('\n');
     }
 
     @Override
-    public final String serialize() {
+    public final String serialize(final boolean... emerged) {
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < height; i++) {
             builder.append(matrix[i]);
         }
-        builder.append(Arrays.toString(links0));
-        builder.append(Arrays.toString(links1));
+        builder.append(Arrays.toString(emerged));
+        builder.append(Arrays.toString(linkStarts));
+        builder.append(Arrays.toString(linkEnds));
         final int size = builder.length();
         for (int i = 0; i < size; i++) {
             final char c = builder.charAt(i);
@@ -165,12 +194,22 @@ public class BoardImpl
     }
 
     @Override
-    public final byte[] getLinks0() {
-        return links0;
+    public final byte[] getLinkStarts() {
+        return linkStarts;
     }
 
     @Override
-    public final byte[] getLinks1() {
-        return links1;
+    public final byte[] getLinkEnds() {
+        return linkEnds;
+    }
+
+    @Override
+    public final byte[] getEmergingPositions() {
+        return emergingPositions;
+    }
+
+    @Override
+    public final char[] getEmergingColors() {
+        return emergingColors;
     }
 }

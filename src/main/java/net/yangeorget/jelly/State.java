@@ -16,7 +16,9 @@ public interface State {
 
     void undoMoveLeft();
 
-    void gravity();
+    void process();
+
+    boolean[] getEmerged();
 
     String getSerialization();
 

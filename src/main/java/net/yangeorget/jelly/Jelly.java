@@ -16,6 +16,8 @@ public interface Jelly {
 
     boolean mayMoveDown();
 
+    boolean mayMoveUp();
+
     boolean overlaps(Jelly j);
 
     boolean overlapsWalls();
@@ -25,4 +27,13 @@ public interface Jelly {
     void updateBoard();
 
     int getSegmentNb();
+
+    int getStart(int segmentIndex);
+
+    int getEnd(int segmentIndex);
+
+    char getColor(int segmentIndex);
+
+    byte[] getPositions();
+
 }

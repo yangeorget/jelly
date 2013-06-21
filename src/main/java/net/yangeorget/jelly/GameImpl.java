@@ -68,8 +68,7 @@ public class GameImpl
     }
 
     private final boolean process(final State clone) {
-        clone.gravity();
-        // TODO: promotions
+        clone.process();
         if (clone.isSolved()) {
             return true;
         }

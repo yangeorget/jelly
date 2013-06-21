@@ -55,7 +55,6 @@ public class StateTest {
                                               "           #",
                                               "            ",
                                               "      YDDYY " }, new byte[] { 0x56, 0x58, 0x59 }), 1, 1, 5);
-
     }
 
     @Test
@@ -102,118 +101,94 @@ public class StateTest {
 
     @Test
     public void testMoveRightOK1() {
-        testMoveRightOK(new BoardImpl(new String[] { " BB  " }), 0, "BB [][]");
+        testMoveRightOK(new BoardImpl(new String[] { " BB  " }), 0, "BB [][][]");
     }
 
     @Test
     public void testMoveRightOK2() {
-        testMoveRightOK(new BoardImpl(new String[] { " BB  ", " GBB " }), 1, "BB   GBB[][]");
+        testMoveRightOK(new BoardImpl(new String[] { " BB  ", " GBB " }), 1, "BB   GBB[][][]");
     }
 
     @Test
     public void testMoveRightOK3() {
-        testMoveRightOK(new BoardImpl(new String[] { " BBYRR ", " GBB R " }), 0, "BBYRR G BB R[][]");
+        testMoveRightOK(new BoardImpl(new String[] { " BBYRR ", " GBB R " }), 0, "BBYRR G BB R[][][]");
     }
 
     @Test
     public void testMoveRightOK4() {
-        testMoveRightOK(new BoardImpl(new String[] { " YYGGG ", " GGG B ", "     # " }), 2, "YYGGG  GGG #B[][]");
+        testMoveRightOK(new BoardImpl(new String[] { " YYGGG ", " GGG B ", "     # " }), 2, "YYGGG  GGG #B[][][]");
     }
 
     @Test
     public void testMoveRightOK5() {
-        testMoveRightOK(new BoardImpl(new String[] { "AABB ", "#    " }), 0, "AABB[][]");
+        testMoveRightOK(new BoardImpl(new String[] { "AABB ", "#    " }), 0, "AABB[][][]");
     }
 
     @Test
     public void testMoveRightOK51() {
-        testMoveRightOK(new BoardImpl(new String[] { "AABB ", "#    ", "##   " }), 0, "AA  ## BB[][]");
+        testMoveRightOK(new BoardImpl(new String[] { "AABB ", "#    ", "##   " }), 0, "AA  ## BB[][][]");
     }
 
     @Test
     public void testMoveRightOK6() {
-        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  " }, new byte[] { 0, 1 }), 0, "AB[18, 17][17, 18]");
+        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  " }, new byte[] { 0, 1 }), 0, "AB[][18, 17][17, 18]");
     }
 
     @Test
     public void testMoveRightOK61() {
         testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  ", "## " }, new byte[] { 0, 1 }),
                         0,
-                        "AB## [18, 17][17, 18]");
+                        "AB## [][18, 17][17, 18]");
     }
 
     private void testMoveRightOK(final Board input, final int index, final String output) {
         final State state = new StateImpl(input);
         state.moveRight(index);
-        state.gravity();
+        state.process();
         Assert.assertEquals(state.getSerialization(), output);
     }
 
 
     @Test
-    public void testGravity1() {
-        testGravity(new BoardImpl(new String[] { " BB ", "    ", "    " }), new BoardImpl(new String[] { "    ",
-                                                                                                        "    ",
-                                                                                                        " BB " }));
+    public void testProcess1() {
+        testProcess(new BoardImpl(new String[] { " BB ", "    ", "    " }), "BB [][][]");
     }
 
     @Test
-    public void testGravity2() {
-        testGravity(new BoardImpl(new String[] { "  GG ", " BB  ", "     " }), new BoardImpl(new String[] { "     ",
-                                                                                                           "  GG ",
-                                                                                                           " BB  " }));
+    public void testProcess2() {
+        testProcess(new BoardImpl(new String[] { "  GG ", " BB  ", "     " }), "GG  BB  [][][]");
     }
 
     @Test
-    public void testGravity3() {
-        testGravity(new BoardImpl(new String[] { "  GG ", " BBG ", "  GG ", "     " }),
-                    new BoardImpl(new String[] { "     ", "  GG ", " BBG ", "  GG " }));
+    public void testProcess3() {
+        testProcess(new BoardImpl(new String[] { "  GG ", " BBG ", "  GG ", "     " }), "GG  BBG   GG [][][]");
     }
 
-    private void testGravity(final Board input, final Board output) {
+    @Test
+    public void testProcess4() {
+        testProcess(new BoardImpl(new String[] { "  ", " B" }, new byte[] { 0x11 }, new char[] { 'B' }),
+                    "B B[true][][]");
+    }
+
+    @Test
+    public void testProcess5() {
+        testProcess(new BoardImpl(new String[] { "  ", " A" }, new byte[] { 0x11 }, new char[] { 'B' }), "A[false][][]");
+    }
+
+    @Test
+    public void testProcess6() {
+        testProcess(new BoardImpl(new String[] { " #", " B" }, new byte[] { 0x11 }, new char[] { 'B' }), "B[false][][]");
+    }
+
+    @Test
+    public void testProcess7() {
+        testProcess(new BoardImpl(new String[] { "  ", " A", " B" }, new byte[] { 0x21 }, new char[] { 'B' }),
+                    "A B B[true][][]");
+    }
+
+    private void testProcess(final Board input, final String output) {
         final State state = new StateImpl(input);
-        state.gravity();
-        Assert.assertEquals(state.getSerialization(), output.serialize());
-    }
-
-
-    @Test
-    public void testNonRegression1() {
-        final Board input = new BoardImpl(new String[] { "     A", "     #", " ABBA " }, new byte[] { 33, 34, 36 });
-        final State state = new StateImpl(input);
-        state.moveLeft(0);
-        state.gravity();
-        Assert.assertTrue(state.getSerialization()
-                               .startsWith("A# ABBA "));
-        Assert.assertEquals(state.getJellies().length, 1);
-        Assert.assertEquals(input.getLinks0().length, 3);
-        Assert.assertEquals(input.getLinks1().length, 3);
-
-        state.moveLeft(0);
-        state.gravity();
-        Assert.assertTrue(state.getSerialization()
-                               .startsWith("A #ABBA  "));
-        Assert.assertEquals(state.getJellies().length, 1);
-        Assert.assertEquals(input.getLinks0().length, 3);
-        Assert.assertEquals(input.getLinks1().length, 3);
-
-    }
-
-    @Test
-    public void testNonRegression2() {
-        final Board input = new BoardImpl(new String[] { "           Y",
-                                                        "       ### #",
-                                                        "           Y",
-                                                        "           #",
-                                                        "            ",
-                                                        "      YDDYY " }, new byte[] { 0x56, 0x58, 0x59 });
-        State state = new StateImpl(input);
-        state = state.clone();
-        state.moveLeft(0);
-        state.gravity();
-        state = state.clone();
-        state.moveLeft(0);
-        state.gravity();
-        Assert.assertEquals(state.getJellies().length, 1);
+        state.process();
+        Assert.assertEquals(state.getSerialization(), output);
     }
 }

@@ -90,15 +90,15 @@ public class JellyImpl
         this.board = board;
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
-        update(board.getMatrix(), board.getLinks0(), board.getLinks1(), i, j);
+        update(board.getMatrix(), board.getLinkStarts(), board.getLinkEnds(), i, j);
         color = Arrays.copyOf(COL_BUF, segmentIndex);
         end = Arrays.copyOf(END_BUF, segmentIndex);
         positions = Arrays.copyOf(POS_BUF, getStart(end, segmentIndex));
     }
 
     private final void update(final char[][] matrix,
-                              final byte[] links0,
-                              final byte[] links1,
+                              final byte[] linkStarts,
+                              final byte[] linkEnds,
                               final int si,
                               final int sj) {
         // we have one single candidate segment for now
@@ -106,7 +106,7 @@ public class JellyImpl
         freeSegmentIndex = 1;
         // we don't have any empty segment yet
         segmentIndex = emptySegmentNb = 0;
-        while (segmentIndex < freeSegmentIndex - emptySegmentNb) {
+        while (segmentIndex + emptySegmentNb < freeSegmentIndex) {
             final int start = getStart(END_BUF, segmentIndex);
             // the current segment ends where it starts (it is empty)
             END_BUF[segmentIndex] = start;
@@ -128,7 +128,7 @@ public class JellyImpl
                         matrix[i][j] = Board.BLANK_CHAR;
                         isFixed |= BoardImpl.isFixed(c);
                         insertPositionInSortedSegment(start, pos);
-                        handleLinkedPosition(links0, links1, pos);
+                        handleLinkedPosition(linkStarts, linkEnds, pos);
                         if (j < leftMin) {
                             leftMin = j;
                         }
@@ -177,12 +177,12 @@ public class JellyImpl
         END_BUF[segmentIndex]++;
     }
 
-    private final void handleLinkedPosition(final byte[] links0, final byte[] links1, final byte pos) {
-        final int idx = contains(links0, 0, links0.length, pos);
+    private final void handleLinkedPosition(final byte[] linkStarts, final byte[] linkEnds, final byte pos) {
+        final int idx = Utils.contains(linkStarts, 0, linkStarts.length, pos);
         if (idx >= 0) {
-            final byte linkedPos = links1[idx];
-            if (contains(POS_BUF, 0, END_BUF[segmentIndex], linkedPos) < 0
-                && contains(CANDIDATE_SEGMENT_BUF, 0, freeSegmentIndex, linkedPos) < 0) {
+            final byte linkedPos = linkEnds[idx];
+            if (Utils.contains(POS_BUF, 0, END_BUF[segmentIndex], linkedPos) < 0
+                && Utils.contains(CANDIDATE_SEGMENT_BUF, 0, freeSegmentIndex, linkedPos) < 0) {
                 CANDIDATE_SEGMENT_BUF[freeSegmentIndex++] = linkedPos;
             }
         }
@@ -243,6 +243,11 @@ public class JellyImpl
         move(Board.DOWN);
         topMin++;
         bottomMax++;
+    }
+
+    @Override
+    public final boolean mayMoveUp() {
+        return !isFixed && topMin != 0;
     }
 
     @Override
@@ -351,17 +356,28 @@ public class JellyImpl
         return index == 0 ? 0 : end[index - 1];
     }
 
-    private final static int contains(final byte[] tab, final int from, final int to, final byte val) {
-        for (int i = from; i < to; i++) {
-            if (tab[i] == val) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     @Override
     public final int getSegmentNb() {
         return color.length;
+    }
+
+    @Override
+    public final byte[] getPositions() {
+        return positions;
+    }
+
+    @Override
+    public final int getStart(final int segmentIndex) {
+        return getStart(end, segmentIndex);
+    }
+
+    @Override
+    public final int getEnd(final int segmentIndex) {
+        return end[segmentIndex];
+    }
+
+    @Override
+    public final char getColor(final int segmentIndex) {
+        return color[segmentIndex];
     }
 }

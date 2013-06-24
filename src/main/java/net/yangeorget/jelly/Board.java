@@ -242,5 +242,15 @@ public interface Board {
                                         "        GB  ",
                                         "###     ##  ",
                                         "##R B     R ",
-                                        "### ########" }, new byte[] { 0x66 }, new char[] { 'R' }) };
+                                        "### ########" }, new byte[] { 0x66 }, new char[] { 'R' }),
+
+            // board 22
+            new BoardImpl(new String[] { "            ",
+                                        "            ",
+                                        "            ",
+                                        "            ",
+                                        "            ",
+                                        "    G  BGR  ",
+                                        " # ##  ### #",
+                                        "B#          " }, new byte[] { 0x65 }, new char[] { 'R' }) };
 }

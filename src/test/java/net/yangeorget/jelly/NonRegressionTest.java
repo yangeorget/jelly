@@ -63,6 +63,19 @@ public class NonRegressionTest {
         state.process();
         state.moveRight(1);
         state.process();
-        Assert.assertEquals(state.getSerialization(), "[B  B B[true][][]]");
+        Assert.assertEquals(state.getSerialization(), "B  B B[true][][]");
+    }
+
+    @Test
+    public void testNonRegression4() {
+        final Board board = new BoardImpl(new String[] { "      #     ",
+                                                        "      #     ",
+                                                        "      #     ",
+                                                        "      g     ",
+                                                        "       B    ",
+                                                        "###    G##  ",
+                                                        "##   R R    ",
+                                                        "###B########" }, new byte[] { 0x66 }, new char[] { 'R' });
+        Assert.assertNotNull(new GameImpl(board).solve());
     }
 }

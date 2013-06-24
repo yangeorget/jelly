@@ -176,9 +176,14 @@ public class StateImpl
     @Override
     public final void process() {
         moveDown();
-        moveUp();
         updateBoard();
         updateFromBoard();
+        // TODO: optimize
+        if (emerged.length != 0) {
+            moveUp();
+            updateBoard();
+            updateFromBoard();
+        }
     }
 
     final void moveDown() {

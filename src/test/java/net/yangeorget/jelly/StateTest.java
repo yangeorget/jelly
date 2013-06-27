@@ -5,26 +5,20 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(groups = "fast")
 public class StateTest {
     private static final Logger LOG = LoggerFactory.getLogger(StateTest.class);
 
     @Test
-    public void testUpdateBoard() {
-        final Board board = new BoardImpl(new String[] { " BB ", "    " });
-        final String ser = board.serialize();
-        final State state = new StateImpl(board);
-        state.updateBoard();
-        Assert.assertEquals(board.serialize(), ser);
-    }
-
-    @Test
-    public void testUpdateFromBoard1() {
+    public void testUpdateFromBoard() {
         final Board board = new BoardImpl(new String[] { " BB ", "    " });
         final State state = new StateImpl(board);
-        final String ser = state.getSerialization();
+        final String ser = state.getSerialization()
+                                .toString();
         state.updateBoard();
         state.updateFromBoard();
-        Assert.assertEquals(state.getSerialization(), ser);
+        Assert.assertEquals(state.getSerialization()
+                                 .toString(), ser);
     }
 
     @Test
@@ -145,7 +139,8 @@ public class StateTest {
         final State state = new StateImpl(input);
         state.moveRight(index);
         state.process();
-        Assert.assertEquals(state.getSerialization(), output);
+        Assert.assertEquals(state.getSerialization()
+                                 .toString(), output);
     }
 
 
@@ -189,6 +184,7 @@ public class StateTest {
     private void testProcess(final Board input, final String output) {
         final State state = new StateImpl(input);
         state.process();
-        Assert.assertEquals(state.getSerialization(), output);
+        Assert.assertEquals(state.getSerialization()
+                                 .toString(), output);
     }
 }

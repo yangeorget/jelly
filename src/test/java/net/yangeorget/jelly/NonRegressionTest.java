@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(groups = "fast")
 public class NonRegressionTest {
     private static final Logger LOG = LoggerFactory.getLogger(NonRegressionTest.class);
 
@@ -15,6 +16,7 @@ public class NonRegressionTest {
         state.moveLeft(0);
         state.process();
         Assert.assertTrue(state.getSerialization()
+                               .toString()
                                .startsWith("A# ABBA "));
         Assert.assertEquals(state.getJellies().length, 1);
         Assert.assertEquals(input.getLinkStarts().length, 3);
@@ -23,6 +25,7 @@ public class NonRegressionTest {
         state.moveLeft(0);
         state.process();
         Assert.assertTrue(state.getSerialization()
+                               .toString()
                                .startsWith("A #ABBA  "));
         Assert.assertEquals(state.getJellies().length, 1);
         Assert.assertEquals(input.getLinkStarts().length, 3);
@@ -63,7 +66,8 @@ public class NonRegressionTest {
         state.process();
         state.moveRight(1);
         state.process();
-        Assert.assertEquals(state.getSerialization(), "B  B B[true][][]");
+        Assert.assertEquals(state.getSerialization()
+                                 .toString(), "B  B B[true][][]");
     }
 
     @Test
@@ -77,5 +81,27 @@ public class NonRegressionTest {
                                                         "##   R R    ",
                                                         "###B########" }, new byte[] { 0x66 }, new char[] { 'R' });
         Assert.assertNotNull(new GameImpl(board).solve());
+    }
+
+    @Test
+    public void testNonRegression5() {
+        final State state = new StateImpl(new BoardImpl(new String[] { "   ", "B B" },
+                                                        new byte[] { 0x12 },
+                                                        new char[] { 'b' }));
+        state.moveRight(0);
+        state.process();
+        Assert.assertEquals(state.getJellies().length, 1);
+        Assert.assertEquals(state.getSerialization()
+                                 .toString(), "BB  b[true][][]");
+    }
+
+    @Test
+    public void testNonRegression6() {
+        final Board board = new BoardImpl(new String[] { "   ", "   ", "B  " },
+                                          new byte[] { 0x21, 0x22 },
+                                          new char[] { 'B', 'B' });
+        final Game game = new GameImpl(board);
+        final State state = game.solve();
+        Assert.assertNotNull(state);
     }
 }

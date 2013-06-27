@@ -3,6 +3,7 @@ package net.yangeorget.jelly;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(groups = "fast")
 public class BoardTest {
     @Test
     public void testHeight() {
@@ -12,12 +13,6 @@ public class BoardTest {
     @Test
     public void testWidth() {
         Assert.assertEquals(new BoardImpl(new String[] { "   ", "   " }).getWidth(), 3);
-    }
-
-
-    @Test
-    public void testSerialize() {
-        Assert.assertEquals(new BoardImpl(new String[] { " #1", " 2 ", "3  " }).serialize(), "1 2 3  [][][]");
     }
 
     @Test

@@ -18,9 +18,9 @@ public interface State {
 
     void process();
 
-    boolean[] getEmerged();
+    StringBuilder getSerialization();
 
-    String getSerialization();
+    void clearSerialization();
 
     boolean isSolved();
 

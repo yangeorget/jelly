@@ -3,6 +3,7 @@ package net.yangeorget.jelly;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(groups = "fast")
 public class JellyTest {
     @Test
     public void testJelly1() {

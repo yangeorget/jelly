@@ -151,25 +151,6 @@ public class BoardImpl
         builder.append('\n');
     }
 
-    @Override
-    public final String serialize(final boolean... emerged) {
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < height; i++) {
-            builder.append(matrix[i]);
-        }
-        builder.append(Arrays.toString(emerged));
-        builder.append(Arrays.toString(linkStarts));
-        builder.append(Arrays.toString(linkEnds));
-        final int size = builder.length();
-        for (int i = 0; i < size; i++) {
-            final char c = builder.charAt(i);
-            if (c != Board.BLANK_CHAR && c != Board.WALL_CHAR) {
-                return builder.substring(i);
-            }
-        }
-        // cannot happen
-        throw new RuntimeException();
-    }
 
     @Override
     public final boolean[][] getWalls() {

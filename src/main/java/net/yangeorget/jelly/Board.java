@@ -38,8 +38,6 @@ public interface Board {
 
     byte[] getEmergingPositions();
 
-    String serialize(boolean... emerged);
-
     int getJellyColorNb();
 
     void clearLinks();
@@ -249,8 +247,51 @@ public interface Board {
                                         "            ",
                                         "            ",
                                         "            ",
-                                        "            ",
                                         "    G  BGR  ",
                                         " # ##  ### #",
-                                        "B#          " }, new byte[] { 0x65 }, new char[] { 'R' }) };
+                                        "B#          ",
+                                        "############" }, new byte[] { 0x65 }, new char[] { 'r' }),
+
+            // board 23
+            new BoardImpl(new String[] { "            ",
+                                        "            ",
+                                        "    G       ",
+                                        "    B       ",
+                                        "    #    R  ",
+                                        "        ##  ",
+                                        " B          ",
+                                        "### R ### #G" }, new byte[] { 0x67 }, new char[] { 'R' }),
+
+            // board 24
+            new BoardImpl(new String[] { "G   B     ##",
+                                        "R   G     ##",
+                                        "y   B Y   Y#",
+                                        "#   # #   ##",
+                                        "###       ##",
+                                        "###       ##",
+                                        "##### ######",
+                                        "#####g######" }, new byte[] { 0x53, 0x58 }, new char[] { 'G', 'r' }),
+
+            // board 25
+            new BoardImpl(new String[] { "#######  #  ",
+                                        "#######  r  ",
+                                        "#######     ",
+                                        "####     R  ",
+                                        "#BBB    DDD ",
+                                        " BBB    DDD ",
+                                        " G        # ",
+                                        "############" }, new byte[] { 0x63, 0x66, 0x69 }, new char[] { 'G', 'G', 'G' }),
+
+            // board 26
+            new BoardImpl(new String[] { "#        ###",
+                                        "#  R     ###",
+                                        "#BBBBBBBB###",
+                                        "#     R   ##",
+                                        "#DDDDDDDD ##",
+                                        "#  R      ##",
+                                        "#FFFFFFFF###",
+                                        "#     R  ###" }, new byte[] { 0x16, 0x33, 0x56, 0x73 }, new char[] { 'R',
+                                                                                                             'R',
+                                                                                                             'R',
+                                                                                                             'R' }) };
 }

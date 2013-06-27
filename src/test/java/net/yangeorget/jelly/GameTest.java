@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(groups = "fast")
 public class GameTest {
     private static final Logger LOG = LoggerFactory.getLogger(GameTest.class);
 

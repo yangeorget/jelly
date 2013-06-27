@@ -1,8 +1,6 @@
 package net.yangeorget.jelly;
 
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,15 +11,13 @@ public class GameImpl
         implements Game {
     private static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
     private final LinkedList<State> states;
-    private final Set<String> explored;
-
-    // private final Trie<String, Boolean> explored;
+    private final StateSet explored;
 
 
     public GameImpl(final Board board) {
         final State state = new StateImpl(board);
-        // explored = new PatriciaTrie<>(new StringKeyAnalyzer());
-        explored = new HashSet<>(1 << 20, 0.75F);
+        // explored = new TrieStateSet();
+        explored = new StateHashSet();
         states = new LinkedList<>();
         push(state);
     }
@@ -68,19 +64,21 @@ public class GameImpl
     }
 
     private final boolean process(final State clone) {
+        // LOG.debug(toString());
         clone.process();
         if (clone.isSolved()) {
             return true;
+        } else {
+            push(clone);
+            return false;
         }
-        push(clone);
-        return false;
     }
 
     private final void push(final State state) {
-        final String ser = state.getSerialization();
-        if (!explored.contains(ser)) {
-            explored.add(ser);
+        if (explored.store(state)) {
             states.addLast(state);
+            // it is not needed to store the serialization of the state
+            state.clearSerialization();
         }
     }
 

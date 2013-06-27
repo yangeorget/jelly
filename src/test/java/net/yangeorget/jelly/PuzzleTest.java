@@ -8,109 +8,134 @@ import org.testng.annotations.Test;
 public class PuzzleTest {
     private static final Logger LOG = LoggerFactory.getLogger(PuzzleTest.class);
 
-    @Test
+    @Test(groups = "fast")
     public void test1() {
         solve(1);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test() {
         solve(2);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test3() {
         solve(3);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test4() {
         solve(4);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test5() {
         solve(5);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test6() {
         solve(6);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test7() {
         solve(7);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test8() {
         solve(8);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test9() {
         solve(9);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test10() {
         solve(10);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test11() {
         solve(11);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test12() {
         solve(12);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test13() {
         solve(13);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test14() {
         solve(14);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test15() {
         solve(15);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test16() {
         solve(16);
     }
 
-    @Test
+    @Test(groups = "slow")
     public void test17() {
         solve(17);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test18() {
         solve(18);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test19() {
         solve(19);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test20() {
         solve(20);
     }
 
-    @Test
+    @Test(groups = "fast")
     public void test21() {
         solve(21);
+    }
+
+    @Test(groups = "fast")
+    public void test22() {
+        solve(22);
+    }
+
+    @Test(groups = "fast")
+    public void test23() {
+        solve(23);
+    }
+
+    @Test(groups = "slow")
+    public void test24() {
+        solve(24);
+    }
+
+    @Test(groups = "fast")
+    public void test25() {
+        solve(25);
+    }
+
+    @Test(groups = "fast")
+    public void test26() {
+        solve(26);
     }
 
     private void solve(final int level) {

@@ -12,7 +12,7 @@ public class StateImpl
     private static int jelliesIndex;
 
     private final Board board;
-    private String serialization;
+    private StringBuilder serialization;
     private Jelly[] jellies;
     private State parent;
     private final boolean[] emerged;
@@ -30,7 +30,7 @@ public class StateImpl
     public StateImpl(final StateImpl state) {
         board = state.getBoard();
         parent = state;
-        serialization = state.getSerialization();
+        // serialization is not copied
         final Jelly[] jellies = state.getJellies();
         final int size = jellies.length;
         this.jellies = new Jelly[size];
@@ -51,12 +51,12 @@ public class StateImpl
 
     @Override
     public final void updateFromBoard() {
-        serialization = board.serialize(emerged);
-        jelliesIndex = 0;
         final char[][] matrix = board.getMatrix();
+        serialization = computeSerialization();
         final boolean[][] walls = board.getWalls();
         final int height = board.getHeight();
         final int width = board.getWidth();
+        jelliesIndex = 0;
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
                 if (matrix[i][j] != Board.BLANK_CHAR && !walls[i][j]) {
@@ -178,9 +178,9 @@ public class StateImpl
         moveDown();
         updateBoard();
         updateFromBoard();
-        // TODO: optimize
-        if (emerged.length != 0) {
+        if (getNotEmergedNb() != 0) {
             moveUp();
+            // TODO: optimize be detecting if moveUp had an effect
             updateBoard();
             updateFromBoard();
         }
@@ -209,11 +209,11 @@ public class StateImpl
         final byte[] emergingPositions = board.getEmergingPositions();
         final char[] emergingColors = board.getEmergingColors();
         for (int j = 0; j < jellies.length; j++) {
-            final int freeIndex = emerge(matrix, emergingPositions, emergingColors, jellies[j]);
+            int freeIndex = emerge(matrix, emergingPositions, emergingColors, jellies[j]);
             if (freeIndex > 0) {
                 if (moveUp(j)) {
-                    for (int index = 0; index < freeIndex; index++) {
-                        final int epIndex = EMERGED_INDEX_BUF[index];
+                    while (--freeIndex >= 0) {
+                        final int epIndex = EMERGED_INDEX_BUF[freeIndex];
                         final byte emergingPosition = emergingPositions[epIndex];
                         matrix[JellyImpl.getI(emergingPosition)][JellyImpl.getJ(emergingPosition)] = emergingColors[epIndex];
                         emerged[epIndex] = true;
@@ -237,7 +237,7 @@ public class StateImpl
             final byte[] positions = jelly.getPositions();
             for (int epIndex = 0; epIndex < emerged.length; epIndex++) {
                 if (!emerged[epIndex]
-                    && emergingColors[epIndex] == segmentColor
+                    && BoardImpl.toFloating(emergingColors[epIndex]) == segmentColor
                     && Utils.contains(positions, segmentStart, segmentEnd, emergingPositions[epIndex]) >= 0) {
                     EMERGED_INDEX_BUF[freeIndex++] = epIndex;
                 }
@@ -282,14 +282,14 @@ public class StateImpl
         return board;
     }
 
-    @Override
-    public final String getSerialization() {
-        return serialization;
-    }
-
-    @Override
-    public final boolean[] getEmerged() {
-        return emerged;
+    private int getNotEmergedNb() {
+        int nb = 0;
+        for (final boolean e : emerged) {
+            if (!e) {
+                nb++;
+            }
+        }
+        return nb;
     }
 
     @Override
@@ -298,12 +298,7 @@ public class StateImpl
         for (final Jelly jelly : jellies) {
             jellyNb += jelly.getSegmentNb();
         }
-        for (final boolean e : emerged) {
-            if (!e) {
-                jellyNb++;
-            }
-        }
-        return jellyNb == board.getJellyColorNb();
+        return jellyNb + getNotEmergedNb() == board.getJellyColorNb();
     }
 
     @Override
@@ -314,5 +309,48 @@ public class StateImpl
         if (parent != null) {
             parent.explain(step + 1);
         }
+    }
+
+    private StringBuilder computeSerialization() { // TODO: try different algos
+        final StringBuilder builder = new StringBuilder();
+        serializeMatrix(builder, board.getMatrix());
+        serializeBooleanArray(builder, emerged);
+        serializeByteArray(builder, board.getLinkStarts());
+        serializeByteArray(builder, board.getLinkEnds());
+        return builder;
+    }
+
+    private static void serializeMatrix(final StringBuilder builder, final char[][] matrix) {
+        boolean skip = true;
+        for (final char[] line : matrix) {
+            if (skip) {
+                for (final char c : line) {
+                    skip &= c == Board.BLANK_CHAR || c == Board.WALL_CHAR;
+                    if (!skip) {
+                        builder.append(c);
+                    }
+                }
+            } else {
+                builder.append(line);
+            }
+        }
+    }
+
+    private static void serializeBooleanArray(final StringBuilder builder, final boolean[] a) {
+        builder.append(Arrays.toString(a));
+    }
+
+    private static void serializeByteArray(final StringBuilder builder, final byte[] a) {
+        builder.append(Arrays.toString(a));
+    }
+
+    @Override
+    public final StringBuilder getSerialization() {
+        return serialization;
+    }
+
+    @Override
+    public final void clearSerialization() {
+        serialization = null;
     }
 }

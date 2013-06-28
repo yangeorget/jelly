@@ -15,22 +15,14 @@ public class NonRegressionTest {
         final State state = new StateImpl(input);
         state.moveLeft(0);
         state.process();
-        Assert.assertTrue(state.getSerialization()
-                               .toString()
-                               .startsWith("A# ABBA "));
         Assert.assertEquals(state.getJellies().length, 1);
         Assert.assertEquals(input.getLinkStarts().length, 3);
         Assert.assertEquals(input.getLinkEnds().length, 3);
-
         state.moveLeft(0);
         state.process();
-        Assert.assertTrue(state.getSerialization()
-                               .toString()
-                               .startsWith("A #ABBA  "));
         Assert.assertEquals(state.getJellies().length, 1);
         Assert.assertEquals(input.getLinkStarts().length, 3);
         Assert.assertEquals(input.getLinkEnds().length, 3);
-
     }
 
     @Test
@@ -67,7 +59,7 @@ public class NonRegressionTest {
         state.moveRight(1);
         state.process();
         Assert.assertEquals(state.getSerialization()
-                                 .toString(), "B  B B[true][][]");
+                                 .toString(), "4B2B1B;;1");
     }
 
     @Test
@@ -92,7 +84,7 @@ public class NonRegressionTest {
         state.process();
         Assert.assertEquals(state.getJellies().length, 1);
         Assert.assertEquals(state.getSerialization()
-                                 .toString(), "BB  b[true][][]");
+                                 .toString(), "1BB2b;;1");
     }
 
     @Test

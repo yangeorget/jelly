@@ -16,8 +16,8 @@ public class GameImpl
 
     public GameImpl(final Board board) {
         final State state = new StateImpl(board);
-        // explored = new TrieStateSet();
-        explored = new StateHashSet();
+        // explored = new StateSetTrieImpl(); // slower
+        explored = new StateHashSetImpl();
         states = new LinkedList<>();
         push(state);
     }

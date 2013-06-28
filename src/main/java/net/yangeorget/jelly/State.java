@@ -29,4 +29,6 @@ public interface State {
     void updateBoard();
 
     void explain(int step);
+
+    boolean[] getEmerged();
 }

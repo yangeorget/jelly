@@ -40,7 +40,7 @@ public class GameTest {
     }
 
     @Test
-    public void testSolvOK6() {
+    public void testSolveOK6() {
         testSolveOK(new BoardImpl(new String[] { "  G       B ", "#B###G #####" }));
     }
 

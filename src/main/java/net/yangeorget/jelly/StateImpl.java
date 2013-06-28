@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 public class StateImpl
         implements State {
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
+    // private static final Serializer SERIALIZER = new SerializerTrimImpl();
+    private static final Serializer SERIALIZER = new SerializerCountImpl();
     private static final Jelly[] JELLIES_BUF = new Jelly[Board.MAX_SIZE];
     private static final int[] EMERGED_INDEX_BUF = new int[Board.MAX_SIZE];
     private static int jelliesIndex;
@@ -51,8 +53,8 @@ public class StateImpl
 
     @Override
     public final void updateFromBoard() {
+        serialization = SERIALIZER.serialize(this);
         final char[][] matrix = board.getMatrix();
-        serialization = computeSerialization();
         final boolean[][] walls = board.getWalls();
         final int height = board.getHeight();
         final int width = board.getWidth();
@@ -178,9 +180,7 @@ public class StateImpl
         moveDown();
         updateBoard();
         updateFromBoard();
-        if (getNotEmergedNb() != 0) {
-            moveUp();
-            // TODO: optimize be detecting if moveUp had an effect
+        if (getNotEmergedNb() != 0 && moveUp()) {
             updateBoard();
             updateFromBoard();
         }
@@ -204,10 +204,14 @@ public class StateImpl
         }
     }
 
-    final void moveUp() {
+    /**
+     * @return a boolean indicating if jellies have emerged
+     */
+    final boolean moveUp() {
         final char[][] matrix = board.getMatrix();
         final byte[] emergingPositions = board.getEmergingPositions();
         final char[] emergingColors = board.getEmergingColors();
+        boolean someEmerged = false;
         for (int j = 0; j < jellies.length; j++) {
             int freeIndex = emerge(matrix, emergingPositions, emergingColors, jellies[j]);
             if (freeIndex > 0) {
@@ -216,15 +220,19 @@ public class StateImpl
                         final int epIndex = EMERGED_INDEX_BUF[freeIndex];
                         final byte emergingPosition = emergingPositions[epIndex];
                         matrix[JellyImpl.getI(emergingPosition)][JellyImpl.getJ(emergingPosition)] = emergingColors[epIndex];
-                        emerged[epIndex] = true;
+                        emerged[epIndex] = someEmerged = true;
                     }
                 } else {
                     undoMoveUp();
                 }
             }
         }
+        return someEmerged;
     }
 
+    /**
+     * Computes the candidates for emerging.
+     */
     final private int emerge(final char[][] matrix,
                              final byte[] emergingPositions,
                              final char[] emergingColors,
@@ -311,39 +319,6 @@ public class StateImpl
         }
     }
 
-    private StringBuilder computeSerialization() { // TODO: try different algos
-        final StringBuilder builder = new StringBuilder();
-        serializeMatrix(builder, board.getMatrix());
-        serializeBooleanArray(builder, emerged);
-        serializeByteArray(builder, board.getLinkStarts());
-        serializeByteArray(builder, board.getLinkEnds());
-        return builder;
-    }
-
-    private static void serializeMatrix(final StringBuilder builder, final char[][] matrix) {
-        boolean skip = true;
-        for (final char[] line : matrix) {
-            if (skip) {
-                for (final char c : line) {
-                    skip &= c == Board.BLANK_CHAR || c == Board.WALL_CHAR;
-                    if (!skip) {
-                        builder.append(c);
-                    }
-                }
-            } else {
-                builder.append(line);
-            }
-        }
-    }
-
-    private static void serializeBooleanArray(final StringBuilder builder, final boolean[] a) {
-        builder.append(Arrays.toString(a));
-    }
-
-    private static void serializeByteArray(final StringBuilder builder, final byte[] a) {
-        builder.append(Arrays.toString(a));
-    }
-
     @Override
     public final StringBuilder getSerialization() {
         return serialization;
@@ -352,5 +327,10 @@ public class StateImpl
     @Override
     public final void clearSerialization() {
         serialization = null;
+    }
+
+    @Override
+    public boolean[] getEmerged() {
+        return emerged;
     }
 }

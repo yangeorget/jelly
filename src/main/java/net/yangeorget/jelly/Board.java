@@ -2,6 +2,7 @@ package net.yangeorget.jelly;
 
 
 public interface Board {
+    int MAX_EMERGING = 32;
     int COORDINATE_MASK = 0xF;
     int MAX_COORDINATE = 16;
     int MAX_COORDINATE_LOG2 = 4;

@@ -46,8 +46,8 @@ public class NonRegressionTest {
 
     @Test
     public void testNonRegression3() {
-        final State state = new StateImpl(new BoardImpl(new String[] { "     ", "B B  " },
-                                                        new byte[] { 0x12 },
+        final State state = new StateImpl(new BoardImpl(new String[] { "     ", "B B  ", "#####" },
+                                                        new byte[] { 0x22 },
                                                         new char[] { 'B' }));
         state.process();
         state.moveRight(0);
@@ -71,14 +71,14 @@ public class NonRegressionTest {
                                                         "       B    ",
                                                         "###    G##  ",
                                                         "##   R R    ",
-                                                        "###B########" }, new byte[] { 0x66 }, new char[] { 'R' });
+                                                        "###B########" }, new byte[] { 0x76 }, new char[] { 'R' });
         Assert.assertNotNull(new GameImpl(board).solve());
     }
 
     @Test
     public void testNonRegression5() {
-        final State state = new StateImpl(new BoardImpl(new String[] { "   ", "B B" },
-                                                        new byte[] { 0x12 },
+        final State state = new StateImpl(new BoardImpl(new String[] { "   ", "B B", "###" },
+                                                        new byte[] { 0x22 },
                                                         new char[] { 'b' }));
         state.moveRight(0);
         state.process();
@@ -89,11 +89,25 @@ public class NonRegressionTest {
 
     @Test
     public void testNonRegression6() {
-        final Board board = new BoardImpl(new String[] { "   ", "   ", "B  " },
-                                          new byte[] { 0x21, 0x22 },
+        final Board board = new BoardImpl(new String[] { "   ", "   ", "B  ", "###" },
+                                          new byte[] { 0x31, 0x32 },
                                           new char[] { 'B', 'B' });
         final Game game = new GameImpl(board);
         final State state = game.solve();
         Assert.assertNotNull(state);
     }
+
+
+    @Test
+    public void testNonRegression7() {
+        final Board board = new BoardImpl(new String[] { "  ", " R", "B ", "##" },
+                                          new byte[] { 0x30 },
+                                          new char[] { 'R' });
+        final State state = new StateImpl(board);
+        state.moveRight(1);
+        state.process();
+        Assert.assertEquals(state.getSerialization()
+                                 .toString(), "1R1R1B;;");
+    }
+
 }

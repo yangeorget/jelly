@@ -241,7 +241,7 @@ public interface Board {
                                         "        GB  ",
                                         "###     ##  ",
                                         "##R B     R ",
-                                        "### ########" }, new byte[] { 0x66 }, new char[] { 'R' }),
+                                        "### ########" }, new byte[] { 0x76 }, new char[] { 'R' }),
 
             // board 22
             new BoardImpl(new String[] { "            ",
@@ -251,7 +251,7 @@ public interface Board {
                                         "    G  BGR  ",
                                         " # ##  ### #",
                                         "B#          ",
-                                        "############" }, new byte[] { 0x65 }, new char[] { 'r' }),
+                                        "############" }, new byte[] { 0x75 }, new char[] { 'r' }),
 
             // board 23
             new BoardImpl(new String[] { "            ",
@@ -261,7 +261,7 @@ public interface Board {
                                         "    #    R  ",
                                         "        ##  ",
                                         " B          ",
-                                        "### R ### #G" }, new byte[] { 0x67 }, new char[] { 'R' }),
+                                        "### R ### #G" }, new byte[] { 0x77 }, new char[] { 'R' }),
 
             // board 24
             new BoardImpl(new String[] { "G   B     ##",
@@ -271,7 +271,7 @@ public interface Board {
                                         "###       ##",
                                         "###       ##",
                                         "##### ######",
-                                        "#####g######" }, new byte[] { 0x53, 0x58 }, new char[] { 'G', 'r' }),
+                                        "#####g######" }, new byte[] { 0x63, 0x68 }, new char[] { 'G', 'r' }),
 
             // board 25
             new BoardImpl(new String[] { "#######  #  ",
@@ -281,7 +281,7 @@ public interface Board {
                                         "#BBB    DDD ",
                                         " BBB    DDD ",
                                         " G        # ",
-                                        "############" }, new byte[] { 0x63, 0x66, 0x69 }, new char[] { 'G', 'G', 'G' }),
+                                        "############" }, new byte[] { 0x73, 0x76, 0x79 }, new char[] { 'G', 'G', 'G' }),
 
             // board 26
             new BoardImpl(new String[] { "#        ###",
@@ -291,8 +291,9 @@ public interface Board {
                                         "#DDDDDDDD ##",
                                         "#  R      ##",
                                         "#FFFFFFFF###",
-                                        "#     R  ###" }, new byte[] { 0x16, 0x33, 0x56, 0x73 }, new char[] { 'R',
-                                                                                                             'R',
-                                                                                                             'R',
-                                                                                                             'R' }) };
+                                        "#     R  ###" },
+                          new byte[] { 0x26, 0x43, 0x66, (byte) 0x83 },
+                          new char[] { 'R', 'R', 'R', 'R' }) };
+
+
 }

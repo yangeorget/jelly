@@ -37,7 +37,7 @@ public class JellyImpl
     private static int emptySegmentNb;
 
     byte[] positions;
-    char[] color;
+    char[] color; // TODO: use byte instead
     int[] end;
     private final Board board;
     private boolean isFixed;

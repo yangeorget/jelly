@@ -142,7 +142,7 @@ public class PuzzleTest {
         final Game game = new GameImpl(Board.LEVELS[level - 1]);
         final long time = System.currentTimeMillis();
         final State state = game.solve();
-        LOG.info("solved " + level + " in: " + (System.currentTimeMillis() - time));
+        LOG.info("solved " + level + " in " + (System.currentTimeMillis() - time) + " ms");
         Assert.assertNotNull(state);
         game.explain(state);
     }

@@ -51,12 +51,12 @@ public class GameTest {
 
     @Test
     public void testSolveOK8() {
-        testSolveOK(new BoardImpl(new String[] { "     ", "B B  " }, new byte[] { 0x12 }, new char[] { 'B' }));
+        testSolveOK(new BoardImpl(new String[] { "     ", "B B  ", "#####" }, new byte[] { 0x22 }, new char[] { 'B' }));
     }
 
     @Test
     public void testSolveOK9() {
-        testSolveOK(new BoardImpl(new String[] { "     ", "R   B" }, new byte[] { 0x12 }, new char[] { 'B' }));
+        testSolveOK(new BoardImpl(new String[] { "     ", "R   B", "#####" }, new byte[] { 0x22 }, new char[] { 'B' }));
     }
 
     private void testSolveOK(final Board board) {

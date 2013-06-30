@@ -159,22 +159,23 @@ public class StateTest {
 
     @Test
     public void testProcess4() {
-        testProcess(new BoardImpl(new String[] { "  ", " B" }, new byte[] { 0x11 }, new char[] { 'B' }), "1B1B;;1");
+        testProcess(new BoardImpl(new String[] { "  ", " B", "##" }, new byte[] { 0x21 }, new char[] { 'B' }),
+                    "1B1B;;1");
     }
 
     @Test
     public void testProcess5() {
-        testProcess(new BoardImpl(new String[] { "  ", " A" }, new byte[] { 0x11 }, new char[] { 'B' }), "3A;;");
+        testProcess(new BoardImpl(new String[] { "  ", " A", "##" }, new byte[] { 0x21 }, new char[] { 'B' }), "3A;;");
     }
 
     @Test
     public void testProcess6() {
-        testProcess(new BoardImpl(new String[] { " #", " B" }, new byte[] { 0x11 }, new char[] { 'B' }), "3B;;");
+        testProcess(new BoardImpl(new String[] { " #", " B", "##" }, new byte[] { 0x21 }, new char[] { 'B' }), "3B;;");
     }
 
     @Test
     public void testProcess7() {
-        testProcess(new BoardImpl(new String[] { "  ", " A", " B" }, new byte[] { 0x21 }, new char[] { 'B' }),
+        testProcess(new BoardImpl(new String[] { "  ", " A", " B", "##" }, new byte[] { 0x31 }, new char[] { 'B' }),
                     "1A1B1B;;1");
     }
 

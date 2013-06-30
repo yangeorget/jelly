@@ -3,7 +3,7 @@ package net.yangeorget.jelly;
 /**
  * @author y.georget
  */
-public interface Serializer { // TODO: write a serializer which counts blanks and #
-
+public interface Serializer {
+    // TODO: serialize as byte array
     StringBuilder serialize(State state);
 }

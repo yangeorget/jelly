@@ -218,7 +218,7 @@ public class StateImpl
                 if (moveUp(j)) {
                     while (--freeIndex >= 0) {
                         final int epIndex = EMERGED_INDEX_BUF[freeIndex];
-                        final byte emergingPosition = emergingPositions[epIndex];
+                        final byte emergingPosition = (byte) (emergingPositions[epIndex] + Board.UP);
                         matrix[JellyImpl.getI(emergingPosition)][JellyImpl.getJ(emergingPosition)] = emergingColors[epIndex];
                         emerged[epIndex] = someEmerged = true;
                     }
@@ -246,7 +246,10 @@ public class StateImpl
             for (int epIndex = 0; epIndex < emerged.length; epIndex++) {
                 if (!emerged[epIndex]
                     && BoardImpl.toFloating(emergingColors[epIndex]) == segmentColor
-                    && Utils.contains(positions, segmentStart, segmentEnd, emergingPositions[epIndex]) >= 0) {
+                    && Utils.contains(positions,
+                                      segmentStart,
+                                      segmentEnd,
+                                      (byte) (emergingPositions[epIndex] + Board.UP)) >= 0) {
                     EMERGED_INDEX_BUF[freeIndex++] = epIndex;
                 }
             }

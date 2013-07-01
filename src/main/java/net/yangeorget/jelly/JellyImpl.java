@@ -258,7 +258,7 @@ public class JellyImpl
     }
 
     final static int getI(final int pos) {
-        return (pos >> Board.MAX_COORDINATE_LOG2) & Board.COORDINATE_MASK;
+        return (pos >> Board.COORDINATE_UB_LOG2) & Board.COORDINATE_MASK;
     }
 
     final static int getJ(final int pos) {
@@ -266,7 +266,7 @@ public class JellyImpl
     }
 
     final static byte value(final int i, final int j) {
-        return (byte) ((i << Board.MAX_COORDINATE_LOG2) | j);
+        return (byte) ((i << Board.COORDINATE_UB_LOG2) | j);
     }
 
     @Override

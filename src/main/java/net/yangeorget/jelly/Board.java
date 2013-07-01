@@ -1,13 +1,27 @@
 package net.yangeorget.jelly;
 
-
+/**
+ * A board
+ * @author y.georget
+ */
 public interface Board {
+    /**
+     * The maximal number of emerging jellies.
+     */
     int MAX_EMERGING = 32;
+    /**
+     * A coordinate mask (a coordinate is a number between 0 and 15).
+     */
     int COORDINATE_MASK = 0xF;
-    int MAX_COORDINATE = 16;
-    int MAX_COORDINATE_LOG2 = 4;
-    int MAX_WIDTH = MAX_COORDINATE;
-    int MAX_HEIGHT = MAX_COORDINATE;
+
+    /**
+     * The upper bound (excluded) of a coordinate.
+     */
+    int COORDINATE_UB = 16;
+
+    int COORDINATE_UB_LOG2 = 4;
+    int MAX_WIDTH = COORDINATE_UB;
+    int MAX_HEIGHT = COORDINATE_UB;
     int MAX_SIZE = MAX_WIDTH * MAX_HEIGHT;
 
     int LEFT = -1;
@@ -19,24 +33,64 @@ public interface Board {
     char BLANK_CHAR = ' ';
     char WALL_CHAR = '#';
 
+    /**
+     * Returns the height of the board.
+     * @return an int
+     */
     int getHeight();
 
+    /**
+     * Returns the width of the board.
+     * @return an int
+     */
     int getWidth();
 
+    /**
+     * Returns the maximal vertical position in the board.
+     * @return an int
+     */
     int getHeight1();
 
+    /**
+     * Returns the maximal horizontal position in the board.
+     * @return an int
+     */
     int getWidth1();
 
+    /**
+     * Returns the matrix.
+     * @return a bi-dimensional array of char
+     */
     char[][] getMatrix();
 
+    /**
+     * Returns the walls.
+     * @return a bi-dimensional array of boolean
+     */
     boolean[][] getWalls();
 
+    /**
+     * Returns the starts of the links.
+     * @return a array of bytes
+     */
     byte[] getLinkStarts();
 
+    /**
+     * Returns the ends of the links.
+     * @return a array of bytes
+     */
     byte[] getLinkEnds();
 
+    /**
+     * Returns the emerging colors.
+     * @return a array of chars
+     */
     char[] getEmergingColors();
 
+    /**
+     * Returns the positions of the emerging colors.
+     * @return a array of bytes
+     */
     byte[] getEmergingPositions();
 
     int getJellyColorNb();

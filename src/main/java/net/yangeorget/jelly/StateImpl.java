@@ -4,6 +4,10 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An implementation of a state.
+ * @author y.georget
+ */
 public class StateImpl
         implements State {
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
@@ -19,6 +23,10 @@ public class StateImpl
     private State parent;
     private final boolean[] emerged;
 
+    /**
+     * Constructs the state from a board.
+     * @param board a board
+     */
     public StateImpl(final Board board) {
         this.board = board;
         emerged = new boolean[board.getEmergingPositions().length];
@@ -186,6 +194,9 @@ public class StateImpl
         }
     }
 
+    /**
+     * Applies gravity.
+     */
     final void moveDown() {
         final int size = jellies.length;
         final boolean[] blocked = new boolean[size];
@@ -205,6 +216,7 @@ public class StateImpl
     }
 
     /**
+     * Give a chance to emerging jellies.
      * @return a boolean indicating if jellies have emerged
      */
     final boolean moveUp() {
@@ -213,14 +225,12 @@ public class StateImpl
         final char[] emergingColors = board.getEmergingColors();
         boolean someEmerged = false;
         for (int j = 0; j < jellies.length; j++) {
-            int freeIndex = emerge(matrix, emergingPositions, emergingColors, jellies[j]);
+            int freeIndex = computeEmergingCandidates(matrix, emergingPositions, emergingColors, jellies[j]);
             if (freeIndex > 0) {
                 if (moveUp(j)) {
+                    someEmerged = true;
                     while (--freeIndex >= 0) {
-                        final int epIndex = EMERGED_INDEX_BUF[freeIndex];
-                        final byte emergingPosition = (byte) (emergingPositions[epIndex] + Board.UP);
-                        matrix[JellyImpl.getI(emergingPosition)][JellyImpl.getJ(emergingPosition)] = emergingColors[epIndex];
-                        emerged[epIndex] = someEmerged = true;
+                        emergeCandidate(matrix, emergingPositions, emergingColors, freeIndex);
                     }
                 } else {
                     undoMoveUp();
@@ -233,12 +243,13 @@ public class StateImpl
     /**
      * Computes the candidates for emerging.
      */
-    final private int emerge(final char[][] matrix,
-                             final byte[] emergingPositions,
-                             final char[] emergingColors,
-                             final Jelly jelly) {
+    final private int computeEmergingCandidates(final char[][] matrix,
+                                                final byte[] emergingPositions,
+                                                final char[] emergingColors,
+                                                final Jelly jelly) {
         int freeIndex = 0;
-        for (int segmentIndex = 0; segmentIndex < jelly.getSegmentNb(); segmentIndex++) {
+        final int segmentNb = jelly.getSegmentNb();
+        for (int segmentIndex = 0; segmentIndex < segmentNb; segmentIndex++) {
             final char segmentColor = jelly.getColor(segmentIndex);
             final int segmentStart = jelly.getStart(segmentIndex);
             final int segmentEnd = jelly.getEnd(segmentIndex);
@@ -255,6 +266,23 @@ public class StateImpl
             }
         }
         return freeIndex;
+    }
+
+    /**
+     * Let an emerging candidate emerge.
+     * @param matrix the matrix
+     * @param emergingPositions the positions
+     * @param emergingColors the colors
+     * @param index the index of the candidate
+     */
+    final private void emergeCandidate(final char[][] matrix,
+                                       final byte[] emergingPositions,
+                                       final char[] emergingColors,
+                                       final int index) {
+        final int epIndex = EMERGED_INDEX_BUF[index];
+        final byte emergingPosition = (byte) (emergingPositions[epIndex] + Board.UP);
+        matrix[JellyImpl.getI(emergingPosition)][JellyImpl.getJ(emergingPosition)] = emergingColors[epIndex];
+        emerged[epIndex] = true;
     }
 
     @Override

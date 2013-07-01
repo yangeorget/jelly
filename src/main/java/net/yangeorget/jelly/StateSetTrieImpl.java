@@ -5,12 +5,16 @@ import org.apache.commons.collections.trie.PatriciaTrie;
 import org.apache.commons.collections.trie.StringKeyAnalyzer;
 
 /**
+ * Trie-based StateSet implementation.
  * @author y.georget
  */
 public class StateSetTrieImpl
         implements StateSet {
     private final Trie<String, Boolean> trie;
 
+    /**
+     * Sole constructor.
+     */
     public StateSetTrieImpl() {
         trie = new PatriciaTrie<>(new StringKeyAnalyzer());
     }

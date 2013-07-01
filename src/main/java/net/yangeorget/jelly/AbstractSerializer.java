@@ -2,6 +2,7 @@ package net.yangeorget.jelly;
 
 
 /**
+ * Abstract serializer.
  * @author y.georget
  */
 public abstract class AbstractSerializer
@@ -19,8 +20,18 @@ public abstract class AbstractSerializer
         return builder;
     }
 
+    /**
+     * Serializes the matrix.
+     * @param builder the builder to serialize into
+     * @param matrix the matrix
+     */
     abstract void serializeMatrix(final StringBuilder builder, final char[][] matrix);
 
+    /**
+     * Serializes a boolean array as an integer.
+     * @param builder the builder to serialize into
+     * @param a the boolean array
+     */
     static void serializeBooleanArray(final StringBuilder builder, final boolean[] a) {
         if (a.length > Board.MAX_EMERGING) {
             throw new RuntimeException("Too many emerging jellies!");

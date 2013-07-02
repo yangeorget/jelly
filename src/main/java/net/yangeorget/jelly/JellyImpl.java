@@ -338,7 +338,7 @@ public class JellyImpl
             for (int i = 0; i < size; i++) {
                 le = getStart(end, i);
                 updateBoard(matrix, le, end[i], color[i]);
-                board.storeLink(positions[ls], positions[le]);
+                board.addLink(positions[ls], positions[le]);
                 ls = le;
             }
         }

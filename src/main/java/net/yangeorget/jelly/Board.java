@@ -93,14 +93,32 @@ public interface Board {
      */
     byte[] getEmergingPositions();
 
+    /**
+     * Returns the number of jelly colors
+     * @return an int
+     */
     int getJellyColorNb();
 
+    /**
+     * To be called before storing links.
+     */
     void clearLinks();
 
-    void updateLinks();
+    /**
+     * To be called after storing links.
+     */
+    void storeLinks();
 
-    void storeLink(byte start, byte end);
+    /**
+     * Stores a link (before a start and an end).
+     * @param start the start position
+     * @param end the end position
+     */
+    void addLink(byte start, byte end);
 
+    /**
+     * The levels as defined in Jelly No Puzzle.
+     */
     Board[] LEVELS = { // board 1
             new BoardImpl(new String[] { "            ",
                                         "            ",

@@ -15,11 +15,10 @@ public class GameImpl
 
 
     public GameImpl(final Board board) {
-        final State state = new StateImpl(board);
         // explored = new StateSetTrieImpl(); // slower
         explored = new StateHashSetImpl();
         states = new LinkedList<>();
-        push(state);
+        push(new StateImpl(board));
     }
 
     @Override

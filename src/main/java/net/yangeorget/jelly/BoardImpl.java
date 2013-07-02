@@ -4,7 +4,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-
+/**
+ * An implementation of a board.
+ * @author y.georget
+ */
 public class BoardImpl
         implements Board {
     private final int height;
@@ -23,6 +26,11 @@ public class BoardImpl
     private static final byte[] LINK_END_BUF = new byte[MAX_SIZE];
     private static int linksIndex;
 
+    /**
+     * Auxilliary constructor.
+     * @param strings the lines of the board
+     * @param linkCycles the links as cycles between positions
+     */
     public BoardImpl(final String[] strings, final byte[]... linkCycles) {
         this(strings, new byte[0], new char[0], linkCycles);
     }
@@ -42,17 +50,13 @@ public class BoardImpl
         width1 = width - 1;
         matrix = new char[height][];
         walls = new boolean[height][width];
+        computeMatrixAndWalls(strings);
+        computeLinks(linkCycles);
         this.emergingPositions = emergingPositions;
         this.emergingColors = emergingColors;
-        processBoardData(strings);
-        clearLinks();
-        for (final byte[] linkCycle : linkCycles) {
-            createLinks(linkCycle);
-        }
-        updateLinks();
     }
 
-    void processBoardData(final String[] strings) {
+    void computeMatrixAndWalls(final String[] strings) {
         final Set<Character> colors = new HashSet<>();
         for (int i = 0; i < height; i++) {
             matrix[i] = strings[i].toCharArray();
@@ -71,14 +75,25 @@ public class BoardImpl
         jellyColorNb = colors.size();
     }
 
-    private final void createLinks(final byte[] linkCycle) {
-        final int size = linkCycle.length;
-        for (int i = 0; i < size - 1; i++) {
-            storeLink(linkCycle[i], linkCycle[i + 1]);
+    void computeLinks(final byte[][] linkCycles) {
+        clearLinks();
+        for (final byte[] linkCycle : linkCycles) {
+            computeLinks(linkCycle);
         }
-        storeLink(linkCycle[size - 1], linkCycle[0]);
+        storeLinks();
     }
 
+    /**
+     * Creates links from a cycle.
+     * @param linkCycle the cycle
+     */
+    private final void computeLinks(final byte[] linkCycle) {
+        final int iMax = linkCycle.length - 1;
+        for (int i = 0; i < iMax; i++) {
+            addLink(linkCycle[i], linkCycle[i + 1]);
+        }
+        addLink(linkCycle[iMax], linkCycle[0]);
+    }
 
     @Override
     public void clearLinks() {
@@ -86,14 +101,14 @@ public class BoardImpl
     }
 
     @Override
-    public final void storeLink(final byte start, final byte end) {
+    public final void addLink(final byte start, final byte end) {
         LINK_START_BUF[linksIndex] = start;
         LINK_END_BUF[linksIndex] = end;
         linksIndex++;
     }
 
     @Override
-    public final void updateLinks() {
+    public final void storeLinks() {
         linkStarts = Arrays.copyOf(LINK_START_BUF, linksIndex);
         linkEnds = Arrays.copyOf(LINK_END_BUF, linksIndex);
     }
@@ -157,14 +172,29 @@ public class BoardImpl
         return walls;
     }
 
+    /**
+     * Returns a boolean indicating if the cell is fixed.
+     * @param c the color of a cell
+     * @return a boolean
+     */
     public static final boolean isFixed(final char c) {
         return (c & FIXED_FLAG) != 0;
     }
 
+    /**
+     * Converts a cell to a floating cell of the same color.
+     * @param c the color of a cell
+     * @return a cell
+     */
     public static final char toFloating(final char c) {
         return (char) (c & ~FIXED_FLAG);
     }
 
+    /**
+     * Converts a cell to a fixed cell of the same color.
+     * @param c the color of a cell
+     * @return a cell
+     */
     public static final char toFixed(final char c) {
         return (char) (c | FIXED_FLAG);
     }

@@ -56,7 +56,6 @@ public class BoardImpl
         width1 = width - 1;
         matrix = new char[height][];
         walls = new boolean[height][width];
-        // TODO: separate all and fixed
         final Set<Character> colors = new HashSet<>();
         computeMatrixAndWalls(colors, strings);
         for (final char color : allEmergingColors) {
@@ -321,14 +320,14 @@ public class BoardImpl
     }
 
     final static byte value(final int i, final int j) {
-        return (byte) ((i << Board.COORDINATE_UB_LOG2) | j);
+        return (byte) ((i << COORDINATE_UB_LOG2) | j);
     }
 
     final static int getJ(final int pos) {
-        return pos & Board.COORDINATE_MASK;
+        return pos & COORDINATE_MASK;
     }
 
     final static int getI(final int pos) {
-        return (pos >> Board.COORDINATE_UB_LOG2) & Board.COORDINATE_MASK;
+        return (pos >> COORDINATE_UB_LOG2) & COORDINATE_MASK;
     }
 }

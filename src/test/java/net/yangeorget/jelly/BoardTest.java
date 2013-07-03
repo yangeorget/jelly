@@ -22,16 +22,16 @@ public class BoardTest {
 
     @Test
     public void testGetWalls() {
-        final boolean[][] walls = new BoardImpl(new String[] { "# A", "  A", "B #" }).getWalls();
-        Assert.assertTrue(walls[0][0]);
-        Assert.assertFalse(walls[0][1]);
-        Assert.assertFalse(walls[0][2]);
-        Assert.assertFalse(walls[1][0]);
-        Assert.assertFalse(walls[1][1]);
-        Assert.assertFalse(walls[1][2]);
-        Assert.assertFalse(walls[2][0]);
-        Assert.assertFalse(walls[2][1]);
-        Assert.assertTrue(walls[2][2]);
+        final Board board = new BoardImpl(new String[] { "# A", "  A", "B #" });
+        Assert.assertTrue(board.isWall(0, 0));
+        Assert.assertFalse(board.isWall(0, 1));
+        Assert.assertFalse(board.isWall(0, 2));
+        Assert.assertFalse(board.isWall(1, 0));
+        Assert.assertFalse(board.isWall(1, 1));
+        Assert.assertFalse(board.isWall(1, 2));
+        Assert.assertFalse(board.isWall(2, 0));
+        Assert.assertFalse(board.isWall(2, 1));
+        Assert.assertTrue(board.isWall(2, 2));
     }
 
     @Test

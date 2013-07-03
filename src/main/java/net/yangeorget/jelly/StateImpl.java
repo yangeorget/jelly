@@ -63,14 +63,12 @@ public class StateImpl
     @Override
     public final void updateFromBoard() {
         serialization = SERIALIZER.serialize(this);
-        final char[][] matrix = board.getMatrix();
-        final boolean[][] walls = board.getWalls();
         final int height = board.getHeight();
         final int width = board.getWidth();
         jelliesIndex = 0;
         for (byte i = 0; i < height; i++) {
             for (byte j = 0; j < width; j++) {
-                if (matrix[i][j] != Board.BLANK_CHAR && !walls[i][j]) {
+                if (board.isColored(i, j)) {
                     JELLIES_BUF[jelliesIndex++] = new JellyImpl(board, i, j);
                 }
             }
@@ -268,8 +266,7 @@ public class StateImpl
      */
     final private void emergeCandidate(final Board board) {
         final int epIndex = EMERGED_IDX_BUF[freeIndex];
-        final byte emergingPosition = (byte) (board.getEmergingPosition(epIndex) + Board.UP);
-        board.getMatrix()[BoardImpl.getI(emergingPosition)][BoardImpl.getJ(emergingPosition)] = board.getEmergingColor(epIndex);
+        board.setColor((byte) (board.getEmergingPosition(epIndex) + Board.UP), board.getEmergingColor(epIndex));
         emerged[epIndex] = true;
     }
 

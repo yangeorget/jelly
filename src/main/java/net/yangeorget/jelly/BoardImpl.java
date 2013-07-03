@@ -198,10 +198,64 @@ public class BoardImpl
         builder.append('\n');
     }
 
+    @Override
+    public final boolean isWall(final byte position) {
+        return isWall(getI(position), getJ(position));
+    }
 
     @Override
-    public final boolean[][] getWalls() {
-        return walls;
+    public final boolean isWall(final int i, final int j) {
+        return walls[i][j];
+    }
+
+    @Override
+    public final boolean isBlank(final byte position) {
+        return isBlank(getI(position), getJ(position));
+    }
+
+    @Override
+    public final boolean isBlank(final int i, final int j) {
+        return matrix[i][j] == BLANK_CHAR;
+    }
+
+    @Override
+    public final boolean isColored(final byte position) {
+        return isColored(getI(position), getJ(position));
+    }
+
+    @Override
+    public final boolean isColored(final int i, final int j) {
+        return !isBlank(i, j) && !isWall(i, j);
+    }
+
+    @Override
+    public final void setColor(final byte position, final char c) {
+        setColor(getI(position), getJ(position), c);
+    }
+
+    @Override
+    public final void setColor(final int i, final int j, final char c) {
+        matrix[i][j] = c;
+    }
+
+    @Override
+    public final char getColor(final byte position) {
+        return getColor(getI(position), getJ(position));
+    }
+
+    @Override
+    public final char getColor(final int i, final int j) {
+        return matrix[i][j];
+    }
+
+    @Override
+    public final void blank(final byte position) {
+        blank(getI(position), getJ(position));
+    }
+
+    @Override
+    public final void blank(final int i, final int j) {
+        matrix[i][j] = BLANK_CHAR;
     }
 
     /**

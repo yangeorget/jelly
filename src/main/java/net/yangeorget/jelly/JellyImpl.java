@@ -90,17 +90,13 @@ public class JellyImpl
         this.board = board;
         topMin = bottomMax = (byte) i;
         leftMin = rightMax = (byte) j;
-        update(board.getMatrix(), board.getLinkStarts(), board.getLinkEnds(), i, j);
+        update(board.getLinkStarts(), board.getLinkEnds(), i, j);
         color = Arrays.copyOf(COL_BUF, segmentIndex);
         end = Arrays.copyOf(END_BUF, segmentIndex);
         positions = Arrays.copyOf(POS_BUF, getStart(end, segmentIndex));
     }
 
-    private final void update(final char[][] matrix,
-                              final byte[] linkStarts,
-                              final byte[] linkEnds,
-                              final int si,
-                              final int sj) {
+    private final void update(final byte[] linkStarts, final byte[] linkEnds, final int si, final int sj) {
         // we have one single candidate segment for now
         CANDIDATE_SEGMENT_BUF[0] = BoardImpl.value(si, sj);
         freeSegmentIndex = 1;
@@ -114,10 +110,8 @@ public class JellyImpl
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
                 final byte pos = CANDIDATE_POS_BUF[index];
-                final byte i = (byte) BoardImpl.getI(pos);
-                final byte j = (byte) BoardImpl.getJ(pos);
-                final char c = matrix[i][j];
-                if (c != Board.BLANK_CHAR) {
+                if (!board.isBlank(pos)) {
+                    final char c = board.getColor(pos);
                     final char color = BoardImpl.toFloating(c);
                     // let's store the color of the current segment if not yet done
                     if (start == END_BUF[segmentIndex]) {
@@ -125,10 +119,12 @@ public class JellyImpl
                     }
                     // has to be true because we want to treat the current segment only here
                     if (color == COL_BUF[segmentIndex]) {
-                        matrix[i][j] = Board.BLANK_CHAR;
+                        board.blank(pos);
                         isFixed |= BoardImpl.isFixed(c);
                         insertPositionInSortedSegment(start, pos);
                         handleLinkedPosition(linkStarts, linkEnds, pos);
+                        final byte i = (byte) BoardImpl.getI(pos);
+                        final byte j = (byte) BoardImpl.getJ(pos);
                         if (j < leftMin) {
                             leftMin = j;
                         }
@@ -305,9 +301,8 @@ public class JellyImpl
 
     @Override
     public final boolean overlapsWalls() {
-        final boolean[][] walls = board.getWalls();
         for (final byte position : positions) {
-            if (walls[BoardImpl.getI(position)][BoardImpl.getJ(position)]) {
+            if (board.isWall(position)) {
                 return true;
             }
         }
@@ -316,16 +311,15 @@ public class JellyImpl
 
     @Override
     public final void updateBoard() {
-        final char[][] matrix = board.getMatrix();
         final int size = end.length;
         if (size == 1) {
-            updateBoard(matrix, 0, end[0], color[0]);
+            updateBoard(0, end[0], color[0]);
         } else {
             int ls = getStart(end, size - 1);
             int le;
             for (int i = 0; i < size; i++) {
                 le = getStart(end, i);
-                updateBoard(matrix, le, end[i], color[i]);
+                updateBoard(le, end[i], color[i]);
                 board.addLink(positions[ls], positions[le]);
                 ls = le;
             }
@@ -333,11 +327,10 @@ public class JellyImpl
         // TODO update with emerging
     }
 
-    private final void updateBoard(final char[][] matrix, final int start, final int end, char c) {
+    private final void updateBoard(final int start, final int end, char c) {
         c = isFixed ? BoardImpl.toFixed(c) : c;
         for (int j = start; j < end; j++) {
-            final byte position = positions[j];
-            matrix[BoardImpl.getI(position)][BoardImpl.getJ(position)] = c;
+            board.setColor(positions[j], c);
         }
     }
 

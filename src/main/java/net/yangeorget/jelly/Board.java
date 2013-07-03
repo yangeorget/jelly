@@ -64,11 +64,29 @@ public interface Board
      */
     char[][] getMatrix();
 
-    /**
-     * Returns the walls.
-     * @return a bi-dimensional array of boolean
-     */
-    boolean[][] getWalls();
+    void setColor(int i, int j, char color);
+
+    void setColor(byte position, char color);
+
+    void blank(byte position);
+
+    void blank(int i, int j);
+
+    boolean isWall(byte position);
+
+    boolean isWall(int i, int j);
+
+    boolean isBlank(byte position);
+
+    boolean isBlank(int i, int j);
+
+    boolean isColored(byte position);
+
+    boolean isColored(int i, int j);
+
+    char getColor(byte position);
+
+    char getColor(int i, int j);
 
     /**
      * Returns the starts of the links.

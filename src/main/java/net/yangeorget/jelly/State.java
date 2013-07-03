@@ -1,7 +1,8 @@
 package net.yangeorget.jelly;
 
 
-public interface State {
+public interface State
+        extends JellyCounters {
     State clone();
 
     Jelly[] getJellies();
@@ -22,8 +23,6 @@ public interface State {
 
     void clearSerialization();
 
-    boolean isSolved();
-
     void updateFromBoard();
 
     void updateBoard();
@@ -31,4 +30,6 @@ public interface State {
     void explain(int step);
 
     boolean[] getEmerged();
+
+    boolean isSolved();
 }

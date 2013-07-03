@@ -342,6 +342,7 @@ public class JellyImpl
                 ls = le;
             }
         }
+        // TODO update with emerging
     }
 
     private final void updateBoard(final char[][] matrix, final int start, final int end, char c) {
@@ -380,4 +381,30 @@ public class JellyImpl
     public final char getColor(final int segmentIndex) {
         return color[segmentIndex];
     }
+
+    @Override
+    public char getEmergingColor(final int epIndex) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public byte getEmergingPosition(final int epIndex) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getEmergingPositionNb() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getEmergingIndex(final byte ep) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+
 }

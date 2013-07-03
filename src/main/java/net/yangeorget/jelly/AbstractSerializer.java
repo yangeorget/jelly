@@ -42,9 +42,7 @@ public abstract class AbstractSerializer
                 ser |= 1 << (a.length - 1 - i);
             }
         }
-        if (ser != 0) {
-            builder.append(ser);
-        }
+        builder.append(ser);
     }
 
     static void serializeByteArray(final StringBuilder builder, final byte[] a) {

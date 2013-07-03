@@ -36,4 +36,11 @@ public interface Jelly {
 
     byte[] getPositions();
 
+    char getEmergingColor(int epIndex);
+
+    byte getEmergingPosition(int epIndex);
+
+    int getEmergingPositionNb();
+
+    int getEmergingIndex(byte ep);
 }

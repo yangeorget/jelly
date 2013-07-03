@@ -8,12 +8,12 @@ import org.testng.annotations.Test;
 public class AbstractSerializerTest {
     @Test
     public void testSerializeBooleanArray1() {
-        testSerializeBooleanArray("");
+        testSerializeBooleanArray("0");
     }
 
     @Test
     public void testSerializeBooleanArray2() {
-        testSerializeBooleanArray("", false, false, false);
+        testSerializeBooleanArray("0", false, false, false);
     }
 
     @Test

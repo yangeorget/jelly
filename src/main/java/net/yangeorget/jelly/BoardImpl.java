@@ -14,7 +14,8 @@ public class BoardImpl
     private final int width;
     private final int height1;
     private final int width1;
-    private int jellyColorNb;
+    private final int jellyColorNb;
+    private int jellyPositionNb;
     private final char[][] matrix;
     private final boolean[][] walls;
     private byte[] linkStarts;
@@ -41,8 +42,8 @@ public class BoardImpl
      * @param linkCycles an array of link cycle (each link cycle is a cycle of links between single color jellies)
      */
     public BoardImpl(final String[] strings,
-                     final byte[] emergingPositions,
-                     final char[] emergingColors,
+                     final byte[] allEmergingPositions,
+                     final char[] allEmergingColors,
                      final byte[]... linkCycles) {
         height = strings.length;
         width = strings[0].length();
@@ -50,14 +51,20 @@ public class BoardImpl
         width1 = width - 1;
         matrix = new char[height][];
         walls = new boolean[height][width];
-        this.emergingPositions = emergingPositions;
-        this.emergingColors = emergingColors;
-        computeMatrixAndWalls(strings);
+        // TODO: separate all and fixed
+        final Set<Character> colors = new HashSet<>();
+        computeMatrixAndWalls(colors, strings);
+        for (final char color : allEmergingColors) {
+            colors.add(BoardImpl.toFloating(color));
+        }
+        jellyPositionNb += allEmergingColors.length;
+        jellyColorNb = colors.size();
         computeLinks(linkCycles);
+        this.emergingPositions = allEmergingPositions;
+        this.emergingColors = allEmergingColors;
     }
 
-    void computeMatrixAndWalls(final String[] strings) {
-        final Set<Character> colors = new HashSet<>();
+    void computeMatrixAndWalls(final Set<Character> colors, final String[] strings) {
         for (int i = 0; i < height; i++) {
             matrix[i] = strings[i].toCharArray();
             for (byte j = 0; j < width; j++) {
@@ -66,13 +73,10 @@ public class BoardImpl
                     walls[i][j] = true;
                 } else if (color != Board.BLANK_CHAR) {
                     colors.add(BoardImpl.toFloating(color));
+                    jellyPositionNb++;
                 }
             }
         }
-        for (final char color : emergingColors) {
-            colors.add(BoardImpl.toFloating(color));
-        }
-        jellyColorNb = colors.size();
     }
 
     void computeLinks(final byte[][] linkCycles) {
@@ -116,6 +120,11 @@ public class BoardImpl
     @Override
     public final int getJellyColorNb() {
         return jellyColorNb;
+    }
+
+    @Override
+    public final int getJellyPositionNb() {
+        return jellyPositionNb;
     }
 
     @Override
@@ -215,12 +224,22 @@ public class BoardImpl
     }
 
     @Override
-    public final byte[] getEmergingPositions() {
-        return emergingPositions;
+    public final byte getEmergingPosition(final int epIndex) {
+        return emergingPositions[epIndex];
     }
 
     @Override
-    public final char[] getEmergingColors() {
-        return emergingColors;
+    public final char getEmergingColor(final int epIndex) {
+        return emergingColors[epIndex];
+    }
+
+    @Override
+    public int getEmergingPositionNb() {
+        return emergingPositions.length;
+    }
+
+    @Override
+    public int getEmergingIndex(final byte ep) {
+        return Utils.contains(emergingPositions, 0, emergingPositions.length, ep);
     }
 }

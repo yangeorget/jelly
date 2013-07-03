@@ -107,7 +107,7 @@ public class NonRegressionTest {
         state.moveRight(1);
         state.process();
         Assert.assertEquals(state.getSerialization()
-                                 .toString(), "1R1R1B;;");
+                                 .toString(), "1R1R1B;;0");
     }
 
 }

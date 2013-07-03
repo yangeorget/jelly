@@ -139,11 +139,13 @@ public class PuzzleTest {
     }
 
     private void solve(final int level) {
-        final Game game = new GameImpl(Board.LEVELS[level - 1]);
         final long time = System.currentTimeMillis();
+        final Board board = Board.LEVELS[level - 1];
+        final Game game = new GameImpl(board);
         final State state = game.solve();
         LOG.info("solved " + level + " in " + (System.currentTimeMillis() - time) + " ms");
         Assert.assertNotNull(state);
+        Assert.assertEquals(board.getJellyPositionNb(), state.getJellyPositionNb());
         game.explain(state);
     }
 

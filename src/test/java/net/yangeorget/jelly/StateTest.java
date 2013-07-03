@@ -95,42 +95,42 @@ public class StateTest {
 
     @Test
     public void testMoveRightOK1() {
-        testMoveRightOK(new BoardImpl(new String[] { " BB  " }), 0, "2BB;;");
+        testMoveRightOK(new BoardImpl(new String[] { " BB  " }), 0, "2BB;;0");
     }
 
     @Test
     public void testMoveRightOK2() {
-        testMoveRightOK(new BoardImpl(new String[] { " BB  ", " GBB " }), 1, "2BB3GBB;;");
+        testMoveRightOK(new BoardImpl(new String[] { " BB  ", " GBB " }), 1, "2BB3GBB;;0");
     }
 
     @Test
     public void testMoveRightOK3() {
-        testMoveRightOK(new BoardImpl(new String[] { " BBYRR ", " GBB R " }), 0, "2BBYRR1G1BB1R;;");
+        testMoveRightOK(new BoardImpl(new String[] { " BBYRR ", " GBB R " }), 0, "2BBYRR1G1BB1R;;0");
     }
 
     @Test
     public void testMoveRightOK4() {
-        testMoveRightOK(new BoardImpl(new String[] { " YYGGG ", " GGG B ", "     # " }), 2, "8YYGGG2GGG2B;;");
+        testMoveRightOK(new BoardImpl(new String[] { " YYGGG ", " GGG B ", "     # " }), 2, "8YYGGG2GGG2B;;0");
     }
 
     @Test
     public void testMoveRightOK5() {
-        testMoveRightOK(new BoardImpl(new String[] { "AABB ", "#    " }), 0, "6AABB;;");
+        testMoveRightOK(new BoardImpl(new String[] { "AABB ", "#    " }), 0, "6AABB;;0");
     }
 
     @Test
     public void testMoveRightOK51() {
-        testMoveRightOK(new BoardImpl(new String[] { "AABB ", "#    ", "##   " }), 0, "6AA5BB;;");
+        testMoveRightOK(new BoardImpl(new String[] { "AABB ", "#    ", "##   " }), 0, "6AA5BB;;0");
     }
 
     @Test
     public void testMoveRightOK6() {
-        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  " }, new byte[] { 0, 1 }), 0, "4AB;12111112;");
+        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  " }, new byte[] { 0, 1 }), 0, "4AB;12111112;0");
     }
 
     @Test
     public void testMoveRightOK61() {
-        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  ", "## " }, new byte[] { 0, 1 }), 0, "4AB;12111112;");
+        testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  ", "## " }, new byte[] { 0, 1 }), 0, "4AB;12111112;0");
     }
 
     private void testMoveRightOK(final Board input, final int index, final String output) {
@@ -144,17 +144,17 @@ public class StateTest {
 
     @Test
     public void testProcess1() {
-        testProcess(new BoardImpl(new String[] { " BB ", "    ", "    " }), "9BB;;");
+        testProcess(new BoardImpl(new String[] { " BB ", "    ", "    " }), "9BB;;0");
     }
 
     @Test
     public void testProcess2() {
-        testProcess(new BoardImpl(new String[] { "  GG ", " BB  ", "     " }), "7GG2BB;;");
+        testProcess(new BoardImpl(new String[] { "  GG ", " BB  ", "     " }), "7GG2BB;;0");
     }
 
     @Test
     public void testProcess3() {
-        testProcess(new BoardImpl(new String[] { "  GG ", " BBG ", "  GG ", "     " }), "7GG2BBG3GG;;");
+        testProcess(new BoardImpl(new String[] { "  GG ", " BBG ", "  GG ", "     " }), "7GG2BBG3GG;;0");
     }
 
     @Test
@@ -165,12 +165,12 @@ public class StateTest {
 
     @Test
     public void testProcess5() {
-        testProcess(new BoardImpl(new String[] { "  ", " A", "##" }, new byte[] { 0x21 }, new char[] { 'B' }), "3A;;");
+        testProcess(new BoardImpl(new String[] { "  ", " A", "##" }, new byte[] { 0x21 }, new char[] { 'B' }), "3A;;0");
     }
 
     @Test
     public void testProcess6() {
-        testProcess(new BoardImpl(new String[] { " #", " B", "##" }, new byte[] { 0x21 }, new char[] { 'B' }), "3B;;");
+        testProcess(new BoardImpl(new String[] { " #", " B", "##" }, new byte[] { 0x21 }, new char[] { 'B' }), "3B;;0");
     }
 
     @Test

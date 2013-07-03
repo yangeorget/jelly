@@ -4,7 +4,8 @@ package net.yangeorget.jelly;
  * A board
  * @author y.georget
  */
-public interface Board {
+public interface Board
+        extends JellyCounters {
     /**
      * The maximal number of emerging jellies.
      */
@@ -81,23 +82,13 @@ public interface Board {
      */
     byte[] getLinkEnds();
 
-    /**
-     * Returns the emerging colors.
-     * @return a array of chars
-     */
-    char[] getEmergingColors();
+    char getEmergingColor(int epIndex);
 
-    /**
-     * Returns the positions of the emerging colors.
-     * @return a array of bytes
-     */
-    byte[] getEmergingPositions();
+    byte getEmergingPosition(int epIndex);
 
-    /**
-     * Returns the number of jelly colors
-     * @return an int
-     */
-    int getJellyColorNb();
+    int getEmergingPositionNb();
+
+    int getEmergingIndex(byte ep);
 
     /**
      * To be called before storing links.

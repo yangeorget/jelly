@@ -50,10 +50,10 @@ public class BoardImpl
         width1 = width - 1;
         matrix = new char[height][];
         walls = new boolean[height][width];
-        computeMatrixAndWalls(strings);
-        computeLinks(linkCycles);
         this.emergingPositions = emergingPositions;
         this.emergingColors = emergingColors;
+        computeMatrixAndWalls(strings);
+        computeLinks(linkCycles);
     }
 
     void computeMatrixAndWalls(final String[] strings) {

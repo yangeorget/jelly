@@ -354,9 +354,8 @@ public interface Board
                                         "#DDDDDDDD ##",
                                         "#  R      ##",
                                         "#FFFFFFFF###",
-                                        "#     R  ###" },
+                                        "#     R  ###",
+                                        "############" }, // extra wall line (for containing an emerging jelly)
                           new byte[] { 0x26, 0x43, 0x66, (byte) 0x83 },
                           new char[] { 'R', 'R', 'R', 'R' }) };
-
-
 }

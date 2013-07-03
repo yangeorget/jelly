@@ -102,7 +102,7 @@ public class JellyImpl
                               final int si,
                               final int sj) {
         // we have one single candidate segment for now
-        CANDIDATE_SEGMENT_BUF[0] = value(si, sj);
+        CANDIDATE_SEGMENT_BUF[0] = BoardImpl.value(si, sj);
         freeSegmentIndex = 1;
         // we don't have any empty segment yet
         segmentIndex = emptySegmentNb = 0;
@@ -114,8 +114,8 @@ public class JellyImpl
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
                 final byte pos = CANDIDATE_POS_BUF[index];
-                final byte i = (byte) getI(pos);
-                final byte j = (byte) getJ(pos);
+                final byte i = (byte) BoardImpl.getI(pos);
+                final byte j = (byte) BoardImpl.getJ(pos);
                 final char c = matrix[i][j];
                 if (c != Board.BLANK_CHAR) {
                     final char color = BoardImpl.toFloating(c);
@@ -257,18 +257,6 @@ public class JellyImpl
         bottomMax--;
     }
 
-    final static int getI(final int pos) {
-        return (pos >> Board.COORDINATE_UB_LOG2) & Board.COORDINATE_MASK;
-    }
-
-    final static int getJ(final int pos) {
-        return pos & Board.COORDINATE_MASK;
-    }
-
-    final static byte value(final int i, final int j) {
-        return (byte) ((i << Board.COORDINATE_UB_LOG2) | j);
-    }
-
     @Override
     public final boolean overlaps(final Jelly jelly) {
         final JellyImpl j = (JellyImpl) jelly;
@@ -319,7 +307,7 @@ public class JellyImpl
     public final boolean overlapsWalls() {
         final boolean[][] walls = board.getWalls();
         for (final byte position : positions) {
-            if (walls[getI(position)][getJ(position)]) {
+            if (walls[BoardImpl.getI(position)][BoardImpl.getJ(position)]) {
                 return true;
             }
         }
@@ -349,7 +337,7 @@ public class JellyImpl
         c = isFixed ? BoardImpl.toFixed(c) : c;
         for (int j = start; j < end; j++) {
             final byte position = positions[j];
-            matrix[getI(position)][getJ(position)] = c;
+            matrix[BoardImpl.getI(position)][BoardImpl.getJ(position)] = c;
         }
     }
 

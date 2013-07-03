@@ -252,16 +252,14 @@ public class StateImpl
             final int end = jelly.getEnd(segmentIndex);
             for (int i = start; i < end; i++) {
                 // let's compute the emerging candidate from the walls
-                computeEmergingCandidates(board, (byte) (positions[i] + Board.DOWN), segmentColor);
+                final int epIndex = board.getEmergingIndex((byte) (positions[i] + Board.DOWN));
+                if (epIndex >= 0
+                    && !emerged[epIndex]
+                    && BoardImpl.toFloating(board.getEmergingColor(epIndex)) == segmentColor) {
+                    EMERGED_IDX_BUF[freeIndex++] = epIndex;
+                }
                 // TODO: compute the emerging candidates from the jellies
             }
-        }
-    }
-
-    final private void computeEmergingCandidates(final Board board, final byte position, final char segmentColor) {
-        final int epIndex = board.getEmergingIndex(position);
-        if (epIndex >= 0 && !emerged[epIndex] && BoardImpl.toFloating(board.getEmergingColor(epIndex)) == segmentColor) {
-            EMERGED_IDX_BUF[freeIndex++] = epIndex;
         }
     }
 
@@ -271,7 +269,7 @@ public class StateImpl
     final private void emergeCandidate(final Board board) {
         final int epIndex = EMERGED_IDX_BUF[freeIndex];
         final byte emergingPosition = (byte) (board.getEmergingPosition(epIndex) + Board.UP);
-        board.getMatrix()[JellyImpl.getI(emergingPosition)][JellyImpl.getJ(emergingPosition)] = board.getEmergingColor(epIndex);
+        board.getMatrix()[BoardImpl.getI(emergingPosition)][BoardImpl.getJ(emergingPosition)] = board.getEmergingColor(epIndex);
         emerged[epIndex] = true;
     }
 

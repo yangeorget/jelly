@@ -1,7 +1,10 @@
 package net.yangeorget.jelly;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,6 +13,10 @@ import java.util.Set;
  */
 public class BoardImpl
         implements Board {
+    private static final byte[] LINK_START_BUF = new byte[MAX_SIZE];
+    private static final byte[] LINK_END_BUF = new byte[MAX_SIZE];
+    private static int linksIndex;
+
     private final int height;
     private final int width;
     private final int height1;
@@ -20,12 +27,10 @@ public class BoardImpl
     private final boolean[][] walls;
     private byte[] linkStarts;
     private byte[] linkEnds;
-    private final byte[] emergingPositions;
-    private final char[] emergingColors;
-
-    private static final byte[] LINK_START_BUF = new byte[MAX_SIZE];
-    private static final byte[] LINK_END_BUF = new byte[MAX_SIZE];
-    private static int linksIndex;
+    private final List<Byte> emergingPositions;
+    private final List<Character> emergingColors;
+    private final List<Byte> floatingEmergingPositions;
+    private final List<Character> floatingEmergingColors;
 
     /**
      * Auxilliary constructor.
@@ -57,11 +62,25 @@ public class BoardImpl
         for (final char color : allEmergingColors) {
             colors.add(BoardImpl.toFloating(color));
         }
-        jellyPositionNb += allEmergingColors.length;
+        final int allEmergingNb = allEmergingColors.length;
+        jellyPositionNb += allEmergingNb;
         jellyColorNb = colors.size();
         computeLinks(linkCycles);
-        this.emergingPositions = allEmergingPositions;
-        this.emergingColors = allEmergingColors;
+        emergingPositions = new LinkedList<>();
+        emergingColors = new LinkedList<>();
+        floatingEmergingPositions = new LinkedList<>();
+        floatingEmergingColors = new LinkedList<>();
+        for (int epIndex = 0; epIndex < allEmergingNb; epIndex++) {
+            final byte ep = allEmergingPositions[epIndex];
+            final char epColor = allEmergingColors[epIndex];
+            if (walls[getI(ep)][getJ(ep)]) {
+                emergingPositions.add(ep);
+                emergingColors.add(epColor);
+            } else {
+                floatingEmergingPositions.add(ep);
+                floatingEmergingColors.add(epColor);
+            }
+        }
     }
 
     void computeMatrixAndWalls(final Set<Character> colors, final String[] strings) {
@@ -169,9 +188,13 @@ public class BoardImpl
             builder.append('\n');
         }
         builder.append(";emergingPositions=");
-        builder.append(Arrays.toString(emergingPositions));
+        builder.append(emergingPositions);
         builder.append(";emergingColors=");
-        builder.append(Arrays.toString(emergingColors));
+        builder.append(emergingColors);
+        builder.append(";floatingEmergingPositions=");
+        builder.append(floatingEmergingPositions);
+        builder.append(";floatingEmergingColors=");
+        builder.append(floatingEmergingColors);
         builder.append('\n');
     }
 
@@ -225,21 +248,33 @@ public class BoardImpl
 
     @Override
     public final byte getEmergingPosition(final int epIndex) {
-        return emergingPositions[epIndex];
+        return emergingPositions.get(epIndex);
     }
 
     @Override
     public final char getEmergingColor(final int epIndex) {
-        return emergingColors[epIndex];
+        return emergingColors.get(epIndex);
     }
 
     @Override
     public int getEmergingPositionNb() {
-        return emergingPositions.length;
+        return emergingPositions.size();
     }
 
     @Override
     public int getEmergingIndex(final byte ep) {
-        return Utils.contains(emergingPositions, 0, emergingPositions.length, ep);
+        return Collections.binarySearch(emergingPositions, ep);
+    }
+
+    final static byte value(final int i, final int j) {
+        return (byte) ((i << Board.COORDINATE_UB_LOG2) | j);
+    }
+
+    final static int getJ(final int pos) {
+        return pos & Board.COORDINATE_MASK;
+    }
+
+    final static int getI(final int pos) {
+        return (pos >> Board.COORDINATE_UB_LOG2) & Board.COORDINATE_MASK;
     }
 }

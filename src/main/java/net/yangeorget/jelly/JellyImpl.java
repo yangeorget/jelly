@@ -387,5 +387,8 @@ public class JellyImpl
         return 0;
     }
 
-
+    @Override
+    public void markAsEmerged(final int epIndex) {
+        // TODO Auto-generated method stub
+    }
 }

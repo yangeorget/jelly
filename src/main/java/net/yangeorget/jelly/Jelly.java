@@ -43,4 +43,6 @@ public interface Jelly {
     int getEmergingPositionNb();
 
     int getEmergingIndex(byte ep);
+
+    void markAsEmerged(int epIndex);
 }

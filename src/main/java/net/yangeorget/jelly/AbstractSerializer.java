@@ -1,5 +1,6 @@
 package net.yangeorget.jelly;
 
+import java.util.List;
 
 /**
  * Abstract serializer.
@@ -8,16 +9,27 @@ package net.yangeorget.jelly;
 public abstract class AbstractSerializer
         implements Serializer {
     @Override
-    public StringBuilder serialize(final State state) {
+    public String serialize(final State state) {
         final StringBuilder builder = new StringBuilder();
         final Board board = state.getBoard();
         serializeMatrix(builder, board.getMatrix());
         builder.append(';');
+        serializeLinks(builder, board);
+        builder.append(';');
+        serializeEmerging(builder, state);
+        return builder.toString();
+    }
+
+    void serializeLinks(final StringBuilder builder, final Board board) {
         serializeByteArray(builder, board.getLinkStarts());
         serializeByteArray(builder, board.getLinkEnds());
-        builder.append(';');
+    }
+
+    void serializeEmerging(final StringBuilder builder, final State state) {
         serializeBooleanArray(builder, state.getEmerged());
-        return builder;
+        final BoardImpl board = (BoardImpl) state.getBoard();
+        serializeByteList(builder, board.floatingEmergingPositions);
+        serializeCharList(builder, board.floatingEmergingColors);
     }
 
     /**
@@ -48,6 +60,18 @@ public abstract class AbstractSerializer
     static void serializeByteArray(final StringBuilder builder, final byte[] a) {
         for (int i = 0; i < a.length; i++) {
             builder.append(String.format("%02X", a[i]));
+        }
+    }
+
+    static void serializeByteList(final StringBuilder builder, final List<Byte> a) {
+        for (final Byte b : a) {
+            builder.append(String.format("%02X", b));
+        }
+    }
+
+    static void serializeCharList(final StringBuilder builder, final List<Character> a) {
+        for (final Character b : a) {
+            builder.append(b);
         }
     }
 }

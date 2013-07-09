@@ -20,7 +20,7 @@ public class StateImpl
     private static int emergingIndex;
 
     private final Board board;
-    private StringBuilder serialization;
+    private String serialization;
     private Jelly[] jellies;
     private State parent;
     private final boolean[] emerged;
@@ -32,6 +32,10 @@ public class StateImpl
     public StateImpl(final Board board) {
         this.board = board;
         emerged = new boolean[board.getEmergingPositionNb()];
+        // the first serialization depends on the way the board has been entered
+        updateFromBoard();
+        // this is why we do a second serialization
+        updateBoard();
         updateFromBoard();
     }
 
@@ -55,6 +59,7 @@ public class StateImpl
     @Override
     public final void updateBoard() {
         board.clearLinks();
+        board.clearFloatingEmerging();
         for (final Jelly jelly : jellies) {
             jelly.updateBoard();
         }
@@ -188,7 +193,7 @@ public class StateImpl
         moveDown();
         updateBoard();
         updateFromBoard();
-        if (getNotEmergedNb() != 0 && moveUp()) {
+        if (moveUp()) {
             updateBoard();
             updateFromBoard();
         }
@@ -220,9 +225,13 @@ public class StateImpl
      * @return a boolean indicating if jellies have emerged
      */
     final boolean moveUp() {
+        if (getNotEmergedNb() == 0) {
+            return false;
+        }
         boolean someEmerged = false;
         for (int j = 0; j < jellies.length; j++) {
             emergingIndex = 0;
+            // it seems smarter to compute this before moving the jelly up
             computeEmergingCandidates(jellies[j]);
             if (emergingIndex > 0) {
                 if (moveUp(j)) {
@@ -283,8 +292,8 @@ public class StateImpl
 
     private boolean computeEmergingCandidateFromJellies(final byte ep, final char segmentColor) {
         for (final Jelly j : jellies) {
-            if (j.getEmergingPositionNb() > 0) { // this is an optimization
-                final int epIndex = j.getEmergingIndex(ep);
+            if (j.getNotEmergedNb() > 0) { // this is an optimization
+                final int epIndex = j.getEpIndex(ep);
                 if (epIndex >= 0) {
                     if (BoardImpl.toFloating(j.getEmergingColor(epIndex)) == segmentColor) {
                         storeEmergingCandidate(j, epIndex);
@@ -372,7 +381,7 @@ public class StateImpl
     }
 
     @Override
-    public final StringBuilder getSerialization() {
+    public final String getSerialization() {
         return serialization;
     }
 
@@ -394,7 +403,7 @@ public class StateImpl
             }
         }
         for (final Jelly j : jellies) {
-            nb += j.getEmergingPositionNb();
+            nb += j.getNotEmergedNb();
         }
         return nb;
     }

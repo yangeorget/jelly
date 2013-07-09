@@ -13,12 +13,10 @@ public class StateTest {
     public void testUpdateFromBoard() {
         final Board board = new BoardImpl(new String[] { " BB ", "    " });
         final State state = new StateImpl(board);
-        final String ser = state.getSerialization()
-                                .toString();
+        final String ser = state.getSerialization();
         state.updateBoard();
         state.updateFromBoard();
-        Assert.assertEquals(state.getSerialization()
-                                 .toString(), ser);
+        Assert.assertEquals(state.getSerialization(), ser);
     }
 
     @Test
@@ -137,8 +135,7 @@ public class StateTest {
         final State state = new StateImpl(input);
         state.moveRight(index);
         state.process();
-        Assert.assertEquals(state.getSerialization()
-                                 .toString(), output);
+        Assert.assertEquals(state.getSerialization(), output);
     }
 
 
@@ -182,7 +179,6 @@ public class StateTest {
     private void testProcess(final Board input, final String output) {
         final State state = new StateImpl(input);
         state.process();
-        Assert.assertEquals(state.getSerialization()
-                                 .toString(), output);
+        Assert.assertEquals(state.getSerialization(), output);
     }
 }

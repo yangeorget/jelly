@@ -1,9 +1,9 @@
 package net.yangeorget.jelly;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,8 +29,8 @@ public class BoardImpl
     private byte[] linkEnds;
     private final List<Byte> emergingPositions;
     private final List<Character> emergingColors;
-    private final List<Byte> floatingEmergingPositions;
-    private final List<Character> floatingEmergingColors;
+    final List<Byte> floatingEmergingPositions;
+    final List<Character> floatingEmergingColors;
 
     /**
      * Auxilliary constructor.
@@ -65,10 +65,10 @@ public class BoardImpl
         jellyPositionNb += allEmergingNb;
         jellyColorNb = colors.size();
         computeLinks(linkCycles);
-        emergingPositions = new LinkedList<>();
-        emergingColors = new LinkedList<>();
-        floatingEmergingPositions = new LinkedList<>();
-        floatingEmergingColors = new LinkedList<>();
+        emergingPositions = new ArrayList<>(allEmergingNb);
+        emergingColors = new ArrayList<>(allEmergingNb);
+        floatingEmergingPositions = new ArrayList<>(allEmergingNb);
+        floatingEmergingColors = new ArrayList<>(allEmergingNb);
         for (int epIndex = 0; epIndex < allEmergingNb; epIndex++) {
             final byte ep = allEmergingPositions[epIndex];
             final char epColor = allEmergingColors[epIndex];
@@ -312,6 +312,33 @@ public class BoardImpl
     @Override
     public int getEmergingPositionNb() {
         return emergingPositions.size();
+    }
+
+    @Override
+    public void clearFloatingEmerging() {
+        floatingEmergingPositions.clear();
+        floatingEmergingColors.clear();
+    }
+
+    @Override
+    public void addFloatingEmerging(final byte emergingPosition, final char emergingColor) {
+        floatingEmergingPositions.add(emergingPosition);
+        floatingEmergingColors.add(emergingColor);
+    }
+
+    @Override
+    public final byte getFloatingEmergingPosition(final int epIndex) {
+        return floatingEmergingPositions.get(epIndex);
+    }
+
+    @Override
+    public final char getFloatingEmergingColor(final int epIndex) {
+        return floatingEmergingColors.get(epIndex);
+    }
+
+    @Override
+    public int getFloatingEmergingPositionNb() {
+        return floatingEmergingPositions.size();
     }
 
     @Override

@@ -58,8 +58,7 @@ public class NonRegressionTest {
         state.process();
         state.moveRight(1);
         state.process();
-        Assert.assertEquals(state.getSerialization()
-                                 .toString(), "4B2B1B;;1");
+        Assert.assertEquals(state.getSerialization(), "4B2B1B;;1");
     }
 
     @Test
@@ -83,8 +82,7 @@ public class NonRegressionTest {
         state.moveRight(0);
         state.process();
         Assert.assertEquals(state.getJellies().length, 1);
-        Assert.assertEquals(state.getSerialization()
-                                 .toString(), "1BB2b;;1");
+        Assert.assertEquals(state.getSerialization(), "1BB2b;;1");
     }
 
     @Test
@@ -101,13 +99,12 @@ public class NonRegressionTest {
     @Test
     public void testNonRegression7() {
         final Board board = new BoardImpl(new String[] { "  ", " R", "B ", "##" },
-                                          new byte[] { 0x30 },
+                                          new byte[] { 0x20 },
                                           new char[] { 'R' });
         final State state = new StateImpl(board);
         state.moveRight(1);
         state.process();
-        Assert.assertEquals(state.getSerialization()
-                                 .toString(), "1R1R1B;;0");
+        Assert.assertEquals(state.getSerialization(), "1R1R1B;;0");
     }
 
 }

@@ -78,7 +78,7 @@ public class PuzzleTest {
         solve(14);
     }
 
-    @Test(groups = "fast")
+    @Test(groups = "medium")
     public void test15() {
         solve(15);
     }
@@ -88,12 +88,12 @@ public class PuzzleTest {
         solve(16);
     }
 
-    @Test(groups = "slow")
+    @Test(groups = "medium")
     public void test17() {
         solve(17);
     }
 
-    @Test(groups = "fast")
+    @Test(groups = "medium")
     public void test18() {
         solve(18);
     }
@@ -133,9 +133,14 @@ public class PuzzleTest {
         solve(25);
     }
 
-    @Test(groups = "fast")
-    public void test26() {
-        // solve(26);
+    @Test(groups = "slow")
+    public void test26() { // TODO: ...
+        solve(26);
+    }
+
+    @Test(groups = "slow")
+    public void test27() { // TODO: ...
+        solve(27);
     }
 
     private void solve(final int level) {

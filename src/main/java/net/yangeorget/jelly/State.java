@@ -19,7 +19,7 @@ public interface State
 
     void process();
 
-    StringBuilder getSerialization();
+    String getSerialization();
 
     void clearSerialization();
 

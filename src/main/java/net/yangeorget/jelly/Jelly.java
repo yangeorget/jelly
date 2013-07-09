@@ -40,9 +40,9 @@ public interface Jelly {
 
     byte getEmergingPosition(int epIndex);
 
-    int getEmergingPositionNb();
+    int getNotEmergedNb();
 
-    int getEmergingIndex(byte ep);
+    int getEpIndex(byte ep);
 
     void markAsEmerged(int epIndex);
 }

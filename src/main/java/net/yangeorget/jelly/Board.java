@@ -31,6 +31,7 @@ public interface Board
     int DOWN = MAX_WIDTH;
 
     char FIXED_FLAG = (char) 32;
+    char EMERGED = 0;
     char BLANK_CHAR = ' ';
     char WALL_CHAR = '#';
 
@@ -99,6 +100,20 @@ public interface Board
      * @return a array of bytes
      */
     byte[] getLinkEnds();
+
+    void clearFloatingEmerging();
+
+    /**
+     * @param emergingPosition
+     * @param emergingColor
+     */
+    void addFloatingEmerging(byte emergingPosition, char emergingColor);
+
+    byte getFloatingEmergingPosition(int epIndex);
+
+    char getFloatingEmergingColor(int epIndex);
+
+    int getFloatingEmergingPositionNb();
 
     char getEmergingColor(int epIndex);
 
@@ -375,5 +390,17 @@ public interface Board
                                         "#     R  ###",
                                         "############" }, // extra wall line (for containing an emerging jelly)
                           new byte[] { 0x26, 0x43, 0x66, (byte) 0x83 },
-                          new char[] { 'R', 'R', 'R', 'R' }) };
+                          new char[] { 'R', 'R', 'R', 'R' }),
+
+            // board 27
+            new BoardImpl(new String[] { "#######  #  ",
+                                        "#######  r  ",
+                                        "#######     ",
+                                        "####     R  ",
+                                        "#BBB    DDD ",
+                                        " BBB    DDD ",
+                                        " G        # ",
+                                        "############" }, new byte[] { 0x73, 0x76, 0x79 }, new char[] { 'G', 'G', 'G' }) };
+
+
 }

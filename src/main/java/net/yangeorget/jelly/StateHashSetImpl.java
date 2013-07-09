@@ -20,8 +20,7 @@ public class StateHashSetImpl
 
     @Override
     public boolean store(final State state) {
-        final String ser = state.getSerialization()
-                                .toString();
+        final String ser = state.getSerialization();
         // LOG.debug("serialization length: " + ser.length());
         return set.add(ser);
     }

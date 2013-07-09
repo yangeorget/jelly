@@ -5,5 +5,5 @@ package net.yangeorget.jelly;
  */
 public interface Serializer {
     // TODO: serialize as byte array
-    StringBuilder serialize(State state);
+    String serialize(State state);
 }

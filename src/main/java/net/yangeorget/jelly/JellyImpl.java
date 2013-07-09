@@ -32,7 +32,11 @@ public class JellyImpl
      */
     private static final int[] END_BUF = new int[Board.MAX_SIZE];
 
+    private static final int[] EP_IDX_BUF = new int[Board.MAX_EMERGING];
+    private static final char[] EP_COL_BUF = new char[Board.MAX_EMERGING];
+
     private static int segmentIndex;
+    private static int floatingIndex;
     private static int freeSegmentIndex;
     private static int emptySegmentNb;
 
@@ -46,6 +50,8 @@ public class JellyImpl
     private byte rightMax;
     private byte topMin;
     private byte bottomMax;
+    private final int[] emergingIndices;
+    private final char[] emergingColors;
 
     JellyImpl(final Board board,
               final boolean isFixed,
@@ -63,7 +69,9 @@ public class JellyImpl
              bottomMax,
              new int[] { positions.length },
              new char[] { color },
-             positions);
+             positions,
+             new int[0],
+             new char[0]);
     }
 
     private JellyImpl(final Board board,
@@ -74,7 +82,9 @@ public class JellyImpl
                       final byte bottomMax,
                       final int[] end,
                       final char[] color,
-                      final byte[] positions) {
+                      final byte[] positions,
+                      final int[] emergingIndices,
+                      final char[] emergingColors) {
         this.board = board;
         this.isFixed = isFixed;
         this.leftMin = leftMin;
@@ -84,6 +94,8 @@ public class JellyImpl
         this.positions = Arrays.copyOf(positions, positions.length);
         this.color = Arrays.copyOf(color, color.length);
         this.end = Arrays.copyOf(end, end.length);
+        this.emergingIndices = Arrays.copyOf(emergingIndices, emergingIndices.length);
+        this.emergingColors = Arrays.copyOf(emergingColors, emergingColors.length);
     }
 
     public JellyImpl(final Board board, final int i, final int j) {
@@ -94,6 +106,17 @@ public class JellyImpl
         color = Arrays.copyOf(COL_BUF, segmentIndex);
         end = Arrays.copyOf(END_BUF, segmentIndex);
         positions = Arrays.copyOf(POS_BUF, getStart(end, segmentIndex));
+        floatingIndex = 0;
+        for (int fepIndex = 0; fepIndex < board.getFloatingEmergingPositionNb(); fepIndex++) {
+            final int epIndex = getEmergingIndex(board.getFloatingEmergingPosition(fepIndex));
+            if (epIndex >= 0) {
+                EP_IDX_BUF[floatingIndex] = epIndex;
+                EP_COL_BUF[floatingIndex] = board.getFloatingEmergingColor(fepIndex);
+                floatingIndex++;
+            }
+        }
+        emergingIndices = Arrays.copyOf(EP_IDX_BUF, floatingIndex);
+        emergingColors = Arrays.copyOf(EP_COL_BUF, floatingIndex);
     }
 
     private final void update(final byte[] linkStarts, final byte[] linkEnds, final int si, final int sj) {
@@ -186,7 +209,17 @@ public class JellyImpl
 
     @Override
     public final JellyImpl clone() {
-        return new JellyImpl(board, isFixed, leftMin, rightMax, topMin, bottomMax, end, color, positions);
+        return new JellyImpl(board,
+                             isFixed,
+                             leftMin,
+                             rightMax,
+                             topMin,
+                             bottomMax,
+                             end,
+                             color,
+                             positions,
+                             emergingIndices,
+                             emergingColors);
     }
 
     @Override
@@ -196,7 +229,21 @@ public class JellyImpl
                + ";color="
                + Arrays.toString(color)
                + ";end="
-               + Arrays.toString(end);
+               + Arrays.toString(end)
+               + ";isFixed="
+               + isFixed
+               + ";leftMin="
+               + leftMin
+               + ";rightMax="
+               + rightMax
+               + ";topMin="
+               + topMin
+               + ";bottomMax="
+               + bottomMax
+               + ";emergingIndices="
+               + Arrays.toString(emergingIndices)
+               + ";emergingColors="
+               + Arrays.toString(emergingColors);
     }
 
     private final void move(final int vec) {
@@ -324,7 +371,13 @@ public class JellyImpl
                 ls = le;
             }
         }
-        // TODO update with emerging
+        for (int epIndex = 0; epIndex < getNotEmergedNb(); epIndex++) {
+            final int emergingIndex = emergingIndices[epIndex];
+            final char color = getEmergingColor(epIndex);
+            if (color != Board.EMERGED) {
+                board.addFloatingEmerging(getEmergingPosition(emergingIndex), color);
+            }
+        }
     }
 
     private final void updateBoard(final int start, final int end, char c) {
@@ -365,30 +418,30 @@ public class JellyImpl
 
     @Override
     public char getEmergingColor(final int epIndex) {
-        // TODO Auto-generated method stub
-        return 0;
+        return emergingColors[epIndex];
     }
 
     @Override
-    public byte getEmergingPosition(final int epIndex) {
-        // TODO Auto-generated method stub
-        return 0;
+    public byte getEmergingPosition(final int emergingIndex) {
+        return positions[emergingIndex];
     }
 
     @Override
-    public int getEmergingPositionNb() {
-        // TODO Auto-generated method stub
-        return 0;
+    public int getEpIndex(final byte ep) {
+        return Arrays.binarySearch(emergingIndices, getEmergingIndex(ep));
+    }
+
+    private int getEmergingIndex(final byte ep) {
+        return Utils.contains(positions, 0, positions.length, ep);
     }
 
     @Override
-    public int getEmergingIndex(final byte ep) {
-        // TODO Auto-generated method stub
-        return 0;
+    public int getNotEmergedNb() {
+        return emergingColors.length;
     }
 
     @Override
     public void markAsEmerged(final int epIndex) {
-        // TODO Auto-generated method stub
+        emergingColors[epIndex] = Board.EMERGED;
     }
 }

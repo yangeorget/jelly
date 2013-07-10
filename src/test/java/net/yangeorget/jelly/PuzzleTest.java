@@ -155,8 +155,8 @@ public class PuzzleTest {
     }
 
     public static void main(final String[] args) {
-        for (int i = 0; i < Board.LEVELS.length; i++) {
-            new GameImpl(Board.LEVELS[i]).solve();
+        for (final String arg : args) {
+            new GameImpl(Board.LEVELS[Integer.parseInt(arg)]).solve();
         }
     }
 }

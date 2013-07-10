@@ -13,11 +13,9 @@ public class StateImpl
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
     // private static final Serializer SERIALIZER = new SerializerTrimImpl();
     private static final Serializer SERIALIZER = new SerializerCountImpl();
-    private static final Jelly[] JELLY_BUF = new Jelly[Board.MAX_SIZE];
+    private static final Jelly[] JELLY_BUF = new Jelly[Board.MAX_SIZE], EP_JELLY_BUF = new Jelly[Board.MAX_SIZE];
     private static final int[] EP_INDEX_BUF = new int[Board.MAX_SIZE];
-    private static final Jelly[] EP_JELLY_BUF = new Jelly[Board.MAX_SIZE];
-    private static int jellyIndex;
-    private static int emergingIndex;
+    private static int jellyIndex, emergingIndex;
 
     private final Board board;
     private String serialization;

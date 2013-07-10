@@ -30,28 +30,19 @@ public class JellyImpl
     /**
      * Ends (in the sense of next free indices) of jelly segments.
      */
-    private static final int[] END_BUF = new int[Board.MAX_SIZE];
+    private static final byte[] END_BUF = new byte[Board.MAX_SIZE];
 
-    private static final int[] EP_IDX_BUF = new int[Board.MAX_EMERGING];
+    private static final byte[] EP_IDX_BUF = new byte[Board.MAX_EMERGING];
     private static final char[] EP_COL_BUF = new char[Board.MAX_EMERGING];
 
-    private static int segmentIndex;
-    private static int floatingIndex;
-    private static int freeSegmentIndex;
-    private static int emptySegmentNb;
+    private static int segmentIndex, floatingIndex, freeSegmentIndex, emptySegmentNb;
 
-    byte[] positions;
-    char[] color; // TODO: use byte instead
-    byte[] end;
+    byte[] positions, end, emergingIndices;
+    char[] color, emergingColors; // TODO: use byte instead
     private final Board board;
     private boolean isFixed;
     // bounding box
-    private byte leftMin;
-    private byte rightMax;
-    private byte topMin;
-    private byte bottomMax;
-    private final int[] emergingIndices;
-    private final char[] emergingColors;
+    private byte leftMin, rightMax, topMin, bottomMax;
 
     JellyImpl(final Board board,
               final boolean isFixed,
@@ -67,10 +58,10 @@ public class JellyImpl
              rightMax,
              topMin,
              bottomMax,
-             new int[] { positions.length },
+             new byte[] { (byte) positions.length },
              new char[] { color },
              positions,
-             new int[0],
+             new byte[0],
              new char[0]);
     }
 
@@ -80,10 +71,10 @@ public class JellyImpl
                       final byte rightMax,
                       final byte topMin,
                       final byte bottomMax,
-                      final int[] end,
+                      final byte[] end,
                       final char[] color,
                       final byte[] positions,
-                      final int[] emergingIndices,
+                      final byte[] emergingIndices,
                       final char[] emergingColors) {
         this.board = board;
         this.isFixed = isFixed;
@@ -107,10 +98,11 @@ public class JellyImpl
         end = Arrays.copyOf(END_BUF, segmentIndex);
         positions = Arrays.copyOf(POS_BUF, getStart(end, segmentIndex));
         floatingIndex = 0;
-        for (int fepIndex = 0; fepIndex < board.getFloatingEmergingPositionNb(); fepIndex++) {
+        final int floatingNb = board.getFloatingEmergingPositionNb();
+        for (int fepIndex = 0; fepIndex < floatingNb; fepIndex++) {
             final int epIndex = getEmergingIndex(board.getFloatingEmergingPosition(fepIndex));
             if (epIndex >= 0) {
-                EP_IDX_BUF[floatingIndex] = epIndex;
+                EP_IDX_BUF[floatingIndex] = (byte) epIndex;
                 EP_COL_BUF[floatingIndex] = board.getFloatingEmergingColor(fepIndex);
                 floatingIndex++;
             }
@@ -128,7 +120,7 @@ public class JellyImpl
         while (segmentIndex + emptySegmentNb < freeSegmentIndex) {
             final int start = getStart(END_BUF, segmentIndex);
             // the current segment ends where it starts (it is empty)
-            END_BUF[segmentIndex] = start;
+            END_BUF[segmentIndex] = (byte) start;
             // let's init the candidate positions with the current candidate segment
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
@@ -146,19 +138,19 @@ public class JellyImpl
                         isFixed |= BoardImpl.isFixed(c);
                         insertPositionInSortedSegment(start, pos);
                         handleLinkedPosition(linkStarts, linkEnds, pos);
-                        final byte i = (byte) BoardImpl.getI(pos);
-                        final byte j = (byte) BoardImpl.getJ(pos);
+                        final int i = BoardImpl.getI(pos);
+                        final int j = BoardImpl.getJ(pos);
                         if (j < leftMin) {
-                            leftMin = j;
+                            leftMin = (byte) j;
                         }
                         if (rightMax < j) {
-                            rightMax = j;
+                            rightMax = (byte) j;
                         }
                         if (i < topMin) {
-                            topMin = i;
+                            topMin = (byte) i;
                         }
                         if (bottomMax < i) {
-                            bottomMax = i;
+                            bottomMax = (byte) i;
                         }
                         if (i > 0) {
                             CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.UP);
@@ -314,7 +306,7 @@ public class JellyImpl
         return false;
     }
 
-    final boolean overlaps(final byte[] aPositions, final int[] aEnd, final int aSegment) {
+    final boolean overlaps(final byte[] aPositions, final byte[] aEnd, final int aSegment) {
         for (int segment = 0; segment < end.length; segment++) {
             if (overlaps(positions, end, segment, aPositions, aEnd, aSegment)) {
                 return true;
@@ -324,10 +316,10 @@ public class JellyImpl
     }
 
     static final boolean overlaps(final byte[] aPositions,
-                                  final int[] aEnd,
+                                  final byte[] aEnd,
                                   final int aSegment,
                                   final byte[] bPositions,
-                                  final int[] bEnd,
+                                  final byte[] bEnd,
                                   final int bSegment) {
         for (int aIndex = getStart(aEnd, aSegment), bIndex = getStart(bEnd, bSegment);;) {
             while (aPositions[aIndex] < bPositions[bIndex]) {
@@ -360,7 +352,7 @@ public class JellyImpl
     public final void updateBoard() {
         final int size = end.length;
         if (size == 1) {
-            updateBoard(0, end[0], color[0]);
+            updateBoard((byte) 0, end[0], color[0]);
         } else {
             int ls = getStart(end, size - 1);
             int le;
@@ -373,7 +365,7 @@ public class JellyImpl
         }
         for (int epIndex = 0; epIndex < getNotEmergedNb(); epIndex++) {
             final char color = getEmergingColor(epIndex);
-            if (color != Board.EMERGED) {
+            if (color != Board.BLANK_CHAR) {
                 board.addFloatingEmerging(getEmergingPosition(emergingIndices[epIndex]), color);
             }
         }
@@ -386,8 +378,8 @@ public class JellyImpl
         }
     }
 
-    private final static int getStart(final int[] end, final int index) {
-        return index == 0 ? 0 : end[index - 1];
+    private final static int getStart(final byte[] end, final int segmentIndex) {
+        return segmentIndex == 0 ? 0 : end[segmentIndex - 1];
     }
 
     @Override
@@ -427,7 +419,7 @@ public class JellyImpl
 
     @Override
     public int getEpIndex(final byte ep) {
-        return Arrays.binarySearch(emergingIndices, getEmergingIndex(ep));
+        return Arrays.binarySearch(emergingIndices, (byte) getEmergingIndex(ep));
     }
 
     private int getEmergingIndex(final byte ep) {
@@ -441,6 +433,6 @@ public class JellyImpl
 
     @Override
     public void markAsEmerged(final int epIndex) {
-        emergingColors[epIndex] = Board.EMERGED;
+        emergingColors[epIndex] = Board.BLANK_CHAR;
     }
 }

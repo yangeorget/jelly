@@ -45,21 +45,22 @@ public abstract class AbstractSerializer
      * @param a the boolean array
      */
     static void serializeBooleanArray(final StringBuilder builder, final boolean[] a) {
-        if (a.length > Board.MAX_EMERGING) {
+        final int size = a.length;
+        if (size > Board.MAX_EMERGING) {
             throw new RuntimeException("Too many emerging jellies!");
         }
         int ser = 0;
-        for (int i = 0; i < a.length; i++) {
+        for (int i = 0; i < size; i++) {
             if (a[i]) {
-                ser |= 1 << (a.length - 1 - i);
+                ser |= 1 << (size - 1 - i);
             }
         }
         builder.append(ser);
     }
 
     static void serializeByteArray(final StringBuilder builder, final byte[] a) {
-        for (int i = 0; i < a.length; i++) {
-            builder.append(String.format("%02X", a[i]));
+        for (final byte b : a) {
+            builder.append(String.format("%02X", b));
         }
     }
 

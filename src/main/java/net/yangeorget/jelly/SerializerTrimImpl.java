@@ -12,7 +12,7 @@ public class SerializerTrimImpl
         for (final char[] line : matrix) {
             if (skip) {
                 for (final char c : line) {
-                    skip &= c == Board.BLANK_CHAR || c == Board.WALL_CHAR;
+                    skip &= c <= Board.WALL_CHAR;
                     if (!skip) {
                         builder.append(c);
                     }

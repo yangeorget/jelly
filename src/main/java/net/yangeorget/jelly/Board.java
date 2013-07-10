@@ -31,7 +31,6 @@ public interface Board
     int DOWN = MAX_WIDTH;
 
     char FIXED_FLAG = (char) 32;
-    char EMERGED = 0;
     char BLANK_CHAR = ' ';
     char WALL_CHAR = '#';
 
@@ -393,14 +392,14 @@ public interface Board
                           new char[] { 'R', 'R', 'R', 'R' }),
 
             // board 27
-            new BoardImpl(new String[] { "#######  #  ",
-                                        "#######  r  ",
-                                        "#######     ",
-                                        "####     R  ",
-                                        "#BBB    DDD ",
-                                        " BBB    DDD ",
-                                        " G        # ",
-                                        "############" }, new byte[] { 0x73, 0x76, 0x79 }, new char[] { 'G', 'G', 'G' }) };
-
-
+            new BoardImpl(new String[] { "####g#y#r###",
+                                        "####     ###",
+                                        "BYGD     R  ",
+                                        "####     ## ",
+                                        "####FFFFF## ",
+                                        "####FFFFF # ",
+                                        "### FFFFFb# ",
+                                        "###   B     ",
+                                        "############" }, new byte[] { (byte) 0x85, (byte) 0x87 }, new char[] { 'B',
+                                                                                                               'B' }) };
 }

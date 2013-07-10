@@ -13,24 +13,16 @@ import java.util.Set;
  */
 public class BoardImpl
         implements Board {
-    private static final byte[] LINK_START_BUF = new byte[MAX_SIZE];
-    private static final byte[] LINK_END_BUF = new byte[MAX_SIZE];
+    private static final byte[] LINK_START_BUF = new byte[MAX_SIZE], LINK_END_BUF = new byte[MAX_SIZE];
     private static int linksIndex;
 
-    private final int height;
-    private final int width;
-    private final int height1;
-    private final int width1;
-    private final int jellyColorNb;
+    private final int height, width, height1, width1, jellyColorNb;
     private int jellyPositionNb;
     private final char[][] matrix;
     private final boolean[][] walls;
-    private byte[] linkStarts;
-    private byte[] linkEnds;
-    private final List<Byte> emergingPositions;
-    private final List<Character> emergingColors;
-    final List<Byte> floatingEmergingPositions;
-    final List<Character> floatingEmergingColors;
+    private byte[] linkStarts, linkEnds;
+    final List<Byte> emergingPositions, floatingEmergingPositions;
+    final List<Character> emergingColors, floatingEmergingColors;
 
     /**
      * Auxilliary constructor.

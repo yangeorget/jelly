@@ -11,7 +11,7 @@ public class SerializerCountImpl
         int count = 0;
         for (final char[] line : matrix) {
             for (final char c : line) {
-                if (c == Board.BLANK_CHAR || c == Board.WALL_CHAR) {
+                if (c <= Board.WALL_CHAR) {
                     count++;
                 } else {
                     if (count > 0) {

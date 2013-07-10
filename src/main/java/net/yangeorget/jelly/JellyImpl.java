@@ -42,7 +42,7 @@ public class JellyImpl
 
     byte[] positions;
     char[] color; // TODO: use byte instead
-    int[] end;
+    byte[] end;
     private final Board board;
     private boolean isFixed;
     // bounding box
@@ -372,10 +372,9 @@ public class JellyImpl
             }
         }
         for (int epIndex = 0; epIndex < getNotEmergedNb(); epIndex++) {
-            final int emergingIndex = emergingIndices[epIndex];
             final char color = getEmergingColor(epIndex);
             if (color != Board.EMERGED) {
-                board.addFloatingEmerging(getEmergingPosition(emergingIndex), color);
+                board.addFloatingEmerging(getEmergingPosition(emergingIndices[epIndex]), color);
             }
         }
     }

@@ -264,7 +264,7 @@ public class StateImpl
         final int segmentNb = jelly.getSegmentNb();
         final byte[] positions = jelly.getPositions();
         for (int segmentIndex = 0; segmentIndex < segmentNb; segmentIndex++) {
-            final char segmentColor = jelly.getColor(segmentIndex);
+            final byte segmentColor = jelly.getColor(segmentIndex);
             final int start = jelly.getStart(segmentIndex);
             final int end = jelly.getEnd(segmentIndex);
             for (int i = start; i < end; i++) {
@@ -276,7 +276,7 @@ public class StateImpl
         }
     }
 
-    private boolean computeEmergingCandidateFromWalls(final byte ep, final char segmentColor) {
+    private boolean computeEmergingCandidateFromWalls(final byte ep, final byte segmentColor) {
         final int epIndex = board.getEmergingIndex(ep);
         if (epIndex >= 0) {
             if (!emerged[epIndex] && BoardImpl.toFloating(board.getEmergingColor(epIndex)) == segmentColor) {
@@ -288,7 +288,7 @@ public class StateImpl
         }
     }
 
-    private boolean computeEmergingCandidateFromJellies(final byte ep, final char segmentColor) {
+    private boolean computeEmergingCandidateFromJellies(final byte ep, final byte segmentColor) {
         for (final Jelly j : jellies) {
             if (j.getNotEmergedNb() > 0) { // this is an optimization
                 final int epIndex = j.getEpIndex(ep);

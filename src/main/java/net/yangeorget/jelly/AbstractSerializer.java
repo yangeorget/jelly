@@ -21,15 +21,15 @@ public abstract class AbstractSerializer
     }
 
     void serializeLinks(final StringBuilder builder, final Board board) {
-        serializeByteArray(builder, board.getLinkStarts());
-        serializeByteArray(builder, board.getLinkEnds());
+        serializeBytes(builder, board.getLinkStarts());
+        serializeBytes(builder, board.getLinkEnds());
     }
 
     void serializeEmerging(final StringBuilder builder, final State state) {
-        serializeBooleanArray(builder, state.getEmerged());
+        serializeBooleans(builder, state.getEmerged());
         final BoardImpl board = (BoardImpl) state.getBoard();
-        serializeByteList(builder, board.floatingEmergingPositions);
-        serializeCharList(builder, board.floatingEmergingColors);
+        serializeBytes(builder, board.floatingEmergingPositions);
+        serializeBytesAsChars(builder, board.floatingEmergingColors);
     }
 
     /**
@@ -37,14 +37,14 @@ public abstract class AbstractSerializer
      * @param builder the builder to serialize into
      * @param matrix the matrix
      */
-    abstract void serializeMatrix(final StringBuilder builder, final char[][] matrix);
+    abstract void serializeMatrix(final StringBuilder builder, final byte[][] matrix);
 
     /**
      * Serializes a boolean array as an integer.
      * @param builder the builder to serialize into
      * @param a the boolean array
      */
-    static void serializeBooleanArray(final StringBuilder builder, final boolean[] a) {
+    static void serializeBooleans(final StringBuilder builder, final boolean[] a) {
         final int size = a.length;
         if (size > Board.MAX_EMERGING) {
             throw new RuntimeException("Too many emerging jellies!");
@@ -58,21 +58,27 @@ public abstract class AbstractSerializer
         builder.append(ser);
     }
 
-    static void serializeByteArray(final StringBuilder builder, final byte[] a) {
+    static void serializeBytes(final StringBuilder builder, final byte[] a) {
         for (final byte b : a) {
             builder.append(String.format("%02X", b));
         }
     }
 
-    static void serializeByteList(final StringBuilder builder, final List<Byte> a) {
+    static void serializeBytes(final StringBuilder builder, final List<Byte> a) {
         for (final Byte b : a) {
             builder.append(String.format("%02X", b));
         }
     }
 
-    static void serializeCharList(final StringBuilder builder, final List<Character> a) {
-        for (final Character b : a) {
-            builder.append(b);
+    static void serializeBytesAsChars(final StringBuilder builder, final List<Byte> a) {
+        for (final Byte b : a) {
+            builder.append(BoardImpl.toChar(b));
+        }
+    }
+
+    static void serializeBytesAsChars(final StringBuilder builder, final byte[] a) {
+        for (final byte b : a) {
+            builder.append(BoardImpl.toChar(b));
         }
     }
 }

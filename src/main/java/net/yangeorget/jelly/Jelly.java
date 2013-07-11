@@ -32,11 +32,11 @@ public interface Jelly {
 
     int getEnd(int segmentIndex);
 
-    char getColor(int segmentIndex);
+    byte getColor(int segmentIndex);
 
     byte[] getPositions();
 
-    char getEmergingColor(int epIndex);
+    byte getEmergingColor(int epIndex);
 
     byte getEmergingPosition(int epIndex);
 

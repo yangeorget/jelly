@@ -7,14 +7,14 @@ package net.yangeorget.jelly;
 public class SerializerTrimImpl
         extends AbstractSerializer {
     @Override
-    void serializeMatrix(final StringBuilder builder, final char[][] matrix) {
+    void serializeMatrix(final StringBuilder builder, final byte[][] matrix) {
         boolean skip = true;
-        for (final char[] line : matrix) {
+        for (final byte[] line : matrix) {
             if (skip) {
-                for (final char c : line) {
-                    skip &= c <= Board.WALL_CHAR;
+                for (final byte c : line) {
+                    skip &= !BoardImpl.isJelly(c);
                     if (!skip) {
-                        builder.append(c);
+                        builder.append(BoardImpl.toChar(c));
                     }
                 }
             } else {

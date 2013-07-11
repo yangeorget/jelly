@@ -14,15 +14,16 @@ import java.util.Set;
 public class BoardImpl
         implements Board {
     private static final byte[] LINK_START_BUF = new byte[MAX_SIZE], LINK_END_BUF = new byte[MAX_SIZE];
+    private static final byte WALL_SPACE_DELTA = 3, A_SPACE_DELTA = 33, a_A_DELTA = 32, a_SPACE_DELTA = A_SPACE_DELTA
+                                                                                                        + a_A_DELTA;
     private static int linksIndex;
 
     private final int height, width, height1, width1, jellyColorNb;
     private int jellyPositionNb;
-    private final char[][] matrix;
+    private final byte[][] matrix;
     private final boolean[][] walls;
     private byte[] linkStarts, linkEnds;
-    final List<Byte> emergingPositions, floatingEmergingPositions;
-    final List<Character> emergingColors, floatingEmergingColors;
+    final List<Byte> emergingPositions, emergingColors, floatingEmergingPositions, floatingEmergingColors;
 
     /**
      * Auxilliary constructor.
@@ -46,12 +47,12 @@ public class BoardImpl
         width = strings[0].length();
         height1 = height - 1;
         width1 = width - 1;
-        matrix = new char[height][];
+        matrix = new byte[height][];
         walls = new boolean[height][width];
-        final Set<Character> colors = new HashSet<>();
+        final Set<Byte> colors = new HashSet<>();
         computeMatrixAndWalls(colors, strings);
         for (final char color : allEmergingColors) {
-            colors.add(BoardImpl.toFloating(color));
+            colors.add(BoardImpl.toFloating(toSpaceCharDelta(color)));
         }
         final int allEmergingNb = allEmergingColors.length;
         jellyPositionNb += allEmergingNb;
@@ -63,7 +64,7 @@ public class BoardImpl
         floatingEmergingColors = new ArrayList<>(allEmergingNb);
         for (int epIndex = 0; epIndex < allEmergingNb; epIndex++) {
             final byte ep = allEmergingPositions[epIndex];
-            final char epColor = allEmergingColors[epIndex];
+            final byte epColor = toSpaceCharDelta(allEmergingColors[epIndex]);
             if (walls[getI(ep)][getJ(ep)]) {
                 emergingPositions.add(ep);
                 emergingColors.add(epColor);
@@ -74,15 +75,23 @@ public class BoardImpl
         }
     }
 
-    void computeMatrixAndWalls(final Set<Character> colors, final String[] strings) {
+    static byte toSpaceCharDelta(final char c) {
+        return (byte) (c - ' ');
+    }
+
+    static char toChar(final byte spaceDelta) {
+        return (char) (spaceDelta + ' ');
+    }
+
+    void computeMatrixAndWalls(final Set<Byte> colors, final String[] strings) {
         for (int i = 0; i < height; i++) {
-            matrix[i] = strings[i].toCharArray();
+            matrix[i] = new byte[width];
             for (byte j = 0; j < width; j++) {
-                final char color = matrix[i][j];
-                if (color == WALL_CHAR) {
+                matrix[i][j] = toSpaceCharDelta(strings[i].charAt(j));
+                if (matrix[i][j] == WALL_SPACE_DELTA) {
                     walls[i][j] = true;
-                } else if (color != Board.BLANK_CHAR) {
-                    colors.add(BoardImpl.toFloating(color));
+                } else if (matrix[i][j] != 0) {
+                    colors.add(BoardImpl.toFloating(matrix[i][j]));
                     jellyPositionNb++;
                 }
             }
@@ -165,13 +174,10 @@ public class BoardImpl
     }
 
     private final void toString(final StringBuilder builder) {
-        final int height1 = height - 1;
-        for (int i = 0; i < height1; i++) {
-            builder.append(matrix[i]);
+        for (int i = 0; i < height; i++) {
+            AbstractSerializer.serializeBytesAsChars(builder, matrix[i]);
             builder.append('\n');
         }
-        builder.append(matrix[height1]);
-        builder.append('\n');
         for (int i = 0; i < linkStarts.length; i++) {
             builder.append(linkStarts[i]);
             builder.append("-");
@@ -187,6 +193,11 @@ public class BoardImpl
         builder.append(";floatingEmergingColors=");
         builder.append(floatingEmergingColors);
         builder.append('\n');
+    }
+
+
+    public static boolean isJelly(final byte c) {
+        return c >= A_SPACE_DELTA;
     }
 
     @Override
@@ -206,7 +217,7 @@ public class BoardImpl
 
     @Override
     public final boolean isBlank(final int i, final int j) {
-        return matrix[i][j] == BLANK_CHAR;
+        return matrix[i][j] == 0;
     }
 
     @Override
@@ -220,22 +231,22 @@ public class BoardImpl
     }
 
     @Override
-    public final void setColor(final byte position, final char c) {
+    public final void setColor(final byte position, final byte c) {
         setColor(getI(position), getJ(position), c);
     }
 
     @Override
-    public final void setColor(final int i, final int j, final char c) {
+    public final void setColor(final int i, final int j, final byte c) {
         matrix[i][j] = c;
     }
 
     @Override
-    public final char getColor(final byte position) {
+    public final byte getColor(final byte position) {
         return getColor(getI(position), getJ(position));
     }
 
     @Override
-    public final char getColor(final int i, final int j) {
+    public final byte getColor(final int i, final int j) {
         return matrix[i][j];
     }
 
@@ -246,7 +257,7 @@ public class BoardImpl
 
     @Override
     public final void blank(final int i, final int j) {
-        matrix[i][j] = BLANK_CHAR;
+        matrix[i][j] = 0;
     }
 
     /**
@@ -254,8 +265,8 @@ public class BoardImpl
      * @param c the color of a cell
      * @return a boolean
      */
-    public static final boolean isFixed(final char c) {
-        return (c & FIXED_FLAG) != 0;
+    public static final boolean isFixed(final byte c) {
+        return c >= a_SPACE_DELTA;
     }
 
     /**
@@ -263,8 +274,8 @@ public class BoardImpl
      * @param c the color of a cell
      * @return a cell
      */
-    public static final char toFloating(final char c) {
-        return (char) (c & ~FIXED_FLAG);
+    public static final byte toFloating(final byte c) {
+        return isFixed(c) ? (byte) (c - a_A_DELTA) : c; // TODO: optimize
     }
 
     /**
@@ -272,12 +283,12 @@ public class BoardImpl
      * @param c the color of a cell
      * @return a cell
      */
-    public static final char toFixed(final char c) {
-        return (char) (c | FIXED_FLAG);
+    public static final byte toFixed(final byte c) {
+        return isFixed(c) ? c : (byte) (c + a_A_DELTA); // TODO: optimize
     }
 
     @Override
-    public final char[][] getMatrix() {
+    public final byte[][] getMatrix() {
         return matrix;
     }
 
@@ -297,7 +308,7 @@ public class BoardImpl
     }
 
     @Override
-    public final char getEmergingColor(final int epIndex) {
+    public final byte getEmergingColor(final int epIndex) {
         return emergingColors.get(epIndex);
     }
 
@@ -313,7 +324,7 @@ public class BoardImpl
     }
 
     @Override
-    public void addFloatingEmerging(final byte emergingPosition, final char emergingColor) {
+    public void addFloatingEmerging(final byte emergingPosition, final byte emergingColor) {
         floatingEmergingPositions.add(emergingPosition);
         floatingEmergingColors.add(emergingColor);
     }
@@ -324,7 +335,7 @@ public class BoardImpl
     }
 
     @Override
-    public final char getFloatingEmergingColor(final int epIndex) {
+    public final byte getFloatingEmergingColor(final int epIndex) {
         return floatingEmergingColors.get(epIndex);
     }
 

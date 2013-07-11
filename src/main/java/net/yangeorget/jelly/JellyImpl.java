@@ -26,23 +26,24 @@ public class JellyImpl
     /**
      * All the colors of a jelly.
      */
-    private static final char[] COL_BUF = new char[Board.MAX_SIZE];
+    private static final byte[] COL_BUF = new byte[Board.MAX_SIZE];
     /**
      * Ends (in the sense of next free indices) of jelly segments.
      */
     private static final byte[] END_BUF = new byte[Board.MAX_SIZE];
 
     private static final byte[] EP_IDX_BUF = new byte[Board.MAX_EMERGING];
-    private static final char[] EP_COL_BUF = new char[Board.MAX_EMERGING];
+    private static final byte[] EP_COL_BUF = new byte[Board.MAX_EMERGING];
 
     private static int segmentIndex, floatingIndex, freeSegmentIndex, emptySegmentNb;
 
-    byte[] positions, end, emergingIndices;
-    char[] color, emergingColors; // TODO: use byte instead
+    byte[] positions, end, color, emergingIndices, emergingColors;
     private final Board board;
     private boolean isFixed;
     // bounding box
     private byte leftMin, rightMax, topMin, bottomMax;
+
+    // TODO: group col and pos in same arrays?
 
     JellyImpl(final Board board,
               final boolean isFixed,
@@ -59,10 +60,10 @@ public class JellyImpl
              topMin,
              bottomMax,
              new byte[] { (byte) positions.length },
-             new char[] { color },
+             new byte[] { BoardImpl.toSpaceCharDelta(color) },
              positions,
              new byte[0],
-             new char[0]);
+             new byte[0]);
     }
 
     private JellyImpl(final Board board,
@@ -72,10 +73,10 @@ public class JellyImpl
                       final byte topMin,
                       final byte bottomMax,
                       final byte[] end,
-                      final char[] color,
+                      final byte[] color,
                       final byte[] positions,
                       final byte[] emergingIndices,
-                      final char[] emergingColors) {
+                      final byte[] emergingColors) {
         this.board = board;
         this.isFixed = isFixed;
         this.leftMin = leftMin;
@@ -126,8 +127,8 @@ public class JellyImpl
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
                 final byte pos = CANDIDATE_POS_BUF[index];
                 if (!board.isBlank(pos)) {
-                    final char c = board.getColor(pos);
-                    final char color = BoardImpl.toFloating(c);
+                    final byte c = board.getColor(pos);
+                    final byte color = BoardImpl.toFloating(c);
                     // let's store the color of the current segment if not yet done
                     if (start == END_BUF[segmentIndex]) {
                         COL_BUF[segmentIndex] = color;
@@ -364,14 +365,14 @@ public class JellyImpl
             }
         }
         for (int epIndex = 0; epIndex < getNotEmergedNb(); epIndex++) {
-            final char color = getEmergingColor(epIndex);
-            if (color != Board.BLANK_CHAR) {
+            final byte color = getEmergingColor(epIndex);
+            if (color != 0) {
                 board.addFloatingEmerging(getEmergingPosition(emergingIndices[epIndex]), color);
             }
         }
     }
 
-    private final void updateBoard(final int start, final int end, char c) {
+    private final void updateBoard(final int start, final int end, byte c) {
         c = isFixed ? BoardImpl.toFixed(c) : c;
         for (int j = start; j < end; j++) {
             board.setColor(positions[j], c);
@@ -403,12 +404,12 @@ public class JellyImpl
     }
 
     @Override
-    public final char getColor(final int segmentIndex) {
+    public final byte getColor(final int segmentIndex) {
         return color[segmentIndex];
     }
 
     @Override
-    public char getEmergingColor(final int epIndex) {
+    public byte getEmergingColor(final int epIndex) {
         return emergingColors[epIndex];
     }
 
@@ -433,6 +434,6 @@ public class JellyImpl
 
     @Override
     public void markAsEmerged(final int epIndex) {
-        emergingColors[epIndex] = Board.BLANK_CHAR;
+        emergingColors[epIndex] = 0;
     }
 }

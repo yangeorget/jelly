@@ -7,18 +7,18 @@ package net.yangeorget.jelly;
 public class SerializerCountImpl
         extends AbstractSerializer {
     @Override
-    void serializeMatrix(final StringBuilder builder, final char[][] matrix) {
+    void serializeMatrix(final StringBuilder builder, final byte[][] matrix) {
         int count = 0;
-        for (final char[] line : matrix) {
-            for (final char c : line) {
-                if (c <= Board.WALL_CHAR) {
+        for (final byte[] line : matrix) {
+            for (final byte c : line) {
+                if (!BoardImpl.isJelly(c)) {
                     count++;
                 } else {
                     if (count > 0) {
                         builder.append(count);
                         count = 0;
                     }
-                    builder.append(c);
+                    builder.append(BoardImpl.toChar(c));
                 }
             }
         }

@@ -33,7 +33,7 @@ public class AbstractSerializerTest {
 
     private void testSerializeBooleanArray(final String s, final boolean... a) {
         final StringBuilder b = new StringBuilder();
-        AbstractSerializer.serializeBooleanArray(b, a);
+        AbstractSerializer.serializeBooleans(b, a);
         Assert.assertEquals(b.toString(), s);
     }
 
@@ -44,7 +44,7 @@ public class AbstractSerializerTest {
 
     private void testSerializeByteArray(final String s, final byte... a) {
         final StringBuilder b = new StringBuilder();
-        AbstractSerializer.serializeByteArray(b, a);
+        AbstractSerializer.serializeBytes(b, a);
         Assert.assertEquals(b.toString(), s);
     }
 }

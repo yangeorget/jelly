@@ -30,10 +30,6 @@ public interface Board
     int UP = -MAX_WIDTH;
     int DOWN = MAX_WIDTH;
 
-    char FIXED_FLAG = (char) 32;
-    char BLANK_CHAR = ' ';
-    char WALL_CHAR = '#';
-
     /**
      * Returns the height of the board.
      * @return an int
@@ -62,11 +58,11 @@ public interface Board
      * Returns the matrix.
      * @return a bi-dimensional array of char
      */
-    char[][] getMatrix();
+    byte[][] getMatrix();
 
-    void setColor(int i, int j, char color);
+    void setColor(int i, int j, byte color);
 
-    void setColor(byte position, char color);
+    void setColor(byte position, byte color);
 
     void blank(byte position);
 
@@ -84,9 +80,9 @@ public interface Board
 
     boolean isColored(int i, int j);
 
-    char getColor(byte position);
+    byte getColor(byte position);
 
-    char getColor(int i, int j);
+    byte getColor(int i, int j);
 
     /**
      * Returns the starts of the links.
@@ -106,15 +102,15 @@ public interface Board
      * @param emergingPosition
      * @param emergingColor
      */
-    void addFloatingEmerging(byte emergingPosition, char emergingColor);
+    void addFloatingEmerging(byte emergingPosition, byte emergingColor);
 
     byte getFloatingEmergingPosition(int epIndex);
 
-    char getFloatingEmergingColor(int epIndex);
+    byte getFloatingEmergingColor(int epIndex);
 
     int getFloatingEmergingPositionNb();
 
-    char getEmergingColor(int epIndex);
+    byte getEmergingColor(int epIndex);
 
     byte getEmergingPosition(int epIndex);
 
@@ -402,4 +398,6 @@ public interface Board
                                         "###   B     ",
                                         "############" }, new byte[] { (byte) 0x85, (byte) 0x87 }, new char[] { 'B',
                                                                                                                'B' }) };
+
+
 }

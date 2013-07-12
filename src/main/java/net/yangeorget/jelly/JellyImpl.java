@@ -43,8 +43,6 @@ public class JellyImpl
     // bounding box
     private byte leftMin, rightMax, topMin, bottomMax;
 
-    // TODO: group col and pos in same arrays?
-
     JellyImpl(final Board board,
               final boolean isFixed,
               final byte leftMin,
@@ -60,7 +58,7 @@ public class JellyImpl
              topMin,
              bottomMax,
              new byte[] { (byte) positions.length },
-             new byte[] { BoardImpl.toSpaceCharDelta(color) },
+             new byte[] { BoardImpl.toByte(color) },
              positions,
              new byte[0],
              new byte[0]);

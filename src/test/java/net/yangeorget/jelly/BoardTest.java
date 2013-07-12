@@ -36,13 +36,13 @@ public class BoardTest {
 
     @Test
     public void testToFloating() {
-        Assert.assertEquals(BoardImpl.toFloating(BoardImpl.toSpaceCharDelta('a')), BoardImpl.toSpaceCharDelta('A'));
-        Assert.assertEquals(BoardImpl.toFloating(BoardImpl.toSpaceCharDelta('A')), BoardImpl.toSpaceCharDelta('A'));
+        Assert.assertEquals(BoardImpl.toFloating(BoardImpl.toByte('a')), BoardImpl.toByte('A'));
+        Assert.assertEquals(BoardImpl.toFloating(BoardImpl.toByte('A')), BoardImpl.toByte('A'));
     }
 
     @Test
     public void testToFixed() {
-        Assert.assertEquals(BoardImpl.toFixed(BoardImpl.toSpaceCharDelta('A')), BoardImpl.toSpaceCharDelta('a'));
-        Assert.assertEquals(BoardImpl.toFixed(BoardImpl.toSpaceCharDelta('a')), BoardImpl.toSpaceCharDelta('a'));
+        Assert.assertEquals(BoardImpl.toFixed(BoardImpl.toByte('A')), BoardImpl.toByte('a'));
+        Assert.assertEquals(BoardImpl.toFixed(BoardImpl.toByte('a')), BoardImpl.toByte('a'));
     }
 }

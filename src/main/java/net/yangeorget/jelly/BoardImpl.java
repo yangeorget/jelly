@@ -52,7 +52,7 @@ public class BoardImpl
         final Set<Byte> colors = new HashSet<>();
         computeMatrixAndWalls(colors, strings);
         for (final char color : allEmergingColors) {
-            colors.add(BoardImpl.toFloating(toSpaceCharDelta(color)));
+            colors.add(BoardImpl.toFloating(toByte(color)));
         }
         final int allEmergingNb = allEmergingColors.length;
         jellyPositionNb += allEmergingNb;
@@ -64,7 +64,7 @@ public class BoardImpl
         floatingEmergingColors = new ArrayList<>(allEmergingNb);
         for (int epIndex = 0; epIndex < allEmergingNb; epIndex++) {
             final byte ep = allEmergingPositions[epIndex];
-            final byte epColor = toSpaceCharDelta(allEmergingColors[epIndex]);
+            final byte epColor = toByte(allEmergingColors[epIndex]);
             if (walls[getI(ep)][getJ(ep)]) {
                 emergingPositions.add(ep);
                 emergingColors.add(epColor);
@@ -75,7 +75,7 @@ public class BoardImpl
         }
     }
 
-    static byte toSpaceCharDelta(final char c) {
+    static byte toByte(final char c) {
         return (byte) (c - ' ');
     }
 
@@ -87,7 +87,7 @@ public class BoardImpl
         for (int i = 0; i < height; i++) {
             matrix[i] = new byte[width];
             for (byte j = 0; j < width; j++) {
-                matrix[i][j] = toSpaceCharDelta(strings[i].charAt(j));
+                matrix[i][j] = toByte(strings[i].charAt(j));
                 if (matrix[i][j] == WALL_SPACE_DELTA) {
                     walls[i][j] = true;
                 } else if (matrix[i][j] != 0) {

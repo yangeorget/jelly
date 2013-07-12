@@ -14,8 +14,7 @@ import java.util.Set;
 public class BoardImpl
         implements Board {
     private static final byte[] LINK_START_BUF = new byte[MAX_SIZE], LINK_END_BUF = new byte[MAX_SIZE];
-    private static final byte WALL_SPACE_DELTA = 3, A_SPACE_DELTA = 33, a_A_DELTA = 32, a_SPACE_DELTA = A_SPACE_DELTA
-                                                                                                        + a_A_DELTA;
+    private static final byte a_A_DELTA = a_BYTE - A_BYTE;
     private static int linksIndex;
 
     private final int height, width, height1, width1, jellyColorNb;
@@ -52,11 +51,11 @@ public class BoardImpl
         final Set<Byte> colors = new HashSet<>();
         computeMatrixAndWalls(colors, strings);
         for (final char color : allEmergingColors) {
-            colors.add(BoardImpl.toFloating(toByte(color)));
+            colors.add(BoardImpl.toFloating((byte) color));
         }
+        jellyColorNb = colors.size();
         final int allEmergingNb = allEmergingColors.length;
         jellyPositionNb += allEmergingNb;
-        jellyColorNb = colors.size();
         computeLinks(linkCycles);
         emergingPositions = new ArrayList<>(allEmergingNb);
         emergingColors = new ArrayList<>(allEmergingNb);
@@ -64,7 +63,7 @@ public class BoardImpl
         floatingEmergingColors = new ArrayList<>(allEmergingNb);
         for (int epIndex = 0; epIndex < allEmergingNb; epIndex++) {
             final byte ep = allEmergingPositions[epIndex];
-            final byte epColor = toByte(allEmergingColors[epIndex]);
+            final byte epColor = (byte) allEmergingColors[epIndex];
             if (walls[getI(ep)][getJ(ep)]) {
                 emergingPositions.add(ep);
                 emergingColors.add(epColor);
@@ -75,22 +74,14 @@ public class BoardImpl
         }
     }
 
-    static byte toByte(final char c) {
-        return (byte) (c - ' ');
-    }
-
-    static char toChar(final byte spaceDelta) {
-        return (char) (spaceDelta + ' ');
-    }
-
     void computeMatrixAndWalls(final Set<Byte> colors, final String[] strings) {
         for (int i = 0; i < height; i++) {
             matrix[i] = new byte[width];
             for (byte j = 0; j < width; j++) {
-                matrix[i][j] = toByte(strings[i].charAt(j));
-                if (matrix[i][j] == WALL_SPACE_DELTA) {
+                matrix[i][j] = (byte) strings[i].charAt(j);
+                if (matrix[i][j] == WALL_BYTE) {
                     walls[i][j] = true;
-                } else if (matrix[i][j] != 0) {
+                } else if (matrix[i][j] != SPACE_BYTE) {
                     colors.add(BoardImpl.toFloating(matrix[i][j]));
                     jellyPositionNb++;
                 }
@@ -175,7 +166,7 @@ public class BoardImpl
 
     private final void toString(final StringBuilder builder) {
         for (int i = 0; i < height; i++) {
-            AbstractSerializer.serializeBytesAsChars(builder, matrix[i]);
+            Utils.appendAsChars(builder, matrix[i]);
             builder.append('\n');
         }
         for (int i = 0; i < linkStarts.length; i++) {
@@ -195,11 +186,6 @@ public class BoardImpl
         builder.append('\n');
     }
 
-
-    public static boolean isJelly(final byte c) {
-        return c >= A_SPACE_DELTA;
-    }
-
     @Override
     public final boolean isWall(final byte position) {
         return isWall(getI(position), getJ(position));
@@ -208,26 +194,6 @@ public class BoardImpl
     @Override
     public final boolean isWall(final int i, final int j) {
         return walls[i][j];
-    }
-
-    @Override
-    public final boolean isBlank(final byte position) {
-        return isBlank(getI(position), getJ(position));
-    }
-
-    @Override
-    public final boolean isBlank(final int i, final int j) {
-        return matrix[i][j] == 0;
-    }
-
-    @Override
-    public final boolean isColored(final byte position) {
-        return isColored(getI(position), getJ(position));
-    }
-
-    @Override
-    public final boolean isColored(final int i, final int j) {
-        return !isBlank(i, j) && !isWall(i, j);
     }
 
     @Override
@@ -251,13 +217,8 @@ public class BoardImpl
     }
 
     @Override
-    public final void blank(final byte position) {
-        blank(getI(position), getJ(position));
-    }
-
-    @Override
     public final void blank(final int i, final int j) {
-        matrix[i][j] = 0;
+        matrix[i][j] = SPACE_BYTE;
     }
 
     /**
@@ -266,7 +227,7 @@ public class BoardImpl
      * @return a boolean
      */
     public static final boolean isFixed(final byte c) {
-        return c >= a_SPACE_DELTA;
+        return c >= a_BYTE;
     }
 
     /**
@@ -275,7 +236,11 @@ public class BoardImpl
      * @return a cell
      */
     public static final byte toFloating(final byte c) {
-        return isFixed(c) ? (byte) (c - a_A_DELTA) : c; // TODO: optimize
+        if (isFixed(c)) {
+            return (byte) (c - a_A_DELTA);
+        } else {
+            return c;
+        }
     }
 
     /**
@@ -284,7 +249,11 @@ public class BoardImpl
      * @return a cell
      */
     public static final byte toFixed(final byte c) {
-        return isFixed(c) ? c : (byte) (c + a_A_DELTA); // TODO: optimize
+        if (isFixed(c)) {
+            return c;
+        } else {
+            return (byte) (c + a_A_DELTA);
+        }
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.Set;
  */
 public class StateHashSetImpl
         implements StateSet {
-    private final Set<String> set;
+    private final Set set;
 
     /**
      * Sole constructor.
@@ -20,9 +20,7 @@ public class StateHashSetImpl
 
     @Override
     public boolean store(final State state) {
-        final String ser = state.getSerialization();
-        // LOG.debug("serialization length: " + ser.length());
-        return set.add(ser);
+        return set.add(state.getSerialization());
     }
 
     @Override

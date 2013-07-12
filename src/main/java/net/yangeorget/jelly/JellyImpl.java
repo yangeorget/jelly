@@ -58,7 +58,7 @@ public class JellyImpl
              topMin,
              bottomMax,
              new byte[] { (byte) positions.length },
-             new byte[] { BoardImpl.toByte(color) },
+             new byte[] { (byte) color },
              positions,
              new byte[0],
              new byte[0]);
@@ -124,7 +124,7 @@ public class JellyImpl
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
                 final byte pos = CANDIDATE_POS_BUF[index];
-                if (!board.isBlank(pos)) {
+                if (board.getColor(pos) >= Board.A_BYTE) {
                     final byte c = board.getColor(pos);
                     final byte color = BoardImpl.toFloating(c);
                     // let's store the color of the current segment if not yet done
@@ -133,12 +133,12 @@ public class JellyImpl
                     }
                     // has to be true because we want to treat the current segment only here
                     if (color == COL_BUF[segmentIndex]) {
-                        board.blank(pos);
+                        final int i = BoardImpl.getI(pos);
+                        final int j = BoardImpl.getJ(pos);
+                        board.blank(i, j);
                         isFixed |= BoardImpl.isFixed(c);
                         insertPositionInSortedSegment(start, pos);
                         handleLinkedPosition(linkStarts, linkEnds, pos);
-                        final int i = BoardImpl.getI(pos);
-                        final int j = BoardImpl.getJ(pos);
                         if (j < leftMin) {
                             leftMin = (byte) j;
                         }

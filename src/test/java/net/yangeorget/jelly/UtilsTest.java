@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test(groups = "fast")
-public class AbstractSerializerTest {
+public class UtilsTest {
     @Test
     public void testSerializeBooleanArray1() {
         testSerializeBooleanArray("0");
@@ -33,7 +33,7 @@ public class AbstractSerializerTest {
 
     private void testSerializeBooleanArray(final String s, final boolean... a) {
         final StringBuilder b = new StringBuilder();
-        AbstractSerializer.serializeBooleans(b, a);
+        Utils.appendAsInt(b, a);
         Assert.assertEquals(b.toString(), s);
     }
 
@@ -44,7 +44,7 @@ public class AbstractSerializerTest {
 
     private void testSerializeByteArray(final String s, final byte... a) {
         final StringBuilder b = new StringBuilder();
-        AbstractSerializer.serializeBytes(b, a);
+        Utils.appendAsHex(b, a);
         Assert.assertEquals(b.toString(), s);
     }
 }

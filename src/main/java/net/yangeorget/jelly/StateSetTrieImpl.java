@@ -21,7 +21,7 @@ public class StateSetTrieImpl
 
     @Override
     public boolean store(final State state) {
-        final String ser = state.getSerialization();
+        final String ser = (String) state.getSerialization();
         if (trie.containsKey(ser)) {
             return false;
         } else {

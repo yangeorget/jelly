@@ -36,13 +36,13 @@ public class BoardTest {
 
     @Test
     public void testToFloating() {
-        Assert.assertEquals(BoardImpl.toFloating(BoardImpl.toByte('a')), BoardImpl.toByte('A'));
-        Assert.assertEquals(BoardImpl.toFloating(BoardImpl.toByte('A')), BoardImpl.toByte('A'));
+        Assert.assertEquals(BoardImpl.toFloating((byte) 'a'), (byte) 'A');
+        Assert.assertEquals(BoardImpl.toFloating((byte) 'A'), (byte) 'A');
     }
 
     @Test
     public void testToFixed() {
-        Assert.assertEquals(BoardImpl.toFixed(BoardImpl.toByte('A')), BoardImpl.toByte('a'));
-        Assert.assertEquals(BoardImpl.toFixed(BoardImpl.toByte('a')), BoardImpl.toByte('a'));
+        Assert.assertEquals(BoardImpl.toFixed((byte) 'A'), (byte) 'a');
+        Assert.assertEquals(BoardImpl.toFixed((byte) 'a'), (byte) 'a');
     }
 }

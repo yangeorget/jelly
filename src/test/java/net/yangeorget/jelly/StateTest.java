@@ -13,7 +13,7 @@ public class StateTest {
     public void testUpdateFromBoard() {
         final Board board = new BoardImpl(new String[] { " BB ", "    " });
         final State state = new StateImpl(board);
-        final String ser = state.getSerialization();
+        final Object ser = state.getSerialization();
         state.updateBoard();
         state.updateFromBoard();
         Assert.assertEquals(state.getSerialization(), ser);

@@ -6,6 +6,11 @@ package net.yangeorget.jelly;
  */
 public interface Board
         extends JellyCounters {
+    byte SPACE_BYTE = 32;
+    byte WALL_BYTE = 35;
+    byte A_BYTE = 65;
+    byte a_BYTE = 97;
+
     /**
      * The maximal number of emerging jellies.
      */
@@ -64,21 +69,11 @@ public interface Board
 
     void setColor(byte position, byte color);
 
-    void blank(byte position);
-
     void blank(int i, int j);
 
     boolean isWall(byte position);
 
     boolean isWall(int i, int j);
-
-    boolean isBlank(byte position);
-
-    boolean isBlank(int i, int j);
-
-    boolean isColored(byte position);
-
-    boolean isColored(int i, int j);
 
     byte getColor(byte position);
 

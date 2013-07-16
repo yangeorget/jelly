@@ -8,7 +8,7 @@ import java.util.Set;
  * HashSet-based implementation of a StateSet.
  * @author y.georget
  */
-public class StateSetHashSetImpl
+public final class StateSetHashSetImpl
         implements StateSet {
     private final Set<ByteBuffer> set;
 

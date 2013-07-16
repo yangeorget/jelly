@@ -3,7 +3,7 @@ package net.yangeorget.jelly;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = "fast")
+@Test
 public class BoardTest {
     @Test
     public void testHeight() {
@@ -23,15 +23,15 @@ public class BoardTest {
     @Test
     public void testGetWalls() {
         final Board board = new BoardImpl(new String[] { "# A", "  A", "B #" });
-        Assert.assertTrue(board.isWall(0, 0));
-        Assert.assertFalse(board.isWall(0, 1));
-        Assert.assertFalse(board.isWall(0, 2));
-        Assert.assertFalse(board.isWall(1, 0));
-        Assert.assertFalse(board.isWall(1, 1));
-        Assert.assertFalse(board.isWall(1, 2));
-        Assert.assertFalse(board.isWall(2, 0));
-        Assert.assertFalse(board.isWall(2, 1));
-        Assert.assertTrue(board.isWall(2, 2));
+        Assert.assertTrue(board.isWall(Cells.value(0, 0)));
+        Assert.assertFalse(board.isWall(Cells.value(0, 1)));
+        Assert.assertFalse(board.isWall(Cells.value(0, 2)));
+        Assert.assertFalse(board.isWall(Cells.value(1, 0)));
+        Assert.assertFalse(board.isWall(Cells.value(1, 1)));
+        Assert.assertFalse(board.isWall(Cells.value(1, 2)));
+        Assert.assertFalse(board.isWall(Cells.value(2, 0)));
+        Assert.assertFalse(board.isWall(Cells.value(2, 1)));
+        Assert.assertTrue(board.isWall(Cells.value(2, 2)));
     }
 
     @Test

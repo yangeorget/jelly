@@ -12,15 +12,15 @@ public final class Cells {
     private Cells() {
     }
 
-    final static byte value(final int i, final int j) {
+    static byte value(final int i, final int j) {
         return (byte) ((i << 4) | j);
     }
 
-    final static int getJ(final byte pos) {
+    static int getJ(final byte pos) {
         return pos & 0xF;
     }
 
-    final static int getI(final byte pos) {
+    static int getI(final byte pos) {
         return (pos >> 4) & 0xF;
     }
 }

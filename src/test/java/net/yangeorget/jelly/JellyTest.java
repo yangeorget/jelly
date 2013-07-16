@@ -9,7 +9,6 @@ public class JellyTest {
     public void testJelly1() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final JellyImpl jelly = new JellyImpl(board,
-                                              false,
                                               (byte) 2,
                                               (byte) 3,
                                               (byte) 1,
@@ -51,7 +50,6 @@ public class JellyTest {
     public void testClone() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final Jelly jelly = new JellyImpl(board,
-                                          false,
                                           (byte) 2,
                                           (byte) 3,
                                           (byte) 1,
@@ -68,7 +66,6 @@ public class JellyTest {
     public void testMoveRight() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final Jelly jelly1 = new JellyImpl(board,
-                                           false,
                                            (byte) 2,
                                            (byte) 3,
                                            (byte) 1,
@@ -78,7 +75,6 @@ public class JellyTest {
                                            (byte) 0x13,
                                            (byte) 0x22);
         final Jelly jelly2 = new JellyImpl(board,
-                                           false,
                                            (byte) 3,
                                            (byte) 4,
                                            (byte) 1,
@@ -95,7 +91,6 @@ public class JellyTest {
     public void testMoveLeft() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final Jelly jelly1 = new JellyImpl(board,
-                                           false,
                                            (byte) 2,
                                            (byte) 3,
                                            (byte) 1,
@@ -105,7 +100,6 @@ public class JellyTest {
                                            (byte) 0x13,
                                            (byte) 0x22);
         final Jelly jelly2 = new JellyImpl(board,
-                                           false,
                                            (byte) 3,
                                            (byte) 4,
                                            (byte) 1,
@@ -122,7 +116,6 @@ public class JellyTest {
     public void testMoveDown() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final Jelly jelly1 = new JellyImpl(board,
-                                           false,
                                            (byte) 2,
                                            (byte) 3,
                                            (byte) 1,
@@ -132,7 +125,6 @@ public class JellyTest {
                                            (byte) 0x13,
                                            (byte) 0x22);
         final Jelly jelly2 = new JellyImpl(board,
-                                           false,
                                            (byte) 2,
                                            (byte) 3,
                                            (byte) 2,
@@ -149,7 +141,6 @@ public class JellyTest {
     public void testMoveUp() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final Jelly jelly1 = new JellyImpl(board,
-                                           false,
                                            (byte) 2,
                                            (byte) 3,
                                            (byte) 1,
@@ -159,7 +150,6 @@ public class JellyTest {
                                            (byte) 0x13,
                                            (byte) 0x22);
         final Jelly jelly2 = new JellyImpl(board,
-                                           false,
                                            (byte) 2,
                                            (byte) 3,
                                            (byte) 2,
@@ -176,7 +166,6 @@ public class JellyTest {
     public void testOverlaps1() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final Jelly jelly1 = new JellyImpl(board,
-                                           false,
                                            (byte) 2,
                                            (byte) 3,
                                            (byte) 1,
@@ -186,7 +175,6 @@ public class JellyTest {
                                            (byte) 0x13,
                                            (byte) 0x22);
         final Jelly jelly2 = new JellyImpl(board,
-                                           false,
                                            (byte) 1,
                                            (byte) 2,
                                            (byte) 2,
@@ -202,7 +190,6 @@ public class JellyTest {
     public void testOverlaps2() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final Jelly jelly1 = new JellyImpl(board,
-                                           false,
                                            (byte) 2,
                                            (byte) 3,
                                            (byte) 1,
@@ -212,7 +199,6 @@ public class JellyTest {
                                            (byte) 0x13,
                                            (byte) 0x22);
         final Jelly jelly2 = new JellyImpl(board,
-                                           false,
                                            (byte) 1,
                                            (byte) 3,
                                            (byte) 2,

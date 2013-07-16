@@ -57,17 +57,11 @@ public interface Board
      */
     byte[][] getMatrix();
 
-    void setColor(int i, int j, byte color);
-
     void setColor(byte position, byte color);
 
     void blank(int i, int j);
 
     boolean isWall(byte position);
-
-    boolean isWall(int i, int j);
-
-    byte getColor(byte position);
 
     byte getColor(int i, int j);
 

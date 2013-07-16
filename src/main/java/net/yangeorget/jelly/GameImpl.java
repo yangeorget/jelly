@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author y.georget
  */
-public class GameImpl
+public final class GameImpl
         implements Game {
     private static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
     private final LinkedList<State> states;
@@ -21,7 +21,7 @@ public class GameImpl
     }
 
     @Override
-    public final State solve() {
+    public State solve() {
         while (!states.isEmpty()) {
             final State state = pop();
             State clone = null;
@@ -61,7 +61,7 @@ public class GameImpl
         return null;
     }
 
-    private final boolean process(final State clone) {
+    private boolean process(final State clone) {
         // LOG.debug(toString());
         clone.process();
         if (clone.isSolved()) {
@@ -72,7 +72,7 @@ public class GameImpl
         }
     }
 
-    private final void push(final State state) {
+    private void push(final State state) {
         final boolean store = explored.store(state.getSerialization());
         if (store) {
             states.addLast(state);
@@ -81,18 +81,18 @@ public class GameImpl
         }
     }
 
-    private final State pop() {
+    private State pop() {
         return states.removeFirst();
     }
 
     @Override
-    public final void explain(final State state) {
+    public void explain(final State state) {
         LOG.debug(toString());
         state.explain(0);
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         final int statesSize = states.size();
         final int pushes = explored.size();
         final int pops = pushes - statesSize;

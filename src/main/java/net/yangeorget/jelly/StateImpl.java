@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
  * An implementation of a state.
  * @author y.georget
  */
-public class StateImpl
+public final class StateImpl
         implements State {
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
     private static final Jelly[] JELLY_BUF = new Jelly[Board.MAX_SIZE], EP_JELLY_BUF = new Jelly[Board.MAX_SIZE];
@@ -53,7 +53,7 @@ public class StateImpl
     }
 
     @Override
-    public final void updateBoard() {
+    public void updateBoard() {
         board.clearLinks();
         board.clearFloatingEmerging();
         for (final Jelly jelly : jellies) {
@@ -63,7 +63,7 @@ public class StateImpl
     }
 
     @Override
-    public final void updateFromBoard() {
+    public void updateFromBoard() {
         serialization = SERIALIZER.serialize(this);
         final int height = board.getHeight();
         final int width = board.getWidth();
@@ -81,22 +81,22 @@ public class StateImpl
     }
 
     @Override
-    public final StateImpl clone() {
+    public StateImpl clone() {
         return new StateImpl(this);
     }
 
     @Override
-    public final Jelly[] getJellies() {
+    public Jelly[] getJellies() {
         return jellies;
     }
 
     @Override
-    public final boolean moveLeft(final int j) {
+    public boolean moveLeft(final int j) {
         jellyIndex = 0;
         return moveLeft(jellies[j]);
     }
 
-    final boolean moveLeft(final Jelly jelly) {
+    boolean moveLeft(final Jelly jelly) {
         if (jelly.mayMoveLeft()) {
             jelly.moveLeft();
             JELLY_BUF[jellyIndex++] = jelly;
@@ -115,12 +115,12 @@ public class StateImpl
     }
 
     @Override
-    public final boolean moveRight(final int j) {
+    public boolean moveRight(final int j) {
         jellyIndex = 0;
         return moveRight(jellies[j]);
     }
 
-    final boolean moveRight(final Jelly jelly) {
+    boolean moveRight(final Jelly jelly) {
         if (jelly.mayMoveRight()) {
             jelly.moveRight();
             JELLY_BUF[jellyIndex++] = jelly;
@@ -138,12 +138,12 @@ public class StateImpl
         }
     }
 
-    final boolean moveDown(final int j) {
+    boolean moveDown(final int j) {
         jellyIndex = 0;
         return moveDown(jellies[j]);
     }
 
-    final boolean moveDown(final Jelly jelly) {
+    boolean moveDown(final Jelly jelly) {
         if (jelly.mayMoveDown()) {
             jelly.moveDown();
             JELLY_BUF[jellyIndex++] = jelly;
@@ -161,12 +161,12 @@ public class StateImpl
         }
     }
 
-    final boolean moveUp(final int j) {
+    boolean moveUp(final int j) {
         jellyIndex = 0;
         return moveUp(jellies[j]);
     }
 
-    final boolean moveUp(final Jelly jelly) {
+    boolean moveUp(final Jelly jelly) {
         if (jelly.mayMoveUp()) {
             jelly.moveUp();
             JELLY_BUF[jellyIndex++] = jelly;
@@ -185,7 +185,7 @@ public class StateImpl
     }
 
     @Override
-    public final void process() {
+    public void process() {
         moveDown();
         updateBoard();
         updateFromBoard();
@@ -198,7 +198,7 @@ public class StateImpl
     /**
      * Applies gravity.
      */
-    final void moveDown() {
+    void moveDown() {
         final int size = jellies.length;
         final boolean[] blocked = new boolean[size];
         for (boolean movedDown = true; movedDown;) {
@@ -220,7 +220,7 @@ public class StateImpl
      * Give a chance to emerging jellies.
      * @return a boolean indicating if jellies have emerged
      */
-    final boolean moveUp() {
+    boolean moveUp() {
         if (getNotEmergedNb() == 0) {
             return false;
         }
@@ -258,7 +258,7 @@ public class StateImpl
     /**
      * Computes the candidates for emerging.
      */
-    final private void computeEmergingCandidates(final Jelly jelly) {
+    private void computeEmergingCandidates(final Jelly jelly) {
         final int segmentNb = jelly.getSegmentNb();
         final byte[] positions = jelly.getPositions();
         for (int segmentIndex = 0; segmentIndex < segmentNb; segmentIndex++) {
@@ -308,33 +308,33 @@ public class StateImpl
     }
 
     @Override
-    public final void undoMoveLeft() {
+    public void undoMoveLeft() {
         while (--jellyIndex >= 0) {
             JELLY_BUF[jellyIndex].moveRight();
         }
     }
 
     @Override
-    public final void undoMoveRight() {
+    public void undoMoveRight() {
         while (--jellyIndex >= 0) {
             JELLY_BUF[jellyIndex].moveLeft();
         }
     }
 
-    private final void undoMoveDown() {
+    private void undoMoveDown() {
         while (--jellyIndex >= 0) {
             JELLY_BUF[jellyIndex].moveUp();
         }
     }
 
-    private final void undoMoveUp() {
+    private void undoMoveUp() {
         while (--jellyIndex >= 0) {
             JELLY_BUF[jellyIndex].moveDown();
         }
     }
 
     @Override
-    public final String toString() {
+    public String toString() {
         return "board="
                + board
                + ";jellies="
@@ -344,17 +344,17 @@ public class StateImpl
     }
 
     @Override
-    public final Board getBoard() {
+    public Board getBoard() {
         return board;
     }
 
     @Override
-    public final boolean isSolved() {
+    public boolean isSolved() {
         return getJellyColorNb() == board.getJellyColorNb();
     }
 
     @Override
-    public final int getJellyColorNb() {
+    public int getJellyColorNb() {
         int nb = 0;
         for (final Jelly jelly : jellies) {
             nb += jelly.getSegmentNb();
@@ -363,7 +363,7 @@ public class StateImpl
     }
 
     @Override
-    public final int getJellyPositionNb() {
+    public int getJellyPositionNb() {
         int nb = 0;
         for (final Jelly jelly : jellies) {
             nb += jelly.getPositions().length;
@@ -372,7 +372,7 @@ public class StateImpl
     }
 
     @Override
-    public final void explain(final int step) {
+    public void explain(final int step) {
         updateBoard();
         LOG.debug("=== STEP " + step + " ===\n" + board.toString());
         updateFromBoard();
@@ -382,12 +382,12 @@ public class StateImpl
     }
 
     @Override
-    public final byte[] getSerialization() {
+    public byte[] getSerialization() {
         return serialization;
     }
 
     @Override
-    public final void clearSerialization() {
+    public void clearSerialization() {
         serialization = null;
     }
 

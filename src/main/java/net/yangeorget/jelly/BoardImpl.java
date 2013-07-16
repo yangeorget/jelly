@@ -64,7 +64,7 @@ public class BoardImpl
         for (int epIndex = 0; epIndex < allEmergingNb; epIndex++) {
             final byte ep = allEmergingPositions[epIndex];
             final byte epColor = (byte) allEmergingColors[epIndex];
-            if (walls[getI(ep)][getJ(ep)]) {
+            if (walls[Cells.getI(ep)][Cells.getJ(ep)]) {
                 emergingPositions.add(ep);
                 emergingColors.add(epColor);
             } else {
@@ -166,7 +166,9 @@ public class BoardImpl
 
     private final void toString(final StringBuilder builder) {
         for (int i = 0; i < height; i++) {
-            Utils.appendAsChars(builder, matrix[i]);
+            for (final byte b : matrix[i]) {
+                builder.append((char) b);
+            }
             builder.append('\n');
         }
         for (int i = 0; i < linkStarts.length; i++) {
@@ -188,7 +190,7 @@ public class BoardImpl
 
     @Override
     public final boolean isWall(final byte position) {
-        return isWall(getI(position), getJ(position));
+        return isWall(Cells.getI(position), Cells.getJ(position));
     }
 
     @Override
@@ -198,7 +200,7 @@ public class BoardImpl
 
     @Override
     public final void setColor(final byte position, final byte c) {
-        setColor(getI(position), getJ(position), c);
+        setColor(Cells.getI(position), Cells.getJ(position), c);
     }
 
     @Override
@@ -208,7 +210,7 @@ public class BoardImpl
 
     @Override
     public final byte getColor(final byte position) {
-        return getColor(getI(position), getJ(position));
+        return getColor(Cells.getI(position), Cells.getJ(position));
     }
 
     @Override
@@ -318,15 +320,5 @@ public class BoardImpl
         return Collections.binarySearch(emergingPositions, ep);
     }
 
-    final static byte value(final int i, final int j) {
-        return (byte) ((i << COORDINATE_UB_LOG2) | j);
-    }
 
-    final static int getJ(final int pos) {
-        return pos & COORDINATE_MASK;
-    }
-
-    final static int getI(final int pos) {
-        return (pos >> COORDINATE_UB_LOG2) & COORDINATE_MASK;
-    }
 }

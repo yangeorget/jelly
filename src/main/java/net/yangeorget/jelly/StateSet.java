@@ -6,12 +6,7 @@ package net.yangeorget.jelly;
  */
 public interface StateSet {
 
-    /**
-     * Stores a state.
-     * @param state the state
-     * @return true iff the state was not contained in the StateSet before
-     */
-    boolean store(State state);
+    boolean store(byte[] serialization);
 
     /**
      * Returns the size of the StateSet.

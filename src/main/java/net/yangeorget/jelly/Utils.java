@@ -1,6 +1,5 @@
 package net.yangeorget.jelly;
 
-import java.util.List;
 
 /**
  * Utilities.
@@ -30,46 +29,21 @@ public final class Utils {
         return -1;
     }
 
-    static void appendAsChars(final StringBuilder builder, final List<Byte> a) {
-        for (final Byte b : a) {
-            builder.append((char) b.byteValue());
-        }
-    }
-
-    static void appendAsChars(final StringBuilder builder, final byte[] a) {
-        for (final byte b : a) {
-            builder.append((char) b);
-        }
-    }
-
     /**
-     * Serializes a boolean array as an integer.
-     * @param builder the builder to serialize into
+     * Serializes a boolean array as a byte.
      * @param a the boolean array
      */
-    static void appendAsInt(final StringBuilder builder, final boolean[] a) {
+    static byte asByte(final boolean[] a) {
         final int size = a.length;
-        if (size > Board.MAX_EMERGING) {
-            throw new RuntimeException("Too many emerging jellies!");
+        if (size > 8) {
+            throw new RuntimeException("Array too big!");
         }
-        int ser = 0;
+        byte ser = 0;
         for (int i = 0; i < size; i++) {
             if (a[i]) {
                 ser |= 1 << (size - 1 - i);
             }
         }
-        builder.append(ser);
-    }
-
-    static void appendAsHex(final StringBuilder builder, final byte[] a) {
-        for (final byte b : a) {
-            builder.append(String.format("%02X", b));
-        }
-    }
-
-    static void serializeBytes(final StringBuilder builder, final List<Byte> a) {
-        for (final Byte b : a) {
-            builder.append(String.format("%02X", b));
-        }
+        return ser;
     }
 }

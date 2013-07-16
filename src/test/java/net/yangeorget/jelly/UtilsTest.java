@@ -7,44 +7,31 @@ import org.testng.annotations.Test;
 @Test(groups = "fast")
 public class UtilsTest {
     @Test
-    public void testSerializeBooleanArray1() {
-        testSerializeBooleanArray("0");
+    public void testAsByte1() {
+        testAsByte(0);
     }
 
     @Test
-    public void testSerializeBooleanArray2() {
-        testSerializeBooleanArray("0", false, false, false);
+    public void testAsByte2() {
+        testAsByte(0, false, false, false);
     }
 
     @Test
-    public void testSerializeBooleanArray3() {
-        testSerializeBooleanArray("1", true);
+    public void testAsByte3() {
+        testAsByte(1, true);
     }
 
     @Test
-    public void testSerializeBooleanArray4() {
-        testSerializeBooleanArray("4", true, false, false);
+    public void testAsByte4() {
+        testAsByte(4, true, false, false);
     }
 
     @Test
-    public void testSerializeBooleanArray5() {
-        testSerializeBooleanArray("10", true, false, true, false);
+    public void testAsByte5() {
+        testAsByte(10, true, false, true, false);
     }
 
-    private void testSerializeBooleanArray(final String s, final boolean... a) {
-        final StringBuilder b = new StringBuilder();
-        Utils.appendAsInt(b, a);
-        Assert.assertEquals(b.toString(), s);
-    }
-
-    @Test
-    public void testSerializeByteArray() {
-        testSerializeByteArray("0A0B0C0D0E0F101121", new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 33 });
-    }
-
-    private void testSerializeByteArray(final String s, final byte... a) {
-        final StringBuilder b = new StringBuilder();
-        Utils.appendAsHex(b, a);
-        Assert.assertEquals(b.toString(), s);
+    private void testAsByte(final int b, final boolean... a) {
+        Assert.assertEquals(Utils.asByte(a), b);
     }
 }

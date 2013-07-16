@@ -11,13 +11,12 @@ import org.slf4j.LoggerFactory;
 public class StateImpl
         implements State {
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
-    private static final Serializer SERIALIZER = new SerializerCountImpl();
     private static final Jelly[] JELLY_BUF = new Jelly[Board.MAX_SIZE], EP_JELLY_BUF = new Jelly[Board.MAX_SIZE];
     private static final int[] EP_INDEX_BUF = new int[Board.MAX_SIZE];
     private static int jellyIndex, emergingIndex;
 
     private final Board board;
-    private Object serialization;
+    private byte[] serialization;
     private Jelly[] jellies;
     private State parent;
     private final boolean[] emerged;
@@ -336,7 +335,12 @@ public class StateImpl
 
     @Override
     public final String toString() {
-        return "board=" + board + ";jellies=" + (jellies == null ? "null" : Arrays.asList(jellies));
+        return "board="
+               + board
+               + ";jellies="
+               + (jellies == null ? "null" : Arrays.asList(jellies))
+               + ";serialization="
+               + Arrays.toString(serialization);
     }
 
     @Override
@@ -378,7 +382,7 @@ public class StateImpl
     }
 
     @Override
-    public final Object getSerialization() {
+    public final byte[] getSerialization() {
         return serialization;
     }
 

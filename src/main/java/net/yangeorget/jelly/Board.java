@@ -10,24 +10,16 @@ public interface Board
     byte WALL_BYTE = 35;
     byte A_BYTE = 65;
     byte a_BYTE = 97;
+    byte SER_DELIM_BYTE = -1;
 
     /**
      * The maximal number of emerging jellies.
      */
-    int MAX_EMERGING = 32;
-    /**
-     * A coordinate mask (a coordinate is a number between 0 and 15).
-     */
-    int COORDINATE_MASK = 0xF;
+    int MAX_EMERGING_FIXED = 8;
+    int MAX_EMERGING_FLOATING = 32;
 
-    /**
-     * The upper bound (excluded) of a coordinate.
-     */
-    int COORDINATE_UB = 16;
-
-    int COORDINATE_UB_LOG2 = 4;
-    int MAX_WIDTH = COORDINATE_UB;
-    int MAX_HEIGHT = COORDINATE_UB;
+    int MAX_WIDTH = Cells.COORDINATE_UB;
+    int MAX_HEIGHT = Cells.COORDINATE_UB;
     int MAX_SIZE = MAX_WIDTH * MAX_HEIGHT;
 
     int LEFT = -1;
@@ -393,6 +385,5 @@ public interface Board
                                         "###   B     ",
                                         "############" }, new byte[] { (byte) 0x85, (byte) 0x87 }, new char[] { 'B',
                                                                                                                'B' }) };
-
 
 }

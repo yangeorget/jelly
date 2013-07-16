@@ -32,8 +32,8 @@ public class JellyImpl
      */
     private static final byte[] END_BUF = new byte[Board.MAX_SIZE];
 
-    private static final byte[] EP_IDX_BUF = new byte[Board.MAX_EMERGING];
-    private static final byte[] EP_COL_BUF = new byte[Board.MAX_EMERGING];
+    private static final byte[] EP_IDX_BUF = new byte[Board.MAX_EMERGING_FLOATING];
+    private static final byte[] EP_COL_BUF = new byte[Board.MAX_EMERGING_FLOATING];
 
     private static int segmentIndex, floatingIndex, freeSegmentIndex, emptySegmentNb;
 
@@ -112,7 +112,7 @@ public class JellyImpl
 
     private final void update(final byte[] linkStarts, final byte[] linkEnds, final int si, final int sj) {
         // we have one single candidate segment for now
-        CANDIDATE_SEGMENT_BUF[0] = BoardImpl.value(si, sj);
+        CANDIDATE_SEGMENT_BUF[0] = Cells.value(si, sj);
         freeSegmentIndex = 1;
         // we don't have any empty segment yet
         segmentIndex = emptySegmentNb = 0;
@@ -133,8 +133,8 @@ public class JellyImpl
                     }
                     // has to be true because we want to treat the current segment only here
                     if (color == COL_BUF[segmentIndex]) {
-                        final int i = BoardImpl.getI(pos);
-                        final int j = BoardImpl.getJ(pos);
+                        final int i = Cells.getI(pos);
+                        final int j = Cells.getJ(pos);
                         board.blank(i, j);
                         isFixed |= BoardImpl.isFixed(c);
                         insertPositionInSortedSegment(start, pos);

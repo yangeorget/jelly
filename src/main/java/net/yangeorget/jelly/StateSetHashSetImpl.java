@@ -1,5 +1,6 @@
 package net.yangeorget.jelly;
 
+import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,20 +8,20 @@ import java.util.Set;
  * HashSet-based implementation of a StateSet.
  * @author y.georget
  */
-public class StateHashSetImpl
+public class StateSetHashSetImpl
         implements StateSet {
-    private final Set set;
+    private final Set<ByteBuffer> set;
 
     /**
      * Sole constructor.
      */
-    public StateHashSetImpl() {
+    public StateSetHashSetImpl() {
         set = new HashSet<>(1 << 20, 0.75F);
     }
 
     @Override
-    public boolean store(final State state) {
-        return set.add(state.getSerialization());
+    public boolean store(final byte[] ser) {
+        return set.add(ByteBuffer.wrap(ser));
     }
 
     @Override

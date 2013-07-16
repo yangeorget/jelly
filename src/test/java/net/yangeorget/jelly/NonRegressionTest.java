@@ -58,7 +58,23 @@ public class NonRegressionTest {
         state.process();
         state.moveRight(1);
         state.process();
-        Assert.assertEquals(state.getSerialization(), "4B2B1B;;1");
+        Assert.assertEquals(state.getSerialization(), new byte[] { 4,
+                                                                  Board.SPACE_BYTE,
+                                                                  1,
+                                                                  'B',
+                                                                  2,
+                                                                  Board.SPACE_BYTE,
+                                                                  1,
+                                                                  'B',
+                                                                  1,
+                                                                  Board.SPACE_BYTE,
+                                                                  1,
+                                                                  'B',
+                                                                  5,
+                                                                  Board.SPACE_BYTE,
+                                                                  Board.SER_DELIM_BYTE,
+                                                                  Board.SER_DELIM_BYTE,
+                                                                  1 });
     }
 
     @Test
@@ -82,7 +98,19 @@ public class NonRegressionTest {
         state.moveRight(0);
         state.process();
         Assert.assertEquals(state.getJellies().length, 1);
-        Assert.assertEquals(state.getSerialization(), "1BB2b;;1");
+        Assert.assertEquals(state.getSerialization(), new byte[] { 1,
+                                                                  Board.SPACE_BYTE,
+                                                                  2,
+                                                                  'B',
+                                                                  2,
+                                                                  Board.SPACE_BYTE,
+                                                                  1,
+                                                                  'b',
+                                                                  3,
+                                                                  Board.SPACE_BYTE,
+                                                                  Board.SER_DELIM_BYTE,
+                                                                  Board.SER_DELIM_BYTE,
+                                                                  1 });
     }
 
     @Test
@@ -104,7 +132,23 @@ public class NonRegressionTest {
         final State state = new StateImpl(board);
         state.moveRight(1);
         state.process();
-        Assert.assertEquals(state.getSerialization(), "1R1R1B;;0");
+        Assert.assertEquals(state.getSerialization(), new byte[] { 1,
+                                                                  Board.SPACE_BYTE,
+                                                                  1,
+                                                                  'R',
+                                                                  1,
+                                                                  Board.SPACE_BYTE,
+                                                                  1,
+                                                                  'R',
+                                                                  1,
+                                                                  Board.SPACE_BYTE,
+                                                                  1,
+                                                                  'B',
+                                                                  2,
+                                                                  Board.SPACE_BYTE,
+                                                                  Board.SER_DELIM_BYTE,
+                                                                  Board.SER_DELIM_BYTE,
+                                                                  0 });
     }
 
 }

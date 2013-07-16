@@ -15,8 +15,7 @@ public class GameImpl
 
 
     public GameImpl(final Board board) {
-        // explored = new StateSetTrieImpl(); // slower
-        explored = new StateHashSetImpl();
+        explored = new StateSetHashSetImpl();
         states = new LinkedList<>();
         push(new StateImpl(board));
     }
@@ -74,7 +73,8 @@ public class GameImpl
     }
 
     private final void push(final State state) {
-        if (explored.store(state)) {
+        final boolean store = explored.store(state.getSerialization());
+        if (store) {
             states.addLast(state);
             // it is not needed to store the serialization of the state
             state.clearSerialization();

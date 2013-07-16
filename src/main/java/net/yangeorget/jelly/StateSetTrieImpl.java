@@ -20,14 +20,11 @@ public class StateSetTrieImpl
     }
 
     @Override
-    public boolean store(final State state) {
-        final String ser = (String) state.getSerialization();
-        if (trie.containsKey(ser)) {
-            return false;
-        } else {
-            trie.put(ser, Boolean.TRUE);
-            return true;
-        }
+    public boolean store(final byte[] ser) {
+        /*
+         * if (trie.containsKey(ser)) { return false; } else { trie.put(ser, Boolean.TRUE); return true; }
+         */
+        return false;
     }
 
     @Override

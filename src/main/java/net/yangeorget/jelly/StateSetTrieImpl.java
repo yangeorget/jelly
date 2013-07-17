@@ -20,15 +20,15 @@ public final class StateSetTrieImpl
     }
 
     @Override
-    public boolean store(final byte[] ser) {
+    public final boolean store(final byte[] ser) {
         /*
          * if (trie.containsKey(ser)) { return false; } else { trie.put(ser, Boolean.TRUE); return true; }
          */
-        return false;
+        throw new RuntimeException("Not implemented!");
     }
 
     @Override
-    public int size() {
+    public final int size() {
         return trie.size();
     }
 }

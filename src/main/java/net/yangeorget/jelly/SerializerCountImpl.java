@@ -13,7 +13,7 @@ public final class SerializerCountImpl
     private static int index;
 
     @Override
-    public byte[] serialize(final State state) {
+    public final byte[] serialize(final State state) {
         index = 0;
         final BoardImpl board = (BoardImpl) state.getBoard();
         serializeMatrix(board.getMatrix());
@@ -27,7 +27,7 @@ public final class SerializerCountImpl
         return Arrays.copyOf(SERIALIZATION, index);
     }
 
-    void serializeMatrix(final byte[][] matrix) {
+    final void serializeMatrix(final byte[][] matrix) {
         int count = 0;
         byte ch = 0;
         for (final byte[] line : matrix) {
@@ -52,19 +52,19 @@ public final class SerializerCountImpl
         serialize(ch);
     }
 
-    private void serialize(final byte[] a) {
+    private final void serialize(final byte[] a) {
         for (final byte b : a) {
             serialize(b);
         }
     }
 
-    private void serialize(final List<Byte> a) {
+    private final void serialize(final List<Byte> a) {
         for (final Byte b : a) {
             serialize(b);
         }
     }
 
-    private void serialize(final byte b) {
+    private final void serialize(final byte b) {
         SERIALIZATION[index++] = b;
     }
 }

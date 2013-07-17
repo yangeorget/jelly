@@ -21,7 +21,7 @@ public final class GameImpl
     }
 
     @Override
-    public State solve() {
+    public final State solve() {
         while (!states.isEmpty()) {
             final State state = pop();
             State clone = null;
@@ -61,7 +61,7 @@ public final class GameImpl
         return null;
     }
 
-    private boolean process(final State clone) {
+    private final boolean process(final State clone) {
         // LOG.debug(toString());
         clone.process();
         if (clone.isSolved()) {
@@ -72,7 +72,7 @@ public final class GameImpl
         }
     }
 
-    private void push(final State state) {
+    private final void push(final State state) {
         final boolean store = explored.store(state.getSerialization());
         if (store) {
             states.addLast(state);
@@ -81,18 +81,18 @@ public final class GameImpl
         }
     }
 
-    private State pop() {
+    private final State pop() {
         return states.removeFirst();
     }
 
     @Override
-    public void explain(final State state) {
+    public final void explain(final State state) {
         LOG.debug(toString());
         state.explain(0);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         final int statesSize = states.size();
         final int pushes = explored.size();
         final int pops = pushes - statesSize;

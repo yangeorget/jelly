@@ -53,7 +53,7 @@ public final class StateImpl
     }
 
     @Override
-    public void updateBoard() {
+    public final void updateBoard() {
         board.clearLinks();
         board.clearFloatingEmerging();
         for (final Jelly jelly : jellies) {
@@ -63,7 +63,7 @@ public final class StateImpl
     }
 
     @Override
-    public void updateFromBoard() {
+    public final void updateFromBoard() {
         serialization = SERIALIZER.serialize(this);
         final int height = board.getHeight();
         final int width = board.getWidth();
@@ -81,22 +81,22 @@ public final class StateImpl
     }
 
     @Override
-    public StateImpl clone() {
+    public final StateImpl clone() {
         return new StateImpl(this);
     }
 
     @Override
-    public Jelly[] getJellies() {
+    public final Jelly[] getJellies() {
         return jellies;
     }
 
     @Override
-    public boolean moveLeft(final int j) {
+    public final boolean moveLeft(final int j) {
         jellyIndex = 0;
         return moveLeft(jellies[j]);
     }
 
-    boolean moveLeft(final Jelly jelly) {
+    final boolean moveLeft(final Jelly jelly) {
         if (jelly.mayMoveLeft()) {
             jelly.moveLeft();
             JELLY_BUF[jellyIndex++] = jelly;
@@ -115,12 +115,12 @@ public final class StateImpl
     }
 
     @Override
-    public boolean moveRight(final int j) {
+    public final boolean moveRight(final int j) {
         jellyIndex = 0;
         return moveRight(jellies[j]);
     }
 
-    boolean moveRight(final Jelly jelly) {
+    final boolean moveRight(final Jelly jelly) {
         if (jelly.mayMoveRight()) {
             jelly.moveRight();
             JELLY_BUF[jellyIndex++] = jelly;
@@ -138,12 +138,12 @@ public final class StateImpl
         }
     }
 
-    boolean moveDown(final int j) {
+    final boolean moveDown(final int j) {
         jellyIndex = 0;
         return moveDown(jellies[j]);
     }
 
-    boolean moveDown(final Jelly jelly) {
+    final boolean moveDown(final Jelly jelly) {
         if (jelly.mayMoveDown()) {
             jelly.moveDown();
             JELLY_BUF[jellyIndex++] = jelly;
@@ -161,12 +161,12 @@ public final class StateImpl
         }
     }
 
-    boolean moveUp(final int j) {
+    final boolean moveUp(final int j) {
         jellyIndex = 0;
         return moveUp(jellies[j]);
     }
 
-    boolean moveUp(final Jelly jelly) {
+    final boolean moveUp(final Jelly jelly) {
         if (jelly.mayMoveUp()) {
             jelly.moveUp();
             JELLY_BUF[jellyIndex++] = jelly;
@@ -185,7 +185,7 @@ public final class StateImpl
     }
 
     @Override
-    public void process() {
+    public final void process() {
         moveDown();
         updateBoard();
         updateFromBoard();
@@ -198,7 +198,7 @@ public final class StateImpl
     /**
      * Applies gravity.
      */
-    void moveDown() {
+    final void moveDown() {
         final int size = jellies.length;
         final boolean[] blocked = new boolean[size];
         for (boolean movedDown = true; movedDown;) {
@@ -220,7 +220,7 @@ public final class StateImpl
      * Give a chance to emerging jellies.
      * @return a boolean indicating if jellies have emerged
      */
-    boolean moveUp() {
+    final boolean moveUp() {
         if (getNotEmergedNb() == 0) {
             return false;
         }
@@ -258,7 +258,7 @@ public final class StateImpl
     /**
      * Computes the candidates for emerging.
      */
-    private void computeEmergingCandidates(final Jelly jelly) {
+    private final void computeEmergingCandidates(final Jelly jelly) {
         final int segmentNb = jelly.getSegmentNb();
         final byte[] positions = jelly.getPositions();
         for (int segmentIndex = 0; segmentIndex < segmentNb; segmentIndex++) {
@@ -274,7 +274,7 @@ public final class StateImpl
         }
     }
 
-    private boolean computeEmergingCandidateFromWalls(final byte ep, final byte segmentColor) {
+    private final boolean computeEmergingCandidateFromWalls(final byte ep, final byte segmentColor) {
         final int epIndex = board.getEmergingIndex(ep);
         if (epIndex >= 0) {
             if (!emerged[epIndex] && BoardImpl.toFloating(board.getEmergingColor(epIndex)) == segmentColor) {
@@ -286,7 +286,7 @@ public final class StateImpl
         }
     }
 
-    private boolean computeEmergingCandidateFromJellies(final byte ep, final byte segmentColor) {
+    private final boolean computeEmergingCandidateFromJellies(final byte ep, final byte segmentColor) {
         for (final Jelly j : jellies) {
             if (j.getNotEmergedNb() > 0) { // this is an optimization
                 final int epIndex = j.getEpIndex(ep);
@@ -301,40 +301,40 @@ public final class StateImpl
         return false;
     }
 
-    private void storeEmergingCandidate(final Jelly jelly, final int epIndex) {
+    private final void storeEmergingCandidate(final Jelly jelly, final int epIndex) {
         EP_JELLY_BUF[emergingIndex] = jelly;
         EP_INDEX_BUF[emergingIndex] = epIndex;
         emergingIndex++;
     }
 
     @Override
-    public void undoMoveLeft() {
+    public final void undoMoveLeft() {
         while (--jellyIndex >= 0) {
             JELLY_BUF[jellyIndex].moveRight();
         }
     }
 
     @Override
-    public void undoMoveRight() {
+    public final void undoMoveRight() {
         while (--jellyIndex >= 0) {
             JELLY_BUF[jellyIndex].moveLeft();
         }
     }
 
-    private void undoMoveDown() {
+    private final void undoMoveDown() {
         while (--jellyIndex >= 0) {
             JELLY_BUF[jellyIndex].moveUp();
         }
     }
 
-    private void undoMoveUp() {
+    private final void undoMoveUp() {
         while (--jellyIndex >= 0) {
             JELLY_BUF[jellyIndex].moveDown();
         }
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "board="
                + board
                + ";jellies="
@@ -344,17 +344,17 @@ public final class StateImpl
     }
 
     @Override
-    public Board getBoard() {
+    public final Board getBoard() {
         return board;
     }
 
     @Override
-    public boolean isSolved() {
+    public final boolean isSolved() {
         return getJellyColorNb() == board.getJellyColorNb();
     }
 
     @Override
-    public int getJellyColorNb() {
+    public final int getJellyColorNb() {
         int nb = 0;
         for (final Jelly jelly : jellies) {
             nb += jelly.getSegmentNb();
@@ -363,7 +363,7 @@ public final class StateImpl
     }
 
     @Override
-    public int getJellyPositionNb() {
+    public final int getJellyPositionNb() {
         int nb = 0;
         for (final Jelly jelly : jellies) {
             nb += jelly.getPositions().length;
@@ -372,7 +372,7 @@ public final class StateImpl
     }
 
     @Override
-    public void explain(final int step) {
+    public final void explain(final int step) {
         updateBoard();
         LOG.debug("=== STEP " + step + " ===\n" + board.toString());
         updateFromBoard();
@@ -382,21 +382,21 @@ public final class StateImpl
     }
 
     @Override
-    public byte[] getSerialization() {
+    public final byte[] getSerialization() {
         return serialization;
     }
 
     @Override
-    public void clearSerialization() {
+    public final void clearSerialization() {
         serialization = null;
     }
 
     @Override
-    public boolean[] getEmerged() {
+    public final boolean[] getEmerged() {
         return emerged;
     }
 
-    private int getNotEmergedNb() {
+    private final int getNotEmergedNb() {
         int nb = 0;
         for (final boolean e : emerged) {
             if (!e) {

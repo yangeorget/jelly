@@ -20,7 +20,7 @@ public final class Utils {
      * @param val the byte value to look for
      * @return the index where found or -1 if not found
      */
-    public static int contains(final byte[] tab, final int from, final int to, final byte val) {
+    public static final int contains(final byte[] tab, final int from, final int to, final byte val) {
         for (int i = from; i < to; i++) {
             if (tab[i] == val) {
                 return i;
@@ -33,7 +33,7 @@ public final class Utils {
      * Serializes a boolean array as a byte.
      * @param a the boolean array
      */
-    static byte asByte(final boolean[] a) {
+    static final byte asByte(final boolean[] a) {
         final int size = a.length;
         if (size > 8) {
             throw new RuntimeException("Array too big!");

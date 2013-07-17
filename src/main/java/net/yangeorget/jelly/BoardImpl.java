@@ -74,7 +74,7 @@ public final class BoardImpl
         }
     }
 
-    void computeMatrixAndWalls(final Set<Byte> colors, final String[] strings) {
+    final void computeMatrixAndWalls(final Set<Byte> colors, final String[] strings) {
         for (int i = 0; i < height; i++) {
             matrix[i] = new byte[width];
             for (byte j = 0; j < width; j++) {
@@ -89,7 +89,7 @@ public final class BoardImpl
         }
     }
 
-    void computeLinks(final byte[][] linkCycles) {
+    final void computeLinks(final byte[][] linkCycles) {
         clearLinks();
         for (final byte[] linkCycle : linkCycles) {
             computeLinks(linkCycle);
@@ -101,7 +101,7 @@ public final class BoardImpl
      * Creates links from a cycle.
      * @param linkCycle the cycle
      */
-    private void computeLinks(final byte[] linkCycle) {
+    private final void computeLinks(final byte[] linkCycle) {
         final int iMax = linkCycle.length - 1;
         for (int i = 0; i < iMax; i++) {
             addLink(linkCycle[i], linkCycle[i + 1]);
@@ -110,61 +110,61 @@ public final class BoardImpl
     }
 
     @Override
-    public void clearLinks() {
+    public final void clearLinks() {
         linksIndex = 0;
     }
 
     @Override
-    public void addLink(final byte start, final byte end) {
+    public final void addLink(final byte start, final byte end) {
         LINK_START_BUF[linksIndex] = start;
         LINK_END_BUF[linksIndex] = end;
         linksIndex++;
     }
 
     @Override
-    public void storeLinks() {
+    public final void storeLinks() {
         linkStarts = Arrays.copyOf(LINK_START_BUF, linksIndex);
         linkEnds = Arrays.copyOf(LINK_END_BUF, linksIndex);
     }
 
     @Override
-    public int getJellyColorNb() {
+    public final int getJellyColorNb() {
         return jellyColorNb;
     }
 
     @Override
-    public int getJellyPositionNb() {
+    public final int getJellyPositionNb() {
         return jellyPositionNb;
     }
 
     @Override
-    public int getHeight() {
+    public final int getHeight() {
         return height;
     }
 
     @Override
-    public int getWidth() {
+    public final int getWidth() {
         return width;
     }
 
     @Override
-    public int getHeight1() {
+    public final int getHeight1() {
         return height1;
     }
 
     @Override
-    public int getWidth1() {
+    public final int getWidth1() {
         return width1;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         final StringBuilder builder = new StringBuilder();
         toString(builder);
         return builder.toString();
     }
 
-    private void toString(final StringBuilder builder) {
+    private final void toString(final StringBuilder builder) {
         for (int i = 0; i < height; i++) {
             for (final byte b : matrix[i]) {
                 builder.append((char) b);
@@ -189,22 +189,22 @@ public final class BoardImpl
     }
 
     @Override
-    public boolean isWall(final byte position) {
+    public final boolean isWall(final byte position) {
         return walls[Cells.getI(position)][Cells.getJ(position)];
     }
 
     @Override
-    public void setColor(final byte position, final byte c) {
+    public final void setColor(final byte position, final byte c) {
         matrix[Cells.getI(position)][Cells.getJ(position)] = c;
     }
 
     @Override
-    public byte getColor(final int i, final int j) {
+    public final byte getColor(final int i, final int j) {
         return matrix[i][j];
     }
 
     @Override
-    public void blank(final int i, final int j) {
+    public final void blank(final int i, final int j) {
         matrix[i][j] = SPACE_BYTE;
     }
 
@@ -213,7 +213,7 @@ public final class BoardImpl
      * @param c the color of a cell
      * @return a boolean
      */
-    public static boolean isFloating(final byte c) {
+    public final static boolean isFloating(final byte c) {
         return c < a_BYTE;
     }
 
@@ -222,7 +222,7 @@ public final class BoardImpl
      * @param c the color of a cell
      * @return a cell
      */
-    public static byte toFloating(final byte c) {
+    public final static byte toFloating(final byte c) {
         if (isFloating(c)) {
             return c;
         } else {
@@ -235,7 +235,7 @@ public final class BoardImpl
      * @param c the color of a cell
      * @return a cell
      */
-    public static byte toFixed(final byte c) {
+    public final static byte toFixed(final byte c) {
         if (isFloating(c)) {
             return (byte) (c + a_A_DELTA);
         } else {
@@ -244,64 +244,64 @@ public final class BoardImpl
     }
 
     @Override
-    public byte[][] getMatrix() {
+    public final byte[][] getMatrix() {
         return matrix;
     }
 
     @Override
-    public byte[] getLinkStarts() {
+    public final byte[] getLinkStarts() {
         return linkStarts;
     }
 
     @Override
-    public byte[] getLinkEnds() {
+    public final byte[] getLinkEnds() {
         return linkEnds;
     }
 
     @Override
-    public byte getEmergingPosition(final int epIndex) {
+    public final byte getEmergingPosition(final int epIndex) {
         return emergingPositions.get(epIndex);
     }
 
     @Override
-    public byte getEmergingColor(final int epIndex) {
+    public final byte getEmergingColor(final int epIndex) {
         return emergingColors.get(epIndex);
     }
 
     @Override
-    public int getEmergingPositionNb() {
+    public final int getEmergingPositionNb() {
         return emergingPositions.size();
     }
 
     @Override
-    public void clearFloatingEmerging() {
+    public final void clearFloatingEmerging() {
         floatingEmergingPositions.clear();
         floatingEmergingColors.clear();
     }
 
     @Override
-    public void addFloatingEmerging(final byte emergingPosition, final byte emergingColor) {
+    public final void addFloatingEmerging(final byte emergingPosition, final byte emergingColor) {
         floatingEmergingPositions.add(emergingPosition);
         floatingEmergingColors.add(emergingColor);
     }
 
     @Override
-    public byte getFloatingEmergingPosition(final int epIndex) {
+    public final byte getFloatingEmergingPosition(final int epIndex) {
         return floatingEmergingPositions.get(epIndex);
     }
 
     @Override
-    public byte getFloatingEmergingColor(final int epIndex) {
+    public final byte getFloatingEmergingColor(final int epIndex) {
         return floatingEmergingColors.get(epIndex);
     }
 
     @Override
-    public int getFloatingEmergingPositionNb() {
+    public final int getFloatingEmergingPositionNb() {
         return floatingEmergingPositions.size();
     }
 
     @Override
-    public int getEmergingIndex(final byte ep) {
+    public final int getEmergingIndex(final byte ep) {
         return Collections.binarySearch(emergingPositions, ep);
     }
 }

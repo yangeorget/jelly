@@ -20,12 +20,12 @@ public final class StateSetHashSetImpl
     }
 
     @Override
-    public boolean store(final byte[] ser) {
+    public final boolean store(final byte[] ser) {
         return set.add(ByteBuffer.wrap(ser));
     }
 
     @Override
-    public int size() {
+    public final int size() {
         return set.size();
     }
 }

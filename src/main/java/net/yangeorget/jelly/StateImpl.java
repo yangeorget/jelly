@@ -260,13 +260,12 @@ public final class StateImpl
      */
     private final void computeEmergingCandidates(final Jelly jelly) {
         final int segmentNb = jelly.getSegmentNb();
-        final byte[] positions = jelly.getPositions();
         for (int segmentIndex = 0; segmentIndex < segmentNb; segmentIndex++) {
             final byte segmentColor = jelly.getColor(segmentIndex);
             final int start = jelly.getStart(segmentIndex);
             final int end = jelly.getEnd(segmentIndex);
             for (int i = start; i < end; i++) {
-                final byte ep = (byte) (positions[i] + Board.DOWN);
+                final byte ep = (byte) (jelly.getPosition(i) + Board.DOWN);
                 if (!computeEmergingCandidateFromWalls(ep, segmentColor)) {
                     computeEmergingCandidateFromJellies(ep, segmentColor);
                 }
@@ -366,7 +365,7 @@ public final class StateImpl
     public final int getJellyPositionNb() {
         int nb = 0;
         for (final Jelly jelly : jellies) {
-            nb += jelly.getPositions().length;
+            nb += jelly.getPositionsNb();
         }
         return nb + getNotEmergedNb();
     }

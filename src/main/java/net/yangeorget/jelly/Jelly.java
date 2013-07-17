@@ -34,7 +34,9 @@ public interface Jelly {
 
     byte getColor(int segmentIndex);
 
-    byte[] getPositions();
+    byte getPosition(int index);
+
+    int getPositionsNb();
 
     byte getEmergingColor(int epIndex);
 

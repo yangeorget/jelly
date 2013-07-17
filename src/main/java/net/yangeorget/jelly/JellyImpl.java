@@ -71,11 +71,13 @@ public final class JellyImpl
                       final byte[] emergingColors) {
         this.board = board;
         this.isFloating = isFloating;
+        // TODO: try avoid cloning
         this.positions = Arrays.copyOf(positions, positions.length);
-        this.color = Arrays.copyOf(color, color.length);
-        this.end = Arrays.copyOf(end, end.length);
-        this.emergingIndices = Arrays.copyOf(emergingIndices, emergingIndices.length);
         this.emergingColors = Arrays.copyOf(emergingColors, emergingColors.length);
+        // no need to clone since they won't be updated
+        this.color = color;
+        this.end = end;
+        this.emergingIndices = emergingIndices;
     }
 
     public JellyImpl(final Board board, final int i, final int j) {
@@ -208,7 +210,7 @@ public final class JellyImpl
             return false;
         }
         for (int index = positions.length; --index >= 0;) {
-            if (Cells.getJ(positions[index]) == 0) {
+            if (Cells.getJ(getPosition(index)) == 0) {
                 return false;
             }
         }
@@ -226,7 +228,7 @@ public final class JellyImpl
             return false;
         }
         for (int index = positions.length; --index >= 0;) {
-            if (Cells.getJ(positions[index]) == board.getWidth1()) {
+            if (Cells.getJ(getPosition(index)) == board.getWidth1()) {
                 return false;
             }
         }
@@ -244,7 +246,7 @@ public final class JellyImpl
             return false;
         }
         for (int index = positions.length; --index >= 0;) {
-            if (Cells.getI(positions[index]) == board.getHeight1()) {
+            if (Cells.getI(getPosition(index)) == board.getHeight1()) {
                 return false;
             }
         }
@@ -262,7 +264,7 @@ public final class JellyImpl
             return false;
         }
         for (int index = positions.length; --index >= 0;) {
-            if (Cells.getI(positions[index]) == 0) {
+            if (Cells.getI(getPosition(index)) == 0) {
                 return false;
             }
         }
@@ -323,8 +325,8 @@ public final class JellyImpl
 
     @Override
     public final boolean overlapsWalls() {
-        for (final byte position : positions) {
-            if (board.isWall(position)) {
+        for (int index = 0; index < positions.length; index++) {
+            if (board.isWall(getPosition(index))) {
                 return true;
             }
         }
@@ -342,7 +344,7 @@ public final class JellyImpl
             for (int i = 0; i < size; i++) {
                 le = getStart(end, i);
                 updateBoard(le, end[i], color[i]);
-                board.addLink(positions[ls], positions[le]);
+                board.addLink(getPosition(ls), getPosition(le));
                 ls = le;
             }
         }
@@ -359,7 +361,7 @@ public final class JellyImpl
             c = BoardImpl.toFixed(c);
         }
         for (int j = start; j < end; j++) {
-            board.setColor(positions[j], c);
+            board.setColor(getPosition(j), c);
         }
     }
 
@@ -373,8 +375,13 @@ public final class JellyImpl
     }
 
     @Override
-    public final byte[] getPositions() {
-        return positions;
+    public final int getPositionsNb() {
+        return positions.length;
+    }
+
+    @Override
+    public final byte getPosition(final int index) {
+        return positions[index];
     }
 
     @Override

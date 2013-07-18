@@ -13,6 +13,7 @@ public final class StateImpl
     private static final Logger LOG = LoggerFactory.getLogger(StateImpl.class);
     private static final Jelly[] JELLY_BUF = new Jelly[Board.MAX_SIZE], EP_JELLY_BUF = new Jelly[Board.MAX_SIZE];
     private static final int[] EP_INDEX_BUF = new int[Board.MAX_SIZE];
+    private static final boolean[] BLOCKED = new boolean[Board.MAX_SIZE];
     private static int jellyIndex, emergingIndex;
 
     private final Board board;
@@ -199,17 +200,16 @@ public final class StateImpl
      * Applies gravity.
      */
     final void moveDown() {
-        final int size = jellies.length;
-        final boolean[] blocked = new boolean[size];
+        Arrays.fill(BLOCKED, false);
         for (boolean movedDown = true; movedDown;) {
             movedDown = false;
-            for (int i = size; --i >= 0;) {
-                if (!blocked[i]) {
+            for (int i = jellies.length; --i >= 0;) {
+                if (!BLOCKED[i]) {
                     if (moveDown(i)) {
                         movedDown = true;
                     } else {
                         undoMoveDown();
-                        blocked[i] = true;
+                        BLOCKED[i] = true;
                     }
                 }
             }

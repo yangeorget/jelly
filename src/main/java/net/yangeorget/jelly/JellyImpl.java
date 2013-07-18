@@ -40,6 +40,7 @@ public final class JellyImpl
     byte[] positions, end, color, emergingIndices, emergingColors;
     private final Board board;
     private boolean isFloating;
+    private byte shift;
 
     /**
      * Used in test only.
@@ -55,6 +56,7 @@ public final class JellyImpl
     JellyImpl(final Board board, final char color, final byte... positions) {
         this(board,
              true,
+             (byte) 0,
              new byte[] { (byte) positions.length },
              new byte[] { (byte) color },
              positions,
@@ -64,6 +66,7 @@ public final class JellyImpl
 
     private JellyImpl(final Board board,
                       final boolean isFloating,
+                      final byte shift,
                       final byte[] end,
                       final byte[] color,
                       final byte[] positions,
@@ -71,10 +74,10 @@ public final class JellyImpl
                       final byte[] emergingColors) {
         this.board = board;
         this.isFloating = isFloating;
-        // TODO: try avoid cloning using a shift
-        this.positions = Arrays.copyOf(positions, positions.length);
+        this.shift = shift;
         this.emergingColors = Arrays.copyOf(emergingColors, emergingColors.length);
         // no need to clone since they won't be updated
+        this.positions = positions;
         this.color = color;
         this.end = end;
         this.emergingIndices = emergingIndices;
@@ -108,9 +111,9 @@ public final class JellyImpl
         // we don't have any empty segment yet
         segmentIndex = emptySegmentNb = 0;
         while (segmentIndex + emptySegmentNb < freeSegmentIndex) {
-            final int start = getStart(END_BUF, segmentIndex);
+            final byte start = getStart(END_BUF, segmentIndex);
             // the current segment ends where it starts (it is empty)
-            END_BUF[segmentIndex] = (byte) start;
+            END_BUF[segmentIndex] = start;
             // let's init the candidate positions with the current candidate segment
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
@@ -179,19 +182,21 @@ public final class JellyImpl
 
     @Override
     public final JellyImpl clone() {
-        return new JellyImpl(board, isFloating, end, color, positions, emergingIndices, emergingColors);
+        return new JellyImpl(board, isFloating, shift, end, color, positions, emergingIndices, emergingColors);
     }
 
     @Override
     public final String toString() {
-        return "positions="
+        return ";isFloating="
+               + isFloating
+               + ";shift="
+               + shift
+               + ";positions="
                + Arrays.toString(positions)
                + ";color="
                + Arrays.toString(color)
                + ";end="
                + Arrays.toString(end)
-               + ";isFloating="
-               + isFloating
                + ";emergingIndices="
                + Arrays.toString(emergingIndices)
                + ";emergingColors="
@@ -199,9 +204,7 @@ public final class JellyImpl
     }
 
     private final void move(final int vec) {
-        for (int index = positions.length; --index >= 0;) {
-            positions[index] += vec;
-        }
+        shift += vec;
     }
 
     @Override
@@ -279,43 +282,41 @@ public final class JellyImpl
     @Override
     public final boolean overlaps(final Jelly jelly) {
         final JellyImpl j = (JellyImpl) jelly;
-        /*
-         * if (j.rightMax < leftMin || rightMax < j.leftMin || j.bottomMax < topMin || bottomMax < j.topMin) { return
-         * false; }
-         */
         for (int segment = 0; segment < end.length; segment++) {
-            if (j.overlaps(positions, end, segment)) {
+            if (j.overlaps(shift, positions, end, segment)) {
                 return true;
             }
         }
         return false;
     }
 
-    final boolean overlaps(final byte[] aPositions, final byte[] aEnd, final int aSegment) {
+    final boolean overlaps(final byte aShift, final byte[] aPositions, final byte[] aEnd, final int aSegment) {
         for (int segment = 0; segment < end.length; segment++) {
-            if (overlaps(positions, end, segment, aPositions, aEnd, aSegment)) {
+            if (overlaps(shift, positions, end, segment, aShift, aPositions, aEnd, aSegment)) {
                 return true;
             }
         }
         return false;
     }
 
-    static final boolean overlaps(final byte[] aPositions,
+    static final boolean overlaps(final byte aShift,
+                                  final byte[] aPositions,
                                   final byte[] aEnd,
                                   final int aSegment,
+                                  final byte bShift,
                                   final byte[] bPositions,
                                   final byte[] bEnd,
                                   final int bSegment) {
         for (int aIndex = getStart(aEnd, aSegment), bIndex = getStart(bEnd, bSegment);;) {
-            while (aPositions[aIndex] < bPositions[bIndex]) {
+            while (aPositions[aIndex] + aShift < bPositions[bIndex] + bShift) {
                 if (++aIndex == aEnd[aSegment]) {
                     return false;
                 }
             }
-            if (aPositions[aIndex] == bPositions[bIndex]) {
+            if (aPositions[aIndex] + aShift == bPositions[bIndex] + bShift) {
                 return true;
             }
-            while (aPositions[aIndex] > bPositions[bIndex]) {
+            while (aPositions[aIndex] + aShift > bPositions[bIndex] + bShift) {
                 if (++bIndex == bEnd[bSegment]) {
                     return false;
                 }
@@ -365,7 +366,7 @@ public final class JellyImpl
         }
     }
 
-    private static final int getStart(final byte[] end, final int segmentIndex) {
+    private static final byte getStart(final byte[] end, final int segmentIndex) {
         return segmentIndex == 0 ? 0 : end[segmentIndex - 1];
     }
 
@@ -381,16 +382,16 @@ public final class JellyImpl
 
     @Override
     public final byte getPosition(final int index) {
-        return positions[index];
+        return (byte) (positions[index] + shift);
     }
 
     @Override
-    public final int getStart(final int segmentIndex) {
+    public final byte getStart(final int segmentIndex) {
         return getStart(end, segmentIndex);
     }
 
     @Override
-    public final int getEnd(final int segmentIndex) {
+    public final byte getEnd(final int segmentIndex) {
         return end[segmentIndex];
     }
 
@@ -406,7 +407,7 @@ public final class JellyImpl
 
     @Override
     public final byte getEmergingPosition(final int epIndex) {
-        return positions[emergingIndices[epIndex]];
+        return getPosition(emergingIndices[epIndex]);
     }
 
     @Override
@@ -415,7 +416,7 @@ public final class JellyImpl
     }
 
     private final int getEmergingIndex(final byte ep) {
-        return Utils.contains(positions, 0, positions.length, ep);
+        return Utils.contains(positions, 0, positions.length, (byte) (ep - shift));
     }
 
     @Override

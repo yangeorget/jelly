@@ -138,7 +138,7 @@ public class PuzzleTest {
         solve(26);
     }
 
-    @Test(groups = "slow")
+    @Test(groups = "dunno")
     public void test27() { // TODO: ...
         solve(27);
     }

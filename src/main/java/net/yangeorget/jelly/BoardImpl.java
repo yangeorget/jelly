@@ -22,6 +22,7 @@ public final class BoardImpl
     private final byte[][] matrix;
     private final boolean[][] walls;
     private byte[] linkStarts, linkEnds;
+    // TODO: use arrays
     final List<Byte> emergingPositions, emergingColors, floatingEmergingPositions, floatingEmergingColors;
 
     /**

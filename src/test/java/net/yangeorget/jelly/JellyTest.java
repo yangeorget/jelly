@@ -47,42 +47,6 @@ public class JellyTest {
     }
 
     @Test
-    public void testMoveRight() {
-        final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final Jelly jelly1 = new JellyImpl(board, 'B', (byte) 0x12, (byte) 0x13, (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(board, 'B', (byte) 0x13, (byte) 0x14, (byte) 0x23);
-        jelly1.moveRight();
-        Assert.assertEquals(jelly1.toString(), jelly2.toString());
-    }
-
-    @Test
-    public void testMoveLeft() {
-        final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final Jelly jelly1 = new JellyImpl(board, 'B', (byte) 0x12, (byte) 0x13, (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(board, 'B', (byte) 0x13, (byte) 0x14, (byte) 0x23);
-        jelly2.moveLeft();
-        Assert.assertEquals(jelly1.toString(), jelly2.toString());
-    }
-
-    @Test
-    public void testMoveDown() {
-        final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final Jelly jelly1 = new JellyImpl(board, 'B', (byte) 0x12, (byte) 0x13, (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(board, 'B', (byte) 0x22, (byte) 0x23, (byte) 0x32);
-        jelly1.moveDown();
-        Assert.assertEquals(jelly1.toString(), jelly2.toString());
-    }
-
-    @Test
-    public void testMoveUp() {
-        final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
-        final Jelly jelly1 = new JellyImpl(board, 'B', (byte) 0x12, (byte) 0x13, (byte) 0x22);
-        final Jelly jelly2 = new JellyImpl(board, 'B', (byte) 0x22, (byte) 0x23, (byte) 0x32);
-        jelly2.moveUp();
-        Assert.assertEquals(jelly1.toString(), jelly2.toString());
-    }
-
-    @Test
     public void testOverlaps1() {
         final Board board = new BoardImpl(new String[] { "     ", "     ", "     ", "     ", "     " });
         final Jelly jelly1 = new JellyImpl(board, 'B', (byte) 0x12, (byte) 0x13, (byte) 0x22);

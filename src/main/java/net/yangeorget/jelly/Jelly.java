@@ -28,9 +28,9 @@ public interface Jelly {
 
     int getSegmentNb();
 
-    int getStart(int segmentIndex);
+    byte getStart(int segmentIndex);
 
-    int getEnd(int segmentIndex);
+    byte getEnd(int segmentIndex);
 
     byte getColor(int segmentIndex);
 

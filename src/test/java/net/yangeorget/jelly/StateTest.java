@@ -15,6 +15,7 @@ public class StateTest {
         final State state = new StateImpl(board);
         final Object ser = state.getSerialization();
         state.updateBoard();
+        state.updateSerialization();
         state.updateFromBoard();
         Assert.assertEquals(state.getSerialization(), ser);
     }

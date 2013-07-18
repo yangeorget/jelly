@@ -71,7 +71,7 @@ public final class JellyImpl
                       final byte[] emergingColors) {
         this.board = board;
         this.isFloating = isFloating;
-        // TODO: try avoid cloning
+        // TODO: try avoid cloning using a shift
         this.positions = Arrays.copyOf(positions, positions.length);
         this.emergingColors = Arrays.copyOf(emergingColors, emergingColors.length);
         // no need to clone since they won't be updated
@@ -351,7 +351,7 @@ public final class JellyImpl
         for (int epIndex = 0; epIndex < getNotEmergedNb(); epIndex++) {
             final byte color = getEmergingColor(epIndex);
             if (color != 0) {
-                board.addFloatingEmerging(getEmergingPosition(emergingIndices[epIndex]), color);
+                board.addFloatingEmerging(getEmergingPosition(epIndex), color);
             }
         }
     }
@@ -405,8 +405,8 @@ public final class JellyImpl
     }
 
     @Override
-    public final byte getEmergingPosition(final int emergingIndex) {
-        return positions[emergingIndex];
+    public final byte getEmergingPosition(final int epIndex) {
+        return positions[emergingIndices[epIndex]];
     }
 
     @Override
@@ -426,5 +426,15 @@ public final class JellyImpl
     @Override
     public final void markAsEmerged(final int epIndex) {
         emergingColors[epIndex] = 0;
+    }
+
+    @Override
+    public boolean allEmerged() {
+        for (final byte emergingColor : emergingColors) {
+            if (emergingColor != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }

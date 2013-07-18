@@ -27,6 +27,8 @@ public interface State
 
     void updateFromBoard();
 
+    void updateSerialization();
+
     void updateBoard();
 
     void explain(int step);

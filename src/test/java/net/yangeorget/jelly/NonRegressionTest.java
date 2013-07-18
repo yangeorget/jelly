@@ -10,7 +10,7 @@ public class NonRegressionTest {
     private static final Logger LOG = LoggerFactory.getLogger(NonRegressionTest.class);
 
     @Test
-    public void testNonRegression1() {
+    public void test1() {
         final Board input = new BoardImpl(new String[] { "     A", "     #", " ABBA " }, new byte[] { 33, 34, 36 });
         final State state = new StateImpl(input);
         state.moveLeft(0);
@@ -26,7 +26,7 @@ public class NonRegressionTest {
     }
 
     @Test
-    public void testNonRegression2() {
+    public void test2() {
         final Board input = new BoardImpl(new String[] { "           Y",
                                                         "       ### #",
                                                         "           Y",
@@ -45,7 +45,7 @@ public class NonRegressionTest {
 
 
     @Test
-    public void testNonRegression3() {
+    public void test3() {
         final State state = new StateImpl(new BoardImpl(new String[] { "     ", "B B  ", "#####" },
                                                         new byte[] { 0x22 },
                                                         new char[] { 'B' }));
@@ -78,7 +78,7 @@ public class NonRegressionTest {
     }
 
     @Test
-    public void testNonRegression4() {
+    public void test4() {
         final Board board = new BoardImpl(new String[] { "      #     ",
                                                         "      #     ",
                                                         "      #     ",
@@ -91,7 +91,7 @@ public class NonRegressionTest {
     }
 
     @Test
-    public void testNonRegression5() {
+    public void test5() {
         final State state = new StateImpl(new BoardImpl(new String[] { "   ", "B B", "###" },
                                                         new byte[] { 0x22 },
                                                         new char[] { 'b' }));
@@ -114,7 +114,7 @@ public class NonRegressionTest {
     }
 
     @Test
-    public void testNonRegression6() {
+    public void test6() {
         final Board board = new BoardImpl(new String[] { "   ", "   ", "B  ", "###" },
                                           new byte[] { 0x31, 0x32 },
                                           new char[] { 'B', 'B' });
@@ -125,7 +125,7 @@ public class NonRegressionTest {
 
 
     @Test
-    public void testNonRegression7() {
+    public void test7() {
         final Board board = new BoardImpl(new String[] { "  ", " R", "B ", "##" },
                                           new byte[] { 0x20 },
                                           new char[] { 'R' });
@@ -151,4 +151,23 @@ public class NonRegressionTest {
                                                                   0 });
     }
 
+
+    @Test
+    public void test8() {
+        final Board board = new BoardImpl(new String[] { "#     R  ###",
+                                                        "#BBBBBBBB###",
+                                                        "#R       ###",
+                                                        "#R        ##",
+                                                        "#DDDDDDDD ##",
+                                                        "#     R   ##",
+                                                        "#FFFFFFFF###",
+                                                        "#  R     ###",
+                                                        "############" },
+                                          new byte[] { -125, 22, 102 },
+                                          new char[] { 'R', 'R', 'R' });
+        final State state = new StateImpl(board);
+        state.moveRight(3);
+        state.process();
+        Assert.assertEquals(state.getJellyPositionNb(), 32);
+    }
 }

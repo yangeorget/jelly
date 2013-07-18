@@ -29,9 +29,11 @@ public final class StateImpl
         this.board = board;
         emerged = new boolean[board.getEmergingPositionNb()];
         // the first serialization depends on the way the board has been entered
+        updateSerialization();
         updateFromBoard();
         // this is why we do a second serialization
         updateBoard();
+        updateSerialization();
         updateFromBoard();
     }
 
@@ -63,8 +65,12 @@ public final class StateImpl
     }
 
     @Override
-    public final void updateFromBoard() {
+    public final void updateSerialization() {
         serialization = SERIALIZER.serialize(this);
+    }
+
+    @Override
+    public final void updateFromBoard() {
         final int height = board.getHeight();
         final int width = board.getWidth();
         jellyIndex = 0;
@@ -187,12 +193,7 @@ public final class StateImpl
     @Override
     public final void process() {
         moveDown();
-        updateBoard();
-        updateFromBoard();
-        if (moveUp()) {
-            updateBoard();
-            updateFromBoard();
-        }
+        moveUp();
     }
 
     /**
@@ -214,42 +215,56 @@ public final class StateImpl
                 }
             }
         }
+        // in any case we want to:
+        // - update the serialization
+        // - have the jellies in the right order
+        updateBoard();
+        updateSerialization();
+        updateFromBoard();
+
     }
 
     /**
      * Give a chance to emerging jellies.
-     * @return a boolean indicating if jellies have emerged
      */
-    final boolean moveUp() {
-        if (getNotEmergedNb() == 0) {
-            return false;
-        }
-        boolean someEmerged = false;
-        for (int j = 0; j < jellies.length; j++) {
-            emergingIndex = 0;
-            // it seems smarter to compute this before moving the jelly up
-            computeEmergingCandidates(jellies[j]);
-            if (emergingIndex > 0) {
-                if (moveUp(j)) {
-                    someEmerged = true;
-                    while (--emergingIndex >= 0) {
-                        final Jelly epJelly = EP_JELLY_BUF[emergingIndex];
-                        final int epIndex = EP_INDEX_BUF[emergingIndex];
-                        if (epJelly == null) {
-                            // let the candidate emerge from the wall
-                            board.setColor((byte) (board.getEmergingPosition(epIndex) + Board.UP),
-                                           board.getEmergingColor(epIndex));
-                            emerged[epIndex] = true;
-                        } else {
-                            // let the candidate emerge from the jelly
-                            board.setColor((byte) (epJelly.getEmergingPosition(epIndex) + Board.UP),
-                                           epJelly.getEmergingColor(epIndex));
-                            epJelly.markAsEmerged(epIndex);
-                        }
-                    }
-                } else {
-                    undoMoveUp();
+    final void moveUp() {
+        if (!allEmerged()) {
+            for (int j = 0; j < jellies.length; j++) {
+                if (moveUpJelly(j)) {
+                    updateBoard();
+                    updateSerialization();
+                    updateFromBoard();
                 }
+            }
+        }
+    }
+
+    final boolean moveUpJelly(final int j) {
+        boolean someEmerged = false;
+        emergingIndex = 0;
+        // it seems smarter to compute this before moving the jelly up
+        computeEmergingCandidates(jellies[j]);
+        if (emergingIndex > 0) {
+            if (moveUp(j)) {
+                someEmerged = true;
+                while (--emergingIndex >= 0) {
+                    final Jelly epJelly = EP_JELLY_BUF[emergingIndex];
+                    final int epIndex = EP_INDEX_BUF[emergingIndex];
+                    // LOG.debug("emerging: " + epJelly + "," + epIndex);
+                    if (epJelly == null) {
+                        // let the candidate emerge from the wall
+                        board.setColor((byte) (board.getEmergingPosition(epIndex) + Board.UP),
+                                       board.getEmergingColor(epIndex));
+                        emerged[epIndex] = true;
+                    } else {
+                        // let the candidate emerge from the jelly
+                        board.setColor((byte) (epJelly.getEmergingPosition(epIndex) + Board.UP),
+                                       epJelly.getEmergingColor(epIndex));
+                        epJelly.markAsEmerged(epIndex);
+                    }
+                }
+            } else {
+                undoMoveUp();
             }
         }
         return someEmerged;
@@ -287,7 +302,7 @@ public final class StateImpl
 
     private final boolean computeEmergingCandidateFromJellies(final byte ep, final byte segmentColor) {
         for (final Jelly j : jellies) {
-            if (j.getNotEmergedNb() > 0) { // this is an optimization
+            if (!j.allEmerged()) {
                 final int epIndex = j.getEpIndex(ep);
                 if (epIndex >= 0) {
                     if (BoardImpl.toFloating(j.getEmergingColor(epIndex)) == segmentColor) {
@@ -336,6 +351,8 @@ public final class StateImpl
     public final String toString() {
         return "board="
                + board
+               + ";emerged="
+               + Arrays.toString(emerged)
                + ";jellies="
                + (jellies == null ? "null" : Arrays.asList(jellies))
                + ";serialization="
@@ -354,20 +371,20 @@ public final class StateImpl
 
     @Override
     public final int getJellyColorNb() {
-        int nb = 0;
+        int nb = getNotEmergedFromWallsNb();
         for (final Jelly jelly : jellies) {
-            nb += jelly.getSegmentNb();
+            nb += jelly.getSegmentNb() + jelly.getNotEmergedNb();
         }
-        return nb + getNotEmergedNb();
+        return nb;
     }
 
     @Override
     public final int getJellyPositionNb() {
-        int nb = 0;
+        int nb = getNotEmergedFromWallsNb();
         for (final Jelly jelly : jellies) {
-            nb += jelly.getPositionsNb();
+            nb += jelly.getPositionsNb() + jelly.getNotEmergedNb();
         }
-        return nb + getNotEmergedNb();
+        return nb;
     }
 
     @Override
@@ -395,16 +412,27 @@ public final class StateImpl
         return emerged;
     }
 
-    private final int getNotEmergedNb() {
+    private final int getNotEmergedFromWallsNb() {
         int nb = 0;
         for (final boolean e : emerged) {
             if (!e) {
                 nb++;
             }
         }
-        for (final Jelly j : jellies) {
-            nb += j.getNotEmergedNb();
-        }
         return nb;
+    }
+
+    private boolean allEmerged() {
+        for (final boolean e : emerged) {
+            if (!e) {
+                return false;
+            }
+        }
+        for (final Jelly j : jellies) {
+            if (!j.allEmerged()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

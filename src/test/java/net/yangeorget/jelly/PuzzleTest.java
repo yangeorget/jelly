@@ -78,7 +78,7 @@ public class PuzzleTest {
         solve(14);
     }
 
-    @Test(groups = "medium")
+    @Test(groups = "slow")
     public void test15() {
         solve(15);
     }
@@ -88,12 +88,12 @@ public class PuzzleTest {
         solve(16);
     }
 
-    @Test(groups = "medium")
+    @Test(groups = "slow")
     public void test17() {
         solve(17);
     }
 
-    @Test(groups = "medium")
+    @Test(groups = "slow")
     public void test18() {
         solve(18);
     }
@@ -133,8 +133,8 @@ public class PuzzleTest {
         solve(25);
     }
 
-    @Test(groups = "slow")
-    public void test26() { // TODO: ...
+    @Test(groups = "fast")
+    public void test26() {
         solve(26);
     }
 
@@ -150,8 +150,8 @@ public class PuzzleTest {
         final State state = game.solve();
         LOG.info("solved " + level + " in " + (System.currentTimeMillis() - time) + " ms");
         Assert.assertNotNull(state);
-        Assert.assertEquals(board.getJellyPositionNb(), state.getJellyPositionNb());
         game.explain(state);
+        Assert.assertEquals(board.getJellyPositionNb(), state.getJellyPositionNb());
     }
 
     public static void main(final String[] args) {

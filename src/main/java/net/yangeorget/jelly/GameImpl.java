@@ -13,8 +13,9 @@ public final class GameImpl
     private final LinkedList<State> states;
     private final StateSet explored;
 
-
     public GameImpl(final Board board) {
+        LOG.debug("jellyColorNb=" + board.getJellyColorNb());
+        LOG.debug("jellyPositionNb=" + board.getJellyPositionNb());
         explored = new StateSetHashSetImpl();
         states = new LinkedList<>();
         push(new StateImpl(board));

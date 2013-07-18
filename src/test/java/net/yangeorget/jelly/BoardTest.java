@@ -21,6 +21,11 @@ public class BoardTest {
     }
 
     @Test
+    public void testGetJellyPositionNb() {
+        Assert.assertEquals(Board.LEVELS[26].getJellyPositionNb(), 32);
+    }
+
+    @Test
     public void testGetWalls() {
         final Board board = new BoardImpl(new String[] { "# A", "  A", "B #" });
         Assert.assertTrue(board.isWall(Cells.value(0, 0)));

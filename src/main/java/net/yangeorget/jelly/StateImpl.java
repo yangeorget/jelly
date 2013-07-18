@@ -28,10 +28,9 @@ public final class StateImpl
     public StateImpl(final Board board) {
         this.board = board;
         emerged = new boolean[board.getEmergingPositionNb()];
-        // the first serialization depends on the way the board has been entered
-        updateSerialization();
+        // the first serialization would depend on the way the board has been entered
+        // updateSerialization();
         updateFromBoard();
-        // this is why we do a second serialization
         updateBoard();
         updateSerialization();
         updateFromBoard();
@@ -217,7 +216,7 @@ public final class StateImpl
         }
         // in any case we want to:
         // - update the serialization
-        // - have the jellies in the right order
+        // - merge jellies
         updateBoard();
         updateSerialization();
         updateFromBoard();

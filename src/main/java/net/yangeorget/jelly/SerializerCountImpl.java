@@ -1,7 +1,6 @@
 package net.yangeorget.jelly;
 
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -15,15 +14,15 @@ public final class SerializerCountImpl
     @Override
     public final byte[] serialize(final State state) {
         index = 0;
-        final BoardImpl board = (BoardImpl) state.getBoard();
+        final Board board = state.getBoard();
         serializeMatrix(board.getMatrix());
         serialize(Board.SER_DELIM_BYTE);
         serialize(board.getLinkStarts());
         serialize(board.getLinkEnds());
         serialize(Board.SER_DELIM_BYTE);
         serialize(Utils.asByte(state.getEmerged()));
-        serialize(board.floatingEmergingPositions);
-        serialize(board.floatingEmergingColors);
+        serialize(board.getFloatingEmergingPositions());
+        serialize(board.getFloatingEmergingColors());
         return Arrays.copyOf(SERIALIZATION, index);
     }
 
@@ -54,12 +53,6 @@ public final class SerializerCountImpl
 
     private final void serialize(final byte[] a) {
         for (final byte b : a) {
-            serialize(b);
-        }
-    }
-
-    private final void serialize(final List<Byte> a) {
-        for (final Byte b : a) {
             serialize(b);
         }
     }

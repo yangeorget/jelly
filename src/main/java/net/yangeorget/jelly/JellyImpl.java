@@ -91,8 +91,8 @@ public final class JellyImpl
         end = Arrays.copyOf(END_BUF, segmentIndex);
         positions = Arrays.copyOf(POS_BUF, getStart(end, segmentIndex));
         floatingIndex = 0;
-        final int floatingNb = board.getFloatingEmergingPositionNb();
-        for (int fepIndex = 0; fepIndex < floatingNb; fepIndex++) {
+        final int fepNb = board.getFloatingEmergingPositionNb();
+        for (int fepIndex = 0; fepIndex < fepNb; fepIndex++) {
             final int epIndex = getEmergingIndex(board.getFloatingEmergingPosition(fepIndex));
             if (epIndex >= 0) {
                 EP_IDX_BUF[floatingIndex] = (byte) epIndex;
@@ -307,19 +307,25 @@ public final class JellyImpl
                                   final byte[] bPositions,
                                   final byte[] bEnd,
                                   final int bSegment) {
+        final byte delta = (byte) (aShift - bShift);
+        final byte aE = aEnd[aSegment];
+        final byte bE = bEnd[bSegment];
         for (int aIndex = getStart(aEnd, aSegment), bIndex = getStart(bEnd, bSegment);;) {
-            while (aPositions[aIndex] + aShift < bPositions[bIndex] + bShift) {
-                if (++aIndex == aEnd[aSegment]) {
+            while (aPositions[aIndex] + delta < bPositions[bIndex]) {
+                if (++aIndex == aE) {
                     return false;
                 }
             }
-            if (aPositions[aIndex] + aShift == bPositions[bIndex] + bShift) {
+            if (aPositions[aIndex] + delta == bPositions[bIndex]) {
                 return true;
             }
-            while (aPositions[aIndex] + aShift > bPositions[bIndex] + bShift) {
-                if (++bIndex == bEnd[bSegment]) {
+            while (aPositions[aIndex] + delta > bPositions[bIndex]) {
+                if (++bIndex == bE) {
                     return false;
                 }
+            }
+            if (aPositions[aIndex] + delta == bPositions[bIndex]) {
+                return true;
             }
         }
     }

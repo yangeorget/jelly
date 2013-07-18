@@ -1,10 +1,7 @@
 package net.yangeorget.jelly;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -13,17 +10,20 @@ import java.util.Set;
  */
 public final class BoardImpl
         implements Board {
-    private static final byte[] LINK_START_BUF = new byte[MAX_SIZE], LINK_END_BUF = new byte[MAX_SIZE];
+    private static final byte[] LINK_START_BUF = new byte[MAX_SIZE], LINK_END_BUF = new byte[MAX_SIZE],
+            EP_POS_BUF = new byte[MAX_SIZE], EP_COL_BUF = new byte[MAX_SIZE], FEP_POS_BUF = new byte[MAX_SIZE],
+            FEP_COL_BUF = new byte[MAX_SIZE];
     private static final byte a_A_DELTA = a_BYTE - A_BYTE;
     private static int linksIndex;
+    private static int epIndex;
+    private static int fepIndex;
 
     private final int height, width, height1, width1, jellyColorNb;
     private int jellyPositionNb;
     private final byte[][] matrix;
     private final boolean[][] walls;
-    private byte[] linkStarts, linkEnds;
-    // TODO: use arrays
-    final List<Byte> emergingPositions, emergingColors, floatingEmergingPositions, floatingEmergingColors;
+    private byte[] linkStarts, linkEnds, emergingPositions, emergingColors, floatingEmergingPositions,
+            floatingEmergingColors;
 
     /**
      * Auxilliary constructor.
@@ -55,24 +55,27 @@ public final class BoardImpl
             colors.add(BoardImpl.toFloating((byte) color));
         }
         jellyColorNb = colors.size();
-        final int allEmergingNb = allEmergingColors.length;
-        jellyPositionNb += allEmergingNb;
+        jellyPositionNb += allEmergingColors.length;
         computeLinks(linkCycles);
-        emergingPositions = new ArrayList<>(allEmergingNb);
-        emergingColors = new ArrayList<>(allEmergingNb);
-        floatingEmergingPositions = new ArrayList<>(allEmergingNb);
-        floatingEmergingColors = new ArrayList<>(allEmergingNb);
-        for (int epIndex = 0; epIndex < allEmergingNb; epIndex++) {
-            final byte ep = allEmergingPositions[epIndex];
-            final byte epColor = (byte) allEmergingColors[epIndex];
-            if (walls[Cells.getI(ep)][Cells.getJ(ep)]) {
-                emergingPositions.add(ep);
-                emergingColors.add(epColor);
-            } else {
-                floatingEmergingPositions.add(ep);
-                floatingEmergingColors.add(epColor);
-            }
+        computeEP(allEmergingPositions, allEmergingColors);
+    }
+
+    final void computeEP(final byte[] allEmergingPositions, final char[] allEmergingColors) {
+        clearEmerging();
+        clearFloatingEmerging();
+        for (int epIndex = 0; epIndex < allEmergingColors.length; epIndex++) {
+            addEP(allEmergingPositions[epIndex], (byte) allEmergingColors[epIndex]);
         }
+        storeEmerging();
+        storeFloatingEmerging();
+    }
+
+    final void computeLinks(final byte[][] linkCycles) {
+        clearLinks();
+        for (final byte[] linkCycle : linkCycles) {
+            computeLinks(linkCycle);
+        }
+        storeLinks();
     }
 
     final void computeMatrixAndWalls(final Set<Byte> colors, final String[] strings) {
@@ -88,14 +91,6 @@ public final class BoardImpl
                 }
             }
         }
-    }
-
-    final void computeLinks(final byte[][] linkCycles) {
-        clearLinks();
-        for (final byte[] linkCycle : linkCycles) {
-            computeLinks(linkCycle);
-        }
-        storeLinks();
     }
 
     /**
@@ -115,6 +110,15 @@ public final class BoardImpl
         linksIndex = 0;
     }
 
+    final void clearEmerging() {
+        epIndex = 0;
+    }
+
+    @Override
+    public final void clearFloatingEmerging() {
+        fepIndex = 0;
+    }
+
     @Override
     public final void addLink(final byte start, final byte end) {
         LINK_START_BUF[linksIndex] = start;
@@ -122,10 +126,42 @@ public final class BoardImpl
         linksIndex++;
     }
 
+    final void addEP(final byte ep, final byte color) {
+        if (walls[Cells.getI(ep)][Cells.getJ(ep)]) {
+            addEmerging(ep, color);
+        } else {
+            addFloatingEmerging(ep, color);
+        }
+    }
+
+    final void addEmerging(final byte ep, final byte color) {
+        EP_POS_BUF[epIndex] = ep;
+        EP_COL_BUF[epIndex] = color;
+        epIndex++;
+    }
+
+    @Override
+    public final void addFloatingEmerging(final byte ep, final byte color) {
+        FEP_POS_BUF[fepIndex] = ep;
+        FEP_COL_BUF[fepIndex] = color;
+        fepIndex++;
+    }
+
     @Override
     public final void storeLinks() {
         linkStarts = Arrays.copyOf(LINK_START_BUF, linksIndex);
         linkEnds = Arrays.copyOf(LINK_END_BUF, linksIndex);
+    }
+
+    final void storeEmerging() {
+        emergingPositions = Arrays.copyOf(EP_POS_BUF, epIndex);
+        emergingColors = Arrays.copyOf(EP_COL_BUF, epIndex);
+    }
+
+    @Override
+    public final void storeFloatingEmerging() {
+        floatingEmergingPositions = Arrays.copyOf(FEP_POS_BUF, fepIndex);
+        floatingEmergingColors = Arrays.copyOf(FEP_COL_BUF, fepIndex);
     }
 
     @Override
@@ -179,13 +215,13 @@ public final class BoardImpl
             builder.append('\n');
         }
         builder.append(";emergingPositions=");
-        builder.append(emergingPositions);
+        builder.append(Arrays.toString(emergingPositions));
         builder.append(";emergingColors=");
-        builder.append(emergingColors);
+        builder.append(Arrays.toString(emergingColors));
         builder.append(";floatingEmergingPositions=");
-        builder.append(floatingEmergingPositions);
+        builder.append(Arrays.toString(floatingEmergingPositions));
         builder.append(";floatingEmergingColors=");
-        builder.append(floatingEmergingColors);
+        builder.append(Arrays.toString(floatingEmergingColors));
         builder.append('\n');
     }
 
@@ -260,49 +296,47 @@ public final class BoardImpl
     }
 
     @Override
+    public final byte[] getFloatingEmergingPositions() {
+        return floatingEmergingPositions;
+    }
+
+    @Override
+    public final byte[] getFloatingEmergingColors() {
+        return floatingEmergingColors;
+    }
+
+    @Override
     public final byte getEmergingPosition(final int epIndex) {
-        return emergingPositions.get(epIndex);
+        return emergingPositions[epIndex];
     }
 
     @Override
     public final byte getEmergingColor(final int epIndex) {
-        return emergingColors.get(epIndex);
+        return emergingColors[epIndex];
     }
 
     @Override
     public final int getEmergingPositionNb() {
-        return emergingPositions.size();
-    }
-
-    @Override
-    public final void clearFloatingEmerging() {
-        floatingEmergingPositions.clear();
-        floatingEmergingColors.clear();
-    }
-
-    @Override
-    public final void addFloatingEmerging(final byte emergingPosition, final byte emergingColor) {
-        floatingEmergingPositions.add(emergingPosition);
-        floatingEmergingColors.add(emergingColor);
+        return emergingPositions.length;
     }
 
     @Override
     public final byte getFloatingEmergingPosition(final int epIndex) {
-        return floatingEmergingPositions.get(epIndex);
+        return floatingEmergingPositions[epIndex];
     }
 
     @Override
     public final byte getFloatingEmergingColor(final int epIndex) {
-        return floatingEmergingColors.get(epIndex);
+        return floatingEmergingColors[epIndex];
     }
 
     @Override
     public final int getFloatingEmergingPositionNb() {
-        return floatingEmergingPositions.size();
+        return floatingEmergingPositions.length;
     }
 
     @Override
     public final int getEmergingIndex(final byte ep) {
-        return Collections.binarySearch(emergingPositions, ep);
+        return Arrays.binarySearch(emergingPositions, ep);
     }
 }

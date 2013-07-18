@@ -62,6 +62,7 @@ public final class StateImpl
             jelly.updateBoard();
         }
         board.storeLinks();
+        board.storeFloatingEmerging();
     }
 
     @Override
@@ -74,9 +75,11 @@ public final class StateImpl
         final int height = board.getHeight();
         final int width = board.getWidth();
         jellyIndex = 0;
+        final byte[][] matrix = board.getMatrix();
         for (byte i = 0; i < height; i++) {
+            final byte[] line = matrix[i];
             for (byte j = 0; j < width; j++) {
-                if (board.getColor(i, j) >= Board.A_BYTE) {
+                if (line[j] >= Board.A_BYTE) {
                     JELLY_BUF[jellyIndex++] = new JellyImpl(board, i, j);
                 }
             }

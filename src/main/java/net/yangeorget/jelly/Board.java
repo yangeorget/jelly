@@ -79,6 +79,8 @@ public interface Board
 
     void clearFloatingEmerging();
 
+    void storeFloatingEmerging();
+
     /**
      * @param emergingPosition
      * @param emergingColor
@@ -98,6 +100,10 @@ public interface Board
     int getEmergingPositionNb();
 
     int getEmergingIndex(byte ep);
+
+    byte[] getFloatingEmergingPositions();
+
+    byte[] getFloatingEmergingColors();
 
     /**
      * To be called before storing links.
@@ -379,5 +385,6 @@ public interface Board
                                         "###   B     ",
                                         "############" }, new byte[] { (byte) 0x85, (byte) 0x87 }, new char[] { 'B',
                                                                                                                'B' }) };
+
 
 }

@@ -12,6 +12,8 @@ public final class GameImpl
     private static final Logger LOG = LoggerFactory.getLogger(GameImpl.class);
     private final LinkedList<State> states;
     private final StateSet explored;
+    private State clone;
+    private long time;
 
     public GameImpl(final Board board) {
         LOG.debug("jellyColorNb=" + board.getJellyColorNb());
@@ -23,68 +25,44 @@ public final class GameImpl
 
     @Override
     public final State solve(final boolean verbose) {
-        final long time = System.currentTimeMillis();
-        try {
-            while (!states.isEmpty()) {
-                final State state = pop();
-                State clone = null;
-                final Jelly[] jellies = state.getJellies();
-                for (int j = 0; j < jellies.length; j++) {
-                    final Jelly jelly = jellies[j];
-                    if (jelly.mayMove(Board.LEFT)) { // TODO: clean this
-                        if (clone == null) {
-                            clone = state.clone();
-                        }
-                        if (clone.move(j, Board.LEFT)) {
-                            if (process(clone)) {
-                                if (verbose) {
-                                    clone.explain(0);
-                                }
-                                return clone;
-                            } else {
-                                clone = null;
-                            }
-                        } else {
-                            clone.undoMove(Board.LEFT);
-                        }
-                    }
-                    if (jelly.mayMove(Board.RIGHT)) {
-                        if (clone == null) {
-                            clone = state.clone();
-                        }
-                        if (clone.move(j, Board.RIGHT)) {
-                            if (process(clone)) {
-                                if (verbose) {
-                                    clone.explain(0);
-                                }
-                                return clone;
-                            } else {
-                                clone = null;
-                            }
-                        } else {
-                            clone.undoMove(Board.RIGHT);
-                        }
-                    }
+        time = System.currentTimeMillis();
+        while (!states.isEmpty()) {
+            final State state = states.removeFirst();
+            clone = null;
+            final Jelly[] jellies = state.getJellies();
+            for (int j = 0; j < jellies.length; j++) {
+                final Jelly jelly = jellies[j];
+                if (process(state, jelly, j, Board.LEFT, verbose) || process(state, jelly, j, Board.RIGHT, verbose)) {
+                    return clone;
                 }
             }
-            return null;
-        } finally {
-            if (verbose) {
-                LOG.info("solved in " + (System.currentTimeMillis() - time) + " ms");
-                LOG.info(toString());
-            }
         }
+        return null;
     }
 
-    private final boolean process(final State clone) {
-        // LOG.debug(toString());
-        clone.process();
-        if (clone.isSolved()) {
-            return true;
-        } else {
-            push(clone);
-            return false;
+    boolean process(final State state, final Jelly jelly, final int j, final int vec, final boolean verbose) {
+        if (jelly.mayMove(vec)) {
+            if (clone == null) {
+                clone = state.clone();
+            }
+            if (clone.move(j, vec)) {
+                clone.process();
+                if (clone.isSolved()) {
+                    if (verbose) {
+                        LOG.info("solved in " + (System.currentTimeMillis() - time) + " ms");
+                        LOG.info(toString());
+                        clone.explain(0);
+                    }
+                    return true;
+                } else {
+                    push(clone);
+                    clone = null;
+                }
+            } else {
+                clone.undoMove(vec);
+            }
         }
+        return false;
     }
 
     private final void push(final State state) {
@@ -95,9 +73,6 @@ public final class GameImpl
         }
     }
 
-    private final State pop() {
-        return states.removeFirst();
-    }
 
     @Override
     public final String toString() {

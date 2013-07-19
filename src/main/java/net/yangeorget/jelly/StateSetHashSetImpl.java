@@ -16,16 +16,25 @@ public final class StateSetHashSetImpl
      * Sole constructor.
      */
     public StateSetHashSetImpl() {
-        set = new HashSet<>(1 << 20, 0.75F);
+        set = new HashSet<>(2000000, 0.75F);
     }
 
     @Override
     public final boolean store(final byte[] ser) {
-        return set.add(ByteBuffer.wrap(ser));
+        return set.add(getByteBuffer(ser));
+    }
+
+    @Override
+    public final boolean contains(final byte[] ser) {
+        return set.contains(getByteBuffer(ser));
     }
 
     @Override
     public final int size() {
         return set.size();
+    }
+
+    private ByteBuffer getByteBuffer(final byte[] ser) {
+        return ByteBuffer.wrap(ser);
     }
 }

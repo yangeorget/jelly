@@ -8,6 +8,8 @@ public interface StateSet {
 
     boolean store(byte[] serialization);
 
+    boolean contains(byte[] serialization);
+
     /**
      * Returns the size of the StateSet.
      * @return the size as an int

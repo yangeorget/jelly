@@ -2,21 +2,9 @@ package net.yangeorget.jelly;
 
 
 public interface Jelly {
-    void moveLeft();
+    void move(int vec);
 
-    void moveRight();
-
-    void moveDown();
-
-    void moveUp();
-
-    boolean mayMoveLeft();
-
-    boolean mayMoveRight();
-
-    boolean mayMoveDown();
-
-    boolean mayMoveUp();
+    boolean mayMove(final int vec);
 
     boolean overlaps(Jelly j);
 

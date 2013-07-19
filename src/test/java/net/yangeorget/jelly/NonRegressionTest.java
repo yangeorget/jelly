@@ -13,12 +13,12 @@ public class NonRegressionTest {
     public void test1() {
         final Board input = new BoardImpl(new String[] { "     A", "     #", " ABBA " }, new byte[] { 33, 34, 36 });
         final State state = new StateImpl(input);
-        state.moveLeft(0);
+        state.move(0, Board.LEFT);
         state.process();
         Assert.assertEquals(state.getJellies().length, 1);
         Assert.assertEquals(input.getLinkStarts().length, 3);
         Assert.assertEquals(input.getLinkEnds().length, 3);
-        state.moveLeft(0);
+        state.move(0, Board.LEFT);
         state.process();
         Assert.assertEquals(state.getJellies().length, 1);
         Assert.assertEquals(input.getLinkStarts().length, 3);
@@ -35,10 +35,10 @@ public class NonRegressionTest {
                                                         "      YDDYY " }, new byte[] { 0x56, 0x58, 0x59 });
         State state = new StateImpl(input);
         state = state.clone();
-        state.moveLeft(0);
+        state.move(0, Board.LEFT);
         state.process();
         state = state.clone();
-        state.moveLeft(0);
+        state.move(0, Board.LEFT);
         state.process();
         Assert.assertEquals(state.getJellies().length, 1);
     }
@@ -50,13 +50,13 @@ public class NonRegressionTest {
                                                         new byte[] { 0x22 },
                                                         new char[] { 'B' }));
         state.process();
-        state.moveRight(0);
+        state.move(0, Board.RIGHT);
         state.process();
-        state.moveRight(0);
+        state.move(0, Board.RIGHT);
         state.process();
-        state.moveRight(1);
+        state.move(1, Board.RIGHT);
         state.process();
-        state.moveRight(1);
+        state.move(1, Board.RIGHT);
         state.process();
         Assert.assertEquals(state.getSerialization(), new byte[] { 4,
                                                                   Board.SPACE_BYTE,
@@ -95,7 +95,7 @@ public class NonRegressionTest {
         final State state = new StateImpl(new BoardImpl(new String[] { "   ", "B B", "###" },
                                                         new byte[] { 0x22 },
                                                         new char[] { 'b' }));
-        state.moveRight(0);
+        state.move(0, Board.RIGHT);
         state.process();
         Assert.assertEquals(state.getJellies().length, 1);
         Assert.assertEquals(state.getSerialization(), new byte[] { 1,
@@ -130,7 +130,7 @@ public class NonRegressionTest {
                                           new byte[] { 0x20 },
                                           new char[] { 'R' });
         final State state = new StateImpl(board);
-        state.moveRight(1);
+        state.move(1, Board.RIGHT);
         state.process();
         Assert.assertEquals(state.getSerialization(), new byte[] { 1,
                                                                   Board.SPACE_BYTE,
@@ -166,7 +166,7 @@ public class NonRegressionTest {
                                           new byte[] { -125, 22, 102 },
                                           new char[] { 'R', 'R', 'R' });
         final State state = new StateImpl(board);
-        state.moveRight(3);
+        state.move(3, Board.RIGHT);
         state.process();
         Assert.assertEquals(state.getJellyPositionNb(), 32);
     }

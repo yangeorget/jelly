@@ -100,90 +100,20 @@ public final class StateImpl
     }
 
     @Override
-    public final boolean moveLeft(final int j) {
+    public final boolean move(final int j, final int vec) {
         jellyIndex = 0;
-        return moveLeft(jellies[j]);
+        return move(jellies[j], vec);
     }
 
-    final boolean moveLeft(final Jelly jelly) {
-        if (jelly.mayMoveLeft()) {
-            jelly.moveLeft();
+    final boolean move(final Jelly jelly, final int vec) {
+        if (jelly.mayMove(vec)) {
+            jelly.move(vec);
             JELLY_BUF[jellyIndex++] = jelly;
             if (jelly.overlapsWalls()) {
                 return false;
             }
             for (final Jelly j : jellies) {
-                if (!jelly.equals(j) && jelly.overlaps(j) && !moveLeft(j)) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public final boolean moveRight(final int j) {
-        jellyIndex = 0;
-        return moveRight(jellies[j]);
-    }
-
-    final boolean moveRight(final Jelly jelly) {
-        if (jelly.mayMoveRight()) {
-            jelly.moveRight();
-            JELLY_BUF[jellyIndex++] = jelly;
-            if (jelly.overlapsWalls()) {
-                return false;
-            }
-            for (final Jelly j : jellies) {
-                if (!jelly.equals(j) && jelly.overlaps(j) && !moveRight(j)) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    final boolean moveDown(final int j) {
-        jellyIndex = 0;
-        return moveDown(jellies[j]);
-    }
-
-    final boolean moveDown(final Jelly jelly) {
-        if (jelly.mayMoveDown()) {
-            jelly.moveDown();
-            JELLY_BUF[jellyIndex++] = jelly;
-            if (jelly.overlapsWalls()) {
-                return false;
-            }
-            for (final Jelly j : jellies) {
-                if (!jelly.equals(j) && jelly.overlaps(j) && !moveDown(j)) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    final boolean moveUp(final int j) {
-        jellyIndex = 0;
-        return moveUp(jellies[j]);
-    }
-
-    final boolean moveUp(final Jelly jelly) {
-        if (jelly.mayMoveUp()) {
-            jelly.moveUp();
-            JELLY_BUF[jellyIndex++] = jelly;
-            if (jelly.overlapsWalls()) {
-                return false;
-            }
-            for (final Jelly j : jellies) {
-                if (!jelly.equals(j) && jelly.overlaps(j) && !moveUp(j)) {
+                if (!jelly.equals(j) && jelly.overlaps(j) && !move(j, vec)) {
                     return false;
                 }
             }
@@ -208,10 +138,10 @@ public final class StateImpl
             movedDown = false;
             for (int i = jellies.length; --i >= 0;) {
                 if (!BLOCKED[i]) {
-                    if (moveDown(i)) {
+                    if (move(i, Board.DOWN)) {
                         movedDown = true;
                     } else {
-                        undoMoveDown();
+                        undoMove(Board.DOWN);
                         BLOCKED[i] = true;
                     }
                 }
@@ -247,7 +177,7 @@ public final class StateImpl
         // it seems smarter to compute this before moving the jelly up
         computeEmergingCandidates(jellies[j]);
         if (emergingIndex > 0) {
-            if (moveUp(j)) {
+            if (move(j, Board.UP)) {
                 someEmerged = true;
                 while (--emergingIndex >= 0) {
                     final Jelly epJelly = EP_JELLY_BUF[emergingIndex];
@@ -266,7 +196,7 @@ public final class StateImpl
                     }
                 }
             } else {
-                undoMoveUp();
+                undoMove(Board.UP);
             }
         }
         return someEmerged;
@@ -324,28 +254,9 @@ public final class StateImpl
     }
 
     @Override
-    public final void undoMoveLeft() {
+    public final void undoMove(final int vec) {
         while (--jellyIndex >= 0) {
-            JELLY_BUF[jellyIndex].moveRight();
-        }
-    }
-
-    @Override
-    public final void undoMoveRight() {
-        while (--jellyIndex >= 0) {
-            JELLY_BUF[jellyIndex].moveLeft();
-        }
-    }
-
-    private final void undoMoveDown() {
-        while (--jellyIndex >= 0) {
-            JELLY_BUF[jellyIndex].moveUp();
-        }
-    }
-
-    private final void undoMoveUp() {
-        while (--jellyIndex >= 0) {
-            JELLY_BUF[jellyIndex].moveDown();
+            JELLY_BUF[jellyIndex].move(-vec);
         }
     }
 

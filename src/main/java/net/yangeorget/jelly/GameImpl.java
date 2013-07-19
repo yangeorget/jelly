@@ -31,11 +31,11 @@ public final class GameImpl
                 final Jelly[] jellies = state.getJellies();
                 for (int j = 0; j < jellies.length; j++) {
                     final Jelly jelly = jellies[j];
-                    if (jelly.mayMoveLeft()) { // TODO: clean this
+                    if (jelly.mayMove(Board.LEFT)) { // TODO: clean this
                         if (clone == null) {
                             clone = state.clone();
                         }
-                        if (clone.moveLeft(j)) {
+                        if (clone.move(j, Board.LEFT)) {
                             if (process(clone)) {
                                 if (verbose) {
                                     clone.explain(0);
@@ -45,14 +45,14 @@ public final class GameImpl
                                 clone = null;
                             }
                         } else {
-                            clone.undoMoveLeft();
+                            clone.undoMove(Board.LEFT);
                         }
                     }
-                    if (jelly.mayMoveRight()) {
+                    if (jelly.mayMove(Board.RIGHT)) {
                         if (clone == null) {
                             clone = state.clone();
                         }
-                        if (clone.moveRight(j)) {
+                        if (clone.move(j, Board.RIGHT)) {
                             if (process(clone)) {
                                 if (verbose) {
                                     clone.explain(0);
@@ -62,7 +62,7 @@ public final class GameImpl
                                 clone = null;
                             }
                         } else {
-                            clone.undoMoveRight();
+                            clone.undoMove(Board.RIGHT);
                         }
                     }
                 }

@@ -206,75 +206,46 @@ public final class JellyImpl
     }
 
     @Override
-    public final boolean mayMoveLeft() {
+    public final boolean mayMove(final int vec) {
         if (!isFloating) {
             return false;
         }
-        for (int index = positions.length; --index >= 0;) {
-            if (Cells.getJ(getPosition(index)) == 0) {
-                return false;
-            }
+        switch (vec) {
+            case Board.LEFT:
+                for (int index = positions.length; --index >= 0;) {
+                    if (Cells.getJ(getPosition(index)) == 0) {
+                        return false;
+                    }
+                }
+                return true;
+            case Board.RIGHT:
+                for (int index = positions.length; --index >= 0;) {
+                    if (Cells.getJ(getPosition(index)) == board.getWidth1()) {
+                        return false;
+                    }
+                }
+                return true;
+            case Board.DOWN:
+                for (int index = positions.length; --index >= 0;) {
+                    if (Cells.getI(getPosition(index)) == board.getHeight1()) {
+                        return false;
+                    }
+                }
+                return true;
+            case Board.UP:
+                for (int index = positions.length; --index >= 0;) {
+                    if (Cells.getI(getPosition(index)) == 0) {
+                        return false;
+                    }
+                }
+                return true;
         }
-        return true;
+        throw new RuntimeException("Wrong vector!");
     }
 
     @Override
-    public final void moveLeft() {
-        shift += Board.LEFT;
-    }
-
-    @Override
-    public final boolean mayMoveRight() {
-        if (!isFloating) {
-            return false;
-        }
-        for (int index = positions.length; --index >= 0;) {
-            if (Cells.getJ(getPosition(index)) == board.getWidth1()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public final void moveRight() {
-        shift += Board.RIGHT;
-    }
-
-    @Override
-    public final boolean mayMoveDown() {
-        if (!isFloating) {
-            return false;
-        }
-        for (int index = positions.length; --index >= 0;) {
-            if (Cells.getI(getPosition(index)) == board.getHeight1()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public final void moveDown() {
-        shift += Board.DOWN;
-    }
-
-    @Override
-    public final boolean mayMoveUp() {
-        if (!isFloating) {
-            return false;
-        }
-        for (int index = positions.length; --index >= 0;) {
-            if (Cells.getI(getPosition(index)) == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public final void moveUp() {
-        shift += Board.UP;
+    public final void move(final int vec) {
+        shift += vec;
     }
 
     @Override

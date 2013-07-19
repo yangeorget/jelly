@@ -89,7 +89,7 @@ public class StateTest {
     }
 
     private void testMoveRightKO(final Board input, final int index) {
-        Assert.assertFalse(new StateImpl(input).moveRight(index));
+        Assert.assertFalse(new StateImpl(input).move(index, Board.RIGHT));
     }
 
     @Test
@@ -242,7 +242,7 @@ public class StateTest {
 
     private void testMoveRightOK(final Board input, final int index, final byte[] output) {
         final State state = new StateImpl(input);
-        state.moveRight(index);
+        state.move(index, Board.RIGHT);
         state.process();
         Assert.assertEquals(state.getSerialization(), output);
     }

@@ -11,13 +11,9 @@ public interface State
 
     Board getBoard();
 
-    boolean moveLeft(final int j);
+    boolean move(final int j, final int vec);
 
-    boolean moveRight(final int j);
-
-    void undoMoveRight();
-
-    void undoMoveLeft();
+    void undoMove(final int vec);
 
     void process();
 

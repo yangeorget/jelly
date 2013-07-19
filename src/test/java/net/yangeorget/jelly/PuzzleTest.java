@@ -143,20 +143,15 @@ public class PuzzleTest {
         solve(27);
     }
 
-    private void solve(final int level) {
-        final long time = System.currentTimeMillis();
-        final Board board = Board.LEVELS[level - 1];
-        final Game game = new GameImpl(board);
-        final State state = game.solve();
-        LOG.info("solved " + level + " in " + (System.currentTimeMillis() - time) + " ms");
-        Assert.assertNotNull(state);
-        game.explain(state);
-        Assert.assertEquals(board.getJellyPositionNb(), state.getJellyPositionNb());
+    @Test(groups = "fast")
+    public void test28() {
+        solve(28);
     }
 
-    public static void main(final String[] args) {
-        for (final String arg : args) {
-            new GameImpl(Board.LEVELS[Integer.parseInt(arg)]).solve();
-        }
+    private void solve(final int level) {
+        final Board board = Board.LEVELS[level - 1];
+        final State state = new GameImpl(board).solve(true);
+        Assert.assertNotNull(state);
+        Assert.assertEquals(board.getJellyPositionNb(), state.getJellyPositionNb());
     }
 }

@@ -22,44 +22,58 @@ public final class GameImpl
     }
 
     @Override
-    public final State solve() {
-        while (!states.isEmpty()) {
-            final State state = pop();
-            State clone = null;
-            final Jelly[] jellies = state.getJellies();
-            for (int j = 0; j < jellies.length; j++) {
-                final Jelly jelly = jellies[j];
-                if (jelly.mayMoveLeft()) {
-                    if (clone == null) {
-                        clone = state.clone();
-                    }
-                    if (clone.moveLeft(j)) {
-                        if (process(clone)) {
-                            return clone;
-                        } else {
-                            clone = null;
+    public final State solve(final boolean verbose) {
+        final long time = System.currentTimeMillis();
+        try {
+            while (!states.isEmpty()) {
+                final State state = pop();
+                State clone = null;
+                final Jelly[] jellies = state.getJellies();
+                for (int j = 0; j < jellies.length; j++) {
+                    final Jelly jelly = jellies[j];
+                    if (jelly.mayMoveLeft()) { // TODO: clean this
+                        if (clone == null) {
+                            clone = state.clone();
                         }
-                    } else {
-                        clone.undoMoveLeft();
-                    }
-                }
-                if (jelly.mayMoveRight()) {
-                    if (clone == null) {
-                        clone = state.clone();
-                    }
-                    if (clone.moveRight(j)) {
-                        if (process(clone)) {
-                            return clone;
+                        if (clone.moveLeft(j)) {
+                            if (process(clone)) {
+                                if (verbose) {
+                                    clone.explain(0);
+                                }
+                                return clone;
+                            } else {
+                                clone = null;
+                            }
                         } else {
-                            clone = null;
+                            clone.undoMoveLeft();
                         }
-                    } else {
-                        clone.undoMoveRight();
+                    }
+                    if (jelly.mayMoveRight()) {
+                        if (clone == null) {
+                            clone = state.clone();
+                        }
+                        if (clone.moveRight(j)) {
+                            if (process(clone)) {
+                                if (verbose) {
+                                    clone.explain(0);
+                                }
+                                return clone;
+                            } else {
+                                clone = null;
+                            }
+                        } else {
+                            clone.undoMoveRight();
+                        }
                     }
                 }
             }
+            return null;
+        } finally {
+            if (verbose) {
+                LOG.info("solved in " + (System.currentTimeMillis() - time) + " ms");
+                LOG.info(toString());
+            }
         }
-        return null;
     }
 
     private final boolean process(final State clone) {
@@ -74,11 +88,10 @@ public final class GameImpl
     }
 
     private final void push(final State state) {
-        final boolean store = explored.store(state.getSerialization());
-        if (store) {
-            states.addLast(state);
+        if (explored.store(state.getSerialization())) {
             // it is not needed to store the serialization of the state
             state.clearSerialization();
+            states.addLast(state);
         }
     }
 
@@ -87,16 +100,16 @@ public final class GameImpl
     }
 
     @Override
-    public final void explain(final State state) {
-        LOG.debug(toString());
-        state.explain(0);
-    }
-
-    @Override
     public final String toString() {
         final int statesSize = states.size();
         final int pushes = explored.size();
         final int pops = pushes - statesSize;
         return "#states=" + statesSize + "#pops=" + pops + ";#pushes=" + pushes + ";#ratio=" + ((float) pops / pushes);
+    }
+
+    public static void main(final String[] args) {
+        for (final String arg : args) {
+            new GameImpl(Board.LEVELS[Integer.parseInt(arg)]).solve(true);
+        }
     }
 }

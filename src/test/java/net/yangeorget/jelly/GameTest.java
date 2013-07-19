@@ -60,10 +60,10 @@ public class GameTest {
     }
 
     private void testSolveOK(final Board board) {
-        Assert.assertNotNull(new GameImpl(board).solve());
+        Assert.assertNotNull(new GameImpl(board).solve(false));
     }
 
     private void testSolveKO(final Board board) {
-        Assert.assertNull(new GameImpl(board).solve());
+        Assert.assertNull(new GameImpl(board).solve(false));
     }
 }

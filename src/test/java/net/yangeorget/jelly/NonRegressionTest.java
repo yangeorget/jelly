@@ -87,7 +87,7 @@ public class NonRegressionTest {
                                                         "###    G##  ",
                                                         "##   R R    ",
                                                         "###B########" }, new byte[] { 0x76 }, new char[] { 'R' });
-        Assert.assertNotNull(new GameImpl(board).solve());
+        Assert.assertNotNull(new GameImpl(board).solve(false));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class NonRegressionTest {
                                           new byte[] { 0x31, 0x32 },
                                           new char[] { 'B', 'B' });
         final Game game = new GameImpl(board);
-        final State state = game.solve();
+        final State state = game.solve(false);
         Assert.assertNotNull(state);
     }
 

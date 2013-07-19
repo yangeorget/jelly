@@ -384,7 +384,17 @@ public interface Board
                                         "### FFFFFb# ",
                                         "###   B     ",
                                         "############" }, new byte[] { (byte) 0x85, (byte) 0x87 }, new char[] { 'B',
-                                                                                                               'B' }) };
+                                                                                                               'B' }),
+
+            // board 28
+            new BoardImpl(new String[] { "### #  # ###",
+                                        "## GB  GB ##",
+                                        "#  ##  ##  #",
+                                        "#   b  g   #",
+                                        "#          #",
+                                        "##        ##",
+                                        "###G    B###",
+                                        "############" }, new byte[] { 0x74, 0x77 }, new char[] { 'b', 'g' }) };
 
 
 }

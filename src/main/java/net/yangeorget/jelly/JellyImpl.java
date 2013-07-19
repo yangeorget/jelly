@@ -116,6 +116,7 @@ public final class JellyImpl
             END_BUF[segmentIndex] = start;
             // let's init the candidate positions with the current candidate segment
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
+            // TODO: set color here
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
                 final byte pos = CANDIDATE_POS_BUF[index];
                 final int i = Cells.getI(pos);
@@ -124,6 +125,7 @@ public final class JellyImpl
                 if (c >= Board.A_BYTE) {
                     final byte color = BoardImpl.toFloating(c);
                     // let's store the color of the current segment if not yet done
+                    // TODO: move this above
                     if (start == END_BUF[segmentIndex]) {
                         COL_BUF[segmentIndex] = color;
                     }
@@ -203,10 +205,6 @@ public final class JellyImpl
                + Arrays.toString(emergingColors);
     }
 
-    private final void move(final int vec) {
-        shift += vec;
-    }
-
     @Override
     public final boolean mayMoveLeft() {
         if (!isFloating) {
@@ -222,7 +220,7 @@ public final class JellyImpl
 
     @Override
     public final void moveLeft() {
-        move(Board.LEFT);
+        shift += Board.LEFT;
     }
 
     @Override
@@ -240,7 +238,7 @@ public final class JellyImpl
 
     @Override
     public final void moveRight() {
-        move(Board.RIGHT);
+        shift += Board.RIGHT;
     }
 
     @Override
@@ -258,7 +256,7 @@ public final class JellyImpl
 
     @Override
     public final void moveDown() {
-        move(Board.DOWN);
+        shift += Board.DOWN;
     }
 
     @Override
@@ -276,7 +274,7 @@ public final class JellyImpl
 
     @Override
     public final void moveUp() {
-        move(Board.UP);
+        shift += Board.UP;
     }
 
     @Override
@@ -311,21 +309,18 @@ public final class JellyImpl
         final byte aE = aEnd[aSegment];
         final byte bE = bEnd[bSegment];
         for (int aIndex = getStart(aEnd, aSegment), bIndex = getStart(bEnd, bSegment);;) {
-            while (aPositions[aIndex] + delta < bPositions[bIndex]) {
+            final int diff = bPositions[bIndex] - aPositions[aIndex] - delta;
+            if (diff == 0) {
+                return true;
+            }
+            if (diff > 0) {
                 if (++aIndex == aE) {
                     return false;
                 }
-            }
-            if (aPositions[aIndex] + delta == bPositions[bIndex]) {
-                return true;
-            }
-            while (aPositions[aIndex] + delta > bPositions[bIndex]) {
+            } else {
                 if (++bIndex == bE) {
                     return false;
                 }
-            }
-            if (aPositions[aIndex] + delta == bPositions[bIndex]) {
-                return true;
             }
         }
     }

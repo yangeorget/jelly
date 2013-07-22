@@ -73,7 +73,6 @@ public class NonRegressionTest {
                                                                   5,
                                                                   Board.SPACE_BYTE,
                                                                   Board.SER_DELIM_BYTE,
-                                                                  Board.SER_DELIM_BYTE,
                                                                   1 });
     }
 
@@ -108,7 +107,6 @@ public class NonRegressionTest {
                                                                   'b',
                                                                   3,
                                                                   Board.SPACE_BYTE,
-                                                                  Board.SER_DELIM_BYTE,
                                                                   Board.SER_DELIM_BYTE,
                                                                   1 });
     }
@@ -146,7 +144,6 @@ public class NonRegressionTest {
                                                                   'B',
                                                                   2,
                                                                   Board.SPACE_BYTE,
-                                                                  Board.SER_DELIM_BYTE,
                                                                   Board.SER_DELIM_BYTE,
                                                                   0 });
     }

@@ -19,7 +19,6 @@ public final class SerializerCountImpl
         serialize(Board.SER_DELIM_BYTE);
         serialize(board.getLinkStarts());
         serialize(board.getLinkEnds());
-        serialize(Board.SER_DELIM_BYTE);
         serialize(Utils.asByte(state.getEmerged()));
         serialize(board.getFloatingEmergingPositions());
         serialize(board.getFloatingEmergingColors());

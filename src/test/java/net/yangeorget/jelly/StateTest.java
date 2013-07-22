@@ -101,7 +101,6 @@ public class StateTest {
                                                                                 1,
                                                                                 Board.SPACE_BYTE,
                                                                                 Board.SER_DELIM_BYTE,
-                                                                                Board.SER_DELIM_BYTE,
                                                                                 0 });
     }
 
@@ -117,7 +116,6 @@ public class StateTest {
                                                                                          'G',
                                                                                          2,
                                                                                          'B',
-                                                                                         Board.SER_DELIM_BYTE,
                                                                                          Board.SER_DELIM_BYTE,
                                                                                          0 });
     }
@@ -145,7 +143,6 @@ public class StateTest {
                                                                                              1,
                                                                                              'R',
                                                                                              Board.SER_DELIM_BYTE,
-                                                                                             Board.SER_DELIM_BYTE,
                                                                                              0 });
     }
 
@@ -168,7 +165,6 @@ public class StateTest {
                                     1,
                                     'B',
                                     Board.SER_DELIM_BYTE,
-                                    Board.SER_DELIM_BYTE,
                                     0 });
     }
 
@@ -180,7 +176,6 @@ public class StateTest {
                                                                                          'A',
                                                                                          2,
                                                                                          'B',
-                                                                                         Board.SER_DELIM_BYTE,
                                                                                          Board.SER_DELIM_BYTE,
                                                                                          0 });
     }
@@ -196,7 +191,6 @@ public class StateTest {
                                                                                                   2,
                                                                                                   'B',
                                                                                                   Board.SER_DELIM_BYTE,
-                                                                                                  Board.SER_DELIM_BYTE,
                                                                                                   0 });
     }
 
@@ -204,19 +198,7 @@ public class StateTest {
     public void testMoveRightOK6() {
         testMoveRightOK(new BoardImpl(new String[] { "AB ", "#  " }, new byte[] { 0, 1 }),
                         0,
-                        new byte[] { 4,
-                                    Board.SPACE_BYTE,
-                                    1,
-                                    'A',
-                                    1,
-                                    'B',
-                                    Board.SER_DELIM_BYTE,
-                                    18,
-                                    17,
-                                    17,
-                                    18,
-                                    Board.SER_DELIM_BYTE,
-                                    0 });
+                        new byte[] { 4, Board.SPACE_BYTE, 1, 'A', 1, 'B', Board.SER_DELIM_BYTE, 18, 17, 17, 18, 0 });
     }
 
     @Test
@@ -236,7 +218,6 @@ public class StateTest {
                                     17,
                                     17,
                                     18,
-                                    Board.SER_DELIM_BYTE,
                                     0 });
     }
 
@@ -257,7 +238,6 @@ public class StateTest {
                                                                                         1,
                                                                                         Board.SPACE_BYTE,
                                                                                         Board.SER_DELIM_BYTE,
-                                                                                        Board.SER_DELIM_BYTE,
                                                                                         0 });
     }
 
@@ -274,7 +254,6 @@ public class StateTest {
                                                                                            'B',
                                                                                            2,
                                                                                            Board.SPACE_BYTE,
-                                                                                           Board.SER_DELIM_BYTE,
                                                                                            Board.SER_DELIM_BYTE,
                                                                                            0 });
     }

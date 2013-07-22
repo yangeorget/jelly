@@ -20,7 +20,6 @@ public class SerializerTest {
                                                                                 2,
                                                                                 'B',
                                                                                 Board.SER_DELIM_BYTE,
-                                                                                Board.SER_DELIM_BYTE,
                                                                                 0 });
     }
 
@@ -34,7 +33,6 @@ public class SerializerTest {
                                                                             'A',
                                                                             2,
                                                                             'B',
-                                                                            Board.SER_DELIM_BYTE,
                                                                             Board.SER_DELIM_BYTE,
                                                                             0 });
     }
@@ -51,7 +49,6 @@ public class SerializerTest {
                                                                                       'A',
                                                                                       2,
                                                                                       'B',
-                                                                                      Board.SER_DELIM_BYTE,
                                                                                       Board.SER_DELIM_BYTE,
                                                                                       0 });
     }
@@ -78,7 +75,6 @@ public class SerializerTest {
                                                                             0x50,
                                                                             0x50,
                                                                             0x51,
-                                                                            Board.SER_DELIM_BYTE,
                                                                             0 });
     }
 
@@ -106,7 +102,6 @@ public class SerializerTest {
                                                                                   0x50,
                                                                                   0x51,
                                                                                   0x53,
-                                                                                  Board.SER_DELIM_BYTE,
                                                                                   0 });
     }
 

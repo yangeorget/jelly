@@ -248,6 +248,8 @@ public final class JellyImpl
         shift += vec;
     }
 
+    // TODO : optimize overlaps
+
     @Override
     public final boolean overlaps(final Jelly jelly) {
         final JellyImpl j = (JellyImpl) jelly;

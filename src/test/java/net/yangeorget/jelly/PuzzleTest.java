@@ -139,7 +139,7 @@ public class PuzzleTest {
     }
 
     @Test(groups = "dunno")
-    public void test27() { // TODO: ...
+    public void test27() { // TODO: out of memory
         solve(27);
     }
 
@@ -158,11 +158,67 @@ public class PuzzleTest {
         solve(30);
     }
 
+    @Test(groups = "dunno")
+    public void test31() {
+        solve(31);
+    }
+
+    @Test(groups = "fast")
+    public void test32() {
+        solve(32);
+    }
+
+    @Test(groups = "dunno")
+    public void test33() {
+        solve(33);
+    }
+
+    @Test(groups = "dunno")
+    public void test34() {
+        solve(34);
+    }
+
+    @Test(groups = "fast")
+    public void test35() {
+        solve(35);
+    }
+
+    @Test(groups = "slow")
+    public void test36() {
+        solve(36);
+    }
+
+    @Test(groups = "dunno")
+    public void test37() {
+        solve(37);
+    }
+
+    @Test(groups = "fast")
+    public void test38() {
+        solve(38);
+    }
+
+    @Test(groups = "dunno")
+    public void test39() { // TODO: out of memory
+        solve(39);
+    }
+
+    @Test(groups = "dunno")
+    public void test40() {
+        solve(40);
+    }
+
     private void solve(final int level) {
         LOG.debug("solving: " + level);
         final Board board = PuzzleData.LEVELS[level - 1];
         final State state = new GameImpl(board).solve(true);
         Assert.assertNotNull(state);
         Assert.assertEquals(board.getJellyPositionNb(), state.getJellyPositionNb());
+    }
+
+    public static void main(final String[] args) {
+        for (final String arg : args) {
+            new GameImpl(PuzzleData.LEVELS[Integer.parseInt(arg)]).solve(true);
+        }
     }
 }

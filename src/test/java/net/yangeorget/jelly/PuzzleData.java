@@ -289,7 +289,86 @@ public interface PuzzleData {
                                         "## RRYY ####" }),
 
             // board 30
-            new BoardImpl(new String[] {}) };
+            new BoardImpl(new String[] { " " }),// TODO: jelly can emerge in any direction!
+
+            // board 31
+            new BoardImpl(new String[] { " " }),
+
+            // board 32
+            new BoardImpl(new String[] { "G   Y   #RDB",
+                                        "F   M    YSG",
+                                        "B   ROO    #",
+                                        "#   ###   ##",
+                                        "           #",
+                                        "       ##  #",
+                                        "#          #",
+                                        "##        ##" },
+                          new byte[] { 0, 16, 32 },
+                          new byte[] { 4, 20, 36 },
+                          new byte[] { 9, 10, 11 },
+                          new byte[] { 25, 26, 27 }),
+
+            // board 33
+            new BoardImpl(new String[] { " " }),
+
+            // board 34
+            new BoardImpl(new String[] { " " }),
+
+            // board 35
+            new BoardImpl(new String[] { "DD    BBBBBR",
+                                        "DB        BY",
+                                        "DD        BY",
+                                        "##YYY     BY",
+                                        "#rFBF     ##",
+                                        "# FFF     ##",
+                                        "####      ##",
+                                        "#######   ##" }, new byte[] { 1, 17 }, new byte[] { 66, 67 }),
+
+            // board 36
+            new BoardImpl(new String[] { "    BRGRBG  ",
+                                        "  ##FFFFFF##",
+                                        "  ##FYFFRF##",
+                                        "    FFFFDD  ",
+                                        "    FFDDDD  ",
+                                        "    DDDDDD  ",
+                                        "    DDDDDD  ",
+                                        "    DDDDDD  ",
+                                        "############" }, new byte[] { (byte) 0x83 }, new char[] { 'R' }),
+
+            // board 37
+            new BoardImpl(new String[] { " " }),
+
+            // board 38
+            new BoardImpl(new String[] { "ggg##YBR    ",
+                                        "   ##BYB    ",
+                                        "GGG#######  ",
+                                        "FFF##       ",
+                                        "#F###       ",
+                                        "#      ## ##",
+                                        "#       ####",
+                                        "#### #######" },
+                          new byte[] { 0x71 },
+                          new char[] { 'R' },
+                          new byte[] { 32, 48 }),
 
 
+            // board 39
+            new BoardImpl(new String[] { "####    ####",
+                                        "###  FFFF###",
+                                        "####    ####",
+                                        "#R#      #G#",
+                                        "#B        B#",
+                                        "YR        GY",
+                                        "###      ###",
+                                        "#### ## ####" }, new byte[] { 0x62, 0x69 }, new char[] { 'G', 'R' }),
+
+            // board 40
+            new BoardImpl(new String[] { "      R R R ",
+                                        "#FY#### # # ",
+                                        "#FFr  # # R ",
+                                        "#RY Y # # # ",
+                                        "#DD # # # R ",
+                                        "#DD       # ",
+                                        "#D          ",
+                                        "###     #   " }, new byte[] { 0x72 }, new char[] { 'Y' }), };
 }

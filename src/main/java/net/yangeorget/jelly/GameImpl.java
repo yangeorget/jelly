@@ -91,10 +91,4 @@ public final class GameImpl
                + ";#states="
                + statesSize;
     }
-
-    public static void main(final String[] args) {
-        for (final String arg : args) {
-            new GameImpl(PuzzleData.LEVELS[Integer.parseInt(arg)]).solve(true);
-        }
-    }
 }

@@ -148,8 +148,19 @@ public class PuzzleTest {
         solve(28);
     }
 
+    @Test(groups = "fast")
+    public void test29() {
+        solve(29);
+    }
+
+    @Test(groups = "dunno")
+    public void test30() {
+        solve(30);
+    }
+
     private void solve(final int level) {
-        final Board board = Board.LEVELS[level - 1];
+        LOG.debug("solving: " + level);
+        final Board board = PuzzleData.LEVELS[level - 1];
         final State state = new GameImpl(board).solve(true);
         Assert.assertNotNull(state);
         Assert.assertEquals(board.getJellyPositionNb(), state.getJellyPositionNb());

@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * @author y.georget
  */
-public final class SerializerCountImpl
+public final class SerializerRLEImpl
         implements Serializer {
     private static final byte[] SERIALIZATION = new byte[Board.MAX_SIZE + 1 + 2 * Board.MAX_SIZE + 1 + Board.MAX_SIZE];
     private static int index;

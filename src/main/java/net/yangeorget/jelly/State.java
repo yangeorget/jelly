@@ -3,7 +3,7 @@ package net.yangeorget.jelly;
 
 public interface State
         extends JellyCounters {
-    Serializer SERIALIZER = new SerializerCountImpl();
+    Serializer SERIALIZER = new SerializerRLEImpl();
 
     State clone();
 

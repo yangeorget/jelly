@@ -22,7 +22,7 @@ public class BoardTest {
 
     @Test
     public void testGetJellyPositionNb() {
-        Assert.assertEquals(Board.LEVELS[26].getJellyPositionNb(), 32);
+        Assert.assertEquals(PuzzleData.LEVELS[26].getJellyPositionNb(), 32);
     }
 
     @Test

@@ -15,6 +15,7 @@ public final class GameImpl
     private State clone;
     private long time;
     private long pushes;
+    private double serSum;
 
     public GameImpl(final Board board) {
         LOG.debug("jellyColorNb=" + board.getJellyColorNb());
@@ -28,7 +29,6 @@ public final class GameImpl
     public final State solve(final boolean verbose) {
         time = System.currentTimeMillis();
         while (!states.isEmpty()) {
-            // LOG.debug(toString());
             final State state = states.removeFirst();
             clone = null;
             final Jelly[] jellies = state.getJellies();
@@ -52,6 +52,7 @@ public final class GameImpl
                 if (clone.isSolved()) {
                     if (verbose) {
                         LOG.info("solved in " + (System.currentTimeMillis() - time) + " ms");
+                        LOG.debug(toString());
                         clone.explain(0);
                     }
                     return true;
@@ -69,6 +70,7 @@ public final class GameImpl
     private final void push(final State state) {
         pushes++;
         final byte[] serialization = state.getSerialization();
+        serSum += serialization.length;
         if (explored.store(serialization)) {
             // it is not needed to store the serialization of the state
             state.clearSerialization();
@@ -80,12 +82,19 @@ public final class GameImpl
     public final String toString() {
         final int statesSize = states.size();
         final int exploredSize = explored.size();
-        return "#pushes=" + pushes + ";#exploredSize=" + exploredSize + "#states=" + statesSize;
+        return "ser~="
+               + (serSum / pushes)
+               + ";#pushes="
+               + pushes
+               + ";#exploredSize="
+               + exploredSize
+               + ";#states="
+               + statesSize;
     }
 
     public static void main(final String[] args) {
         for (final String arg : args) {
-            new GameImpl(Board.LEVELS[Integer.parseInt(arg)]).solve(true);
+            new GameImpl(PuzzleData.LEVELS[Integer.parseInt(arg)]).solve(true);
         }
     }
 }

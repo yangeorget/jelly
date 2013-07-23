@@ -116,37 +116,29 @@ public final class JellyImpl
             END_BUF[segmentIndex] = start;
             // let's init the candidate positions with the current candidate segment
             CANDIDATE_POS_BUF[0] = CANDIDATE_SEGMENT_BUF[segmentIndex];
-            // TODO: set color here
+            COL_BUF[segmentIndex] = BoardImpl.toFloating(board.getColor(Cells.getI(CANDIDATE_POS_BUF[0]),
+                                                                        Cells.getJ(CANDIDATE_POS_BUF[0])));
             for (int index = 0, freeIndex = 1; index < freeIndex; index++) {
                 final byte pos = CANDIDATE_POS_BUF[index];
                 final int i = Cells.getI(pos);
                 final int j = Cells.getJ(pos);
                 final byte c = board.getColor(i, j);
-                if (c >= Board.A_BYTE) {
-                    final byte color = BoardImpl.toFloating(c);
-                    // let's store the color of the current segment if not yet done
-                    // TODO: move this above
-                    if (start == END_BUF[segmentIndex]) {
-                        COL_BUF[segmentIndex] = color;
+                if (c >= Board.A_BYTE && BoardImpl.toFloating(c) == COL_BUF[segmentIndex]) {
+                    board.blank(i, j);
+                    isFloating &= BoardImpl.isFloating(c);
+                    insertPositionInSortedSegment(start, pos);
+                    handleLinkedPosition(linkStarts, linkEnds, pos);
+                    if (i > 0) {
+                        CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.UP);
                     }
-                    // has to be true because we want to treat the current segment only here
-                    if (color == COL_BUF[segmentIndex]) {
-                        board.blank(i, j);
-                        isFloating &= BoardImpl.isFloating(c);
-                        insertPositionInSortedSegment(start, pos);
-                        handleLinkedPosition(linkStarts, linkEnds, pos);
-                        if (i > 0) {
-                            CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.UP);
-                        }
-                        if (i < board.getHeight1()) {
-                            CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.DOWN);
-                        }
-                        if (j > 0) {
-                            CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.LEFT);
-                        }
-                        if (j < board.getWidth1()) {
-                            CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.RIGHT);
-                        }
+                    if (i < board.getHeight1()) {
+                        CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.DOWN);
+                    }
+                    if (j > 0) {
+                        CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.LEFT);
+                    }
+                    if (j < board.getWidth1()) {
+                        CANDIDATE_POS_BUF[freeIndex++] = (byte) (pos + Board.RIGHT);
                     }
                 }
             }
@@ -248,50 +240,41 @@ public final class JellyImpl
         shift += vec;
     }
 
-    // TODO : optimize overlaps
-
     @Override
     public final boolean overlaps(final Jelly jelly) {
         final JellyImpl j = (JellyImpl) jelly;
-        for (int segment = 0; segment < end.length; segment++) {
-            if (j.overlaps(shift, positions, end, segment)) {
-                return true;
+        final byte[] bPositions = j.positions;
+        final byte[] bEnd = j.end;
+        final byte delta = (byte) (shift - j.shift);
+        for (int aSegment = end.length; --aSegment >= 0;) {
+            final int aS = getStart(end, aSegment);
+            final byte aE = end[aSegment];
+            for (int bSegment = bEnd.length; --bSegment >= 0;) {
+                if (overlaps(delta, positions, aS, aE, bPositions, getStart(bEnd, bSegment), bEnd[bSegment])) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    final boolean overlaps(final byte aShift, final byte[] aPositions, final byte[] aEnd, final int aSegment) {
-        for (int segment = 0; segment < end.length; segment++) {
-            if (overlaps(shift, positions, end, segment, aShift, aPositions, aEnd, aSegment)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    static final boolean overlaps(final byte aShift,
+    static final boolean overlaps(final byte delta,
                                   final byte[] aPositions,
-                                  final byte[] aEnd,
-                                  final int aSegment,
-                                  final byte bShift,
+                                  int aS,
+                                  final int aE,
                                   final byte[] bPositions,
-                                  final byte[] bEnd,
-                                  final int bSegment) {
-        final byte delta = (byte) (aShift - bShift);
-        final byte aE = aEnd[aSegment];
-        final byte bE = bEnd[bSegment];
-        for (int aIndex = getStart(aEnd, aSegment), bIndex = getStart(bEnd, bSegment);;) {
-            final int diff = bPositions[bIndex] - aPositions[aIndex] - delta;
+                                  int bS,
+                                  final int bE) {
+        for (;;) {
+            final int diff = bPositions[bS] - aPositions[aS] - delta;
             if (diff == 0) {
                 return true;
-            }
-            if (diff > 0) {
-                if (++aIndex == aE) {
+            } else if (diff > 0) {
+                if (++aS == aE) {
                     return false;
                 }
             } else {
-                if (++bIndex == bE) {
+                if (++bS == bE) {
                     return false;
                 }
             }
@@ -300,7 +283,7 @@ public final class JellyImpl
 
     @Override
     public final boolean overlapsWalls() {
-        for (int index = 0; index < positions.length; index++) {
+        for (int index = positions.length; --index >= 0;) {
             if (board.isWall(getPosition(index))) {
                 return true;
             }

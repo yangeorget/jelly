@@ -14,6 +14,7 @@ public final class StateImpl
     private static final Jelly[] JELLY_BUF = new Jelly[Board.MAX_SIZE], EP_JELLY_BUF = new Jelly[Board.MAX_SIZE];
     private static final int[] EP_INDEX_BUF = new int[Board.MAX_SIZE];
     private static final boolean[] BLOCKED = new boolean[Board.MAX_SIZE];
+    private static final Serializer SERIALIZER = new SerializerRLEImpl();
     private static int jellyIndex, emergingIndex;
 
     private final Board board;
@@ -125,14 +126,14 @@ public final class StateImpl
 
     @Override
     public final void process() {
-        moveDown();
+        gravity();
         emergence();
     }
 
     /**
      * Applies gravity.
      */
-    final void moveDown() {
+    final void gravity() {
         Arrays.fill(BLOCKED, false);
         for (boolean movedDown = true; movedDown;) {
             movedDown = false;
@@ -160,15 +161,13 @@ public final class StateImpl
      * Give a chance to emerging jellies.
      */
     final void emergence() {
-        // if (!allEmerged()) {
-        for (int j = 0; j < jellies.length; j++) {
+        for (int j = 0; j < jellies.length; j++) { // TODO: iterate on ep first
             if (emergeUp(j)) {
                 updateBoard();
                 updateSerialization();
                 updateFromBoard();
             }
         }
-        // }
     }
 
     final boolean emergeUp(final int j) {
@@ -234,7 +233,6 @@ public final class StateImpl
 
     private final boolean computeEmergingCandidateFromJellies(final byte ep, final byte segmentColor) {
         for (final Jelly j : jellies) {
-            // if (!j.allEmerged()) {
             final int epIndex = j.getEpIndex(ep);
             if (epIndex >= 0) {
                 if (BoardImpl.toFloating(j.getEmergingColor(epIndex)) == segmentColor) {
@@ -242,7 +240,6 @@ public final class StateImpl
                 }
                 return true;
             }
-            // }
         }
         return false;
     }

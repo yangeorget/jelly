@@ -204,7 +204,7 @@ public class PuzzleTest {
     }
 
     @Test(groups = "dunno")
-    public void test40() {
+    public void test40() { // TODO: out of memory
         solve(40);
     }
 

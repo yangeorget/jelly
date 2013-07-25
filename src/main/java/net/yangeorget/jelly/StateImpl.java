@@ -126,7 +126,7 @@ public final class StateImpl
     @Override
     public final void process() {
         moveDown();
-        moveUp();
+        emergence();
     }
 
     /**
@@ -159,10 +159,10 @@ public final class StateImpl
     /**
      * Give a chance to emerging jellies.
      */
-    final void moveUp() {
+    final void emergence() {
         if (!allEmerged()) {
             for (int j = 0; j < jellies.length; j++) {
-                if (moveUpJelly(j)) {
+                if (emergeUp(j)) {
                     updateBoard();
                     updateSerialization();
                     updateFromBoard();
@@ -171,7 +171,7 @@ public final class StateImpl
         }
     }
 
-    final boolean moveUpJelly(final int j) {
+    final boolean emergeUp(final int j) {
         boolean someEmerged = false;
         emergingIndex = 0;
         // it seems smarter to compute this before moving the jelly up

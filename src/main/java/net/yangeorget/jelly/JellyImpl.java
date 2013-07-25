@@ -385,14 +385,4 @@ public final class JellyImpl
     public final void markAsEmerged(final int epIndex) {
         emergingColors[epIndex] = 0;
     }
-
-    @Override
-    public boolean allEmerged() {
-        for (final byte emergingColor : emergingColors) {
-            if (emergingColor != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

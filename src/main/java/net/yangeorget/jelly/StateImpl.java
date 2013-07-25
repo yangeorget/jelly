@@ -160,15 +160,15 @@ public final class StateImpl
      * Give a chance to emerging jellies.
      */
     final void emergence() {
-        if (!allEmerged()) {
-            for (int j = 0; j < jellies.length; j++) {
-                if (emergeUp(j)) {
-                    updateBoard();
-                    updateSerialization();
-                    updateFromBoard();
-                }
+        // if (!allEmerged()) {
+        for (int j = 0; j < jellies.length; j++) {
+            if (emergeUp(j)) {
+                updateBoard();
+                updateSerialization();
+                updateFromBoard();
             }
         }
+        // }
     }
 
     final boolean emergeUp(final int j) {
@@ -234,15 +234,15 @@ public final class StateImpl
 
     private final boolean computeEmergingCandidateFromJellies(final byte ep, final byte segmentColor) {
         for (final Jelly j : jellies) {
-            if (!j.allEmerged()) {
-                final int epIndex = j.getEpIndex(ep);
-                if (epIndex >= 0) {
-                    if (BoardImpl.toFloating(j.getEmergingColor(epIndex)) == segmentColor) {
-                        storeEmergingCandidate(j, epIndex);
-                    }
-                    return true;
+            // if (!j.allEmerged()) {
+            final int epIndex = j.getEpIndex(ep);
+            if (epIndex >= 0) {
+                if (BoardImpl.toFloating(j.getEmergingColor(epIndex)) == segmentColor) {
+                    storeEmergingCandidate(j, epIndex);
                 }
+                return true;
             }
+            // }
         }
         return false;
     }
@@ -333,19 +333,5 @@ public final class StateImpl
             }
         }
         return nb;
-    }
-
-    private boolean allEmerged() {
-        for (final boolean e : emerged) {
-            if (!e) {
-                return false;
-            }
-        }
-        for (final Jelly j : jellies) {
-            if (!j.allEmerged()) {
-                return false;
-            }
-        }
-        return true;
     }
 }

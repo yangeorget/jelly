@@ -32,8 +32,6 @@ public interface Jelly {
 
     int getNotEmergedNb();
 
-    boolean allEmerged();
-
     int getEpIndex(byte ep);
 
     void markAsEmerged(int epIndex);

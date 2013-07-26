@@ -306,7 +306,7 @@ public final class JellyImpl
                 ls = le;
             }
         }
-        for (int epIndex = 0; epIndex < getNotEmergedNb(); epIndex++) {
+        for (int epIndex = 0; epIndex < getEmergingColorNb(); epIndex++) {
             final byte color = getEmergingColor(epIndex);
             if (color != 0) {
                 board.addFloatingEmerging(getEmergingPosition(epIndex), color);
@@ -333,7 +333,7 @@ public final class JellyImpl
     }
 
     @Override
-    public final int getPositionsNb() {
+    public final int getPositionNb() {
         return positions.length;
     }
 
@@ -377,7 +377,7 @@ public final class JellyImpl
     }
 
     @Override
-    public final int getNotEmergedNb() {
+    public final int getEmergingColorNb() {
         return emergingColors.length;
     }
 

@@ -24,13 +24,13 @@ public interface Jelly {
 
     byte getPosition(int index);
 
-    int getPositionsNb();
+    int getPositionNb();
 
     byte getEmergingColor(int epIndex);
 
     byte getEmergingPosition(int epIndex);
 
-    int getNotEmergedNb();
+    int getEmergingColorNb();
 
     int getEpIndex(byte ep);
 

@@ -162,7 +162,9 @@ public final class StateImpl
      */
     final void emergence() {
         final byte vec = Board.UP;
-        for (int j = 0; j < jellies.length; j++) { // TODO: iterate on ep first
+        for (int j = 0; j < jellies.length; j++) { // TODO: this is wrong since the number of jellies is going to evolve
+                                                   // inside this loop
+            // instead we want to continue until everything has emerged
             emergingIndex = 0;
             final Jelly jelly = jellies[j];
             for (int segmentIndex = 0; segmentIndex < jelly.getSegmentNb(); segmentIndex++) {

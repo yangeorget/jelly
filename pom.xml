@@ -24,11 +24,6 @@
    </properties>
    <dependencies>
      <dependency>
-       <groupId>com.github.dirkraft</groupId>
-       <artifactId>commons-collections</artifactId>
-       <version>${commons.collections.version}</version>
-     </dependency>            
-     <dependency>
        <groupId>com.google.guava</groupId>
        <artifactId>guava</artifactId>
        <version>${guava.version}</version>

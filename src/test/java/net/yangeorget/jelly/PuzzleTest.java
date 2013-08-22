@@ -138,8 +138,8 @@ public class PuzzleTest {
         solve(26);
     }
 
-    @Test(groups = "dunno")
-    public void test27() { // TODO: out of memory
+    @Test(groups = "slow")
+    public void test27() {
         solve(27);
     }
 
